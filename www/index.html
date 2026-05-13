@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="pt" class="h-full">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="description" content="Portal do Investidor Exclusivo It's Wesus. Aceda à sua conta para acompanhar o seu capital gestionado e rentabilidade." />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <title>It's Wesus — Portal do Investidor</title>
+
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" media="print" onload="this.media='all'">
+  <noscript>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap">
+  </noscript>
+
+  <link rel="preload" as="image" href="img/logo-its-wesus-small.webp">
+  <link rel="stylesheet" href="css/tailwind-output.css" />
+</head>
+
+<body class="h-full">
+
+  <div class="h-[100dvh] w-full flex flex-col lg:flex-row relative overflow-hidden bg-[#0B1F3A]">
+
+    <div class="absolute inset-0 hidden lg:block" aria-hidden="true">
+      <img src="img/casa-background-desktop-small.webp" alt="Fundo Portal It's Wesus" class="w-full h-full object-cover object-center" loading="eager" decoding="async" />
+    </div>
+
+    <div class="absolute inset-y-0 left-0 w-[60%] hidden lg:block pointer-events-none z-0" aria-hidden="true">
+      <div class="absolute inset-0" style="background: linear-gradient(to bottom, rgba(11,31,58,1) 0%, rgba(11, 31, 58, 0.95) 25%, rgba(11, 31, 58, 0.90) 100%);
+                  -webkit-mask-image: linear-gradient(to right, black 0%, black 80%, transparent 100%);
+                  mask-image: linear-gradient(to right, black 0%, black 80%, transparent 100%);">
+      </div>
+    </div>
+
+    <main class="
+    relative flex flex-col items-center justify-center
+    w-full lg:w-1/2
+    h-full
+    px-4 py-4 lg:py-12 lg:px-16 
+    safe-top safe-bottom
+    overflow-hidden
+  ">
+
+      <div class="absolute inset-0 lg:hidden" aria-hidden="true">
+        <img src="img/casa-background-mobile-xsmall.webp" alt="" class="w-full h-full object-cover object-center" fetchpriority="high" loading="eager" decoding="async" />
+        <div class="absolute inset-0" style="background: rgba(11,31,58,0.85);"></div>
+      </div>
+
+      <div class="glow-orb hidden lg:block animate-glow-pulse" style="width:380px;height:380px;top:-80px;left:-100px; background:rgba(30,70,130,0.55); animation-delay:0s;"></div>
+      <div class="glow-orb hidden lg:block animate-glow-pulse" style="width:320px;height:320px;bottom:0;right:-60px; background:rgba(197,160,89,0.12); animation-delay:2s;"></div>
+      <div class="glow-orb hidden lg:block animate-glow-pulse" style="width:200px;height:200px;top:50%;left:55%; transform:translate(-50%,-50%); background:rgba(20,46,82,0.7); animation-delay:4s;"></div>
+
+      <div class="absolute top-0 left-0 right-0 h-px hidden lg:block" style="background:linear-gradient(90deg,transparent,rgba(197,160,89,0.5),transparent);" aria-hidden="true"></div>
+
+      <div class="relative z-10 w-full max-w-[92%] sm:max-w-sm lg:max-w-sm flex flex-col items-center justify-between h-full py-2 lg:py-0 lg:justify-center lg:gap-8">
+
+        <header class="header relative flex flex-col items-center w-full shrink-0 mt-auto lg:mt-0">
+          <div class="relative z-20 pointer-events-none lg:mt-[-100px] lg:mb-[-150px]">
+            <img src="img/logo-its-wesus-small.webp" alt="Logo It's Wesus" width="360" height="360" fetchpriority="high" class="img-logo w-[clamp(160px,50vw,240px)] lg:max-w-[360px] h-auto object-contain drop-shadow-[0_10px_20px_rgba(0,0,0,0.4)]" style="filter: drop-shadow(0 0 15px rgba(197, 160, 89, 0.2));">
+          </div>
+
+          <div class="relative z-10 text-center -mt-4 lg:-mt-0 lg:pt-8">
+            <h1 class="font-playfair text-white leading-tight uppercase" style="font-size:clamp(1.4rem, 3.5dvh + 1.5vw, 2.2rem);">
+              Portal do <br>Investidor
+              <span class="text-gold-glossy drop-shadow-sm">
+                Exclusivo
+              </span>
+            </h1>
+            <div class="mt-2 mx-auto w-16 h-[1.5px]" style="background: linear-gradient(90deg, transparent, #FFE5A3, transparent);"></div>
+          </div>
+        </header>
+
+        <form id="loginForm" novalidate class="glass rounded-xl w-full p-4 sm:p-5 lg:p-6 flex flex-col gap-[clamp(0.5rem,1.5dvh,1.25rem)] lg:gap-5 shrink my-auto lg:my-0" aria-label="Formulário de autenticação">
+
+          <div class="flex flex-col gap-1">
+            <label for="email" class="text-[clamp(10px,1.5dvh,12px)] font-medium tracking-wider" style="color: white;">E-mail</label>
+            <input id="email" type="email" name="email" autocomplete="email" placeholder="o.seu@email.com" class="w-full h-[clamp(2.5rem,5.5dvh,3rem)] lg:h-12 px-4 rounded-xl text-xs sm:text-sm font-inter glass-input" aria-required="true" />
+            <p id="emailError" class="hidden text-xs text-red-400 mt-0.5" role="alert"></p>
+          </div>
+
+          <div class="flex flex-col gap-1">
+            <label for="password" class="text-[clamp(10px,1.5dvh,12px)] font-medium tracking-wider" style="color:white;">Palavra-passe</label>
+            <div class="relative">
+              <input id="password" type="password" name="password" autocomplete="current-password" placeholder="••••••••" class="w-full h-[clamp(2.5rem,5.5dvh,3rem)] lg:h-12 px-4 pr-12 rounded-xl text-xs sm:text-sm font-inter glass-input" aria-required="true" />
+              <button type="button" id="eyeBtn" class="eye-btn absolute right-4 top-1/2 -translate-y-1/2" aria-label="Mostrar ou ocultar palavra-passe">
+                <svg id="eyeOpen" xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 sm:w-4.5 sm:h-4.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z" />
+                  <circle cx="12" cy="12" r="3" />
+                </svg>
+                <svg id="eyeClosed" xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 sm:w-4.5 sm:h-4.5 hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M17.94 17.94A10.94 10.94 0 0 1 12 19C5 19 1 12 1 12a18.9 18.9 0 0 1 5.06-5.94" />
+                  <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19" />
+                  <line x1="1" y1="1" x2="23" y2="23" />
+                </svg>
+              </button>
+            </div>
+            <p id="passwordError" class="hidden text-xs text-red-400 mt-0.5" role="alert"></p>
+          </div>
+
+          <div class="text-right -mt-1 lg:-mt-2 shrink-0">
+            <a href="#" class="text-[clamp(11.5px,1.2dvh,12px)] transition-colors duration-200" style="color:white;" onmouseover="this.style.color='#E8D08D'" onmouseout="this.style.color='rgba(197,160,89,0.75)'">
+              Esqueceu a Palavra-passe?
+            </a>
+          </div>
+
+          <button type="submit" id="loginBtn" class="w-full h-[clamp(2.75rem,6.5dvh,3.25rem)] lg:h-12 rounded-full text-[clamp(15px,1.5dvh,14px)] font-bold tracking-widest uppercase btn-gold-effects shrink-0 mt-1 lg:mt-0 flex items-center justify-center">
+            <span id="btnLabel">INICIAR SESSÃO</span>
+            <span id="btnSpinner" class="hidden absolute inset-0 flex items-center justify-center">
+              <svg class="animate-spin w-5 h-5 text-[#0B1F3A]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+              </svg>
+            </span>
+          </button>
+
+          <p id="formError" class="hidden text-center text-xs text-red-400 shrink-0" role="alert"></p>
+        </form>
+
+        <p class="text-[clamp(10px,1.4dvh,12px)] shrink-0 mb-3 lg:mb-0" style="color:rgba(255,255,255,0.5);">
+          Ainda não tem acesso?
+          <a href="#" class="transition-colors duration-200 ml-1 underline underline-offset-2" style="color:#C5A059;" onmouseover="this.style.color='#E8D08D'" onmouseout="this.style.color='#C5A059'">
+            Solicitar Acesso
+          </a>
+        </p>
+
+        <div class="flex flex-col w-full lg:hidden shrink-0 mb-auto gap-1">
+          <div class="flex gap-2 sm:gap-3 w-full" aria-label="Indicadores de desempenho">
+            <div class="glass rounded-lg flex-1 p-2 flex flex-col items-center gap-1">
+              <svg class="w-6 h-6 sm:w-7 sm:h-7" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Capital Gestionado - Banco">
+
+                <defs>
+                  <linearGradient id="goldCircle" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#f9e8b3" />
+                    <stop offset="25%" stop-color="#e9d291" />
+                    <stop offset="50%" stop-color="#c5a574" />
+                    <stop offset="75%" stop-color="#a68653" />
+                    <stop offset="100%" stop-color="#93723f" />
+                  </linearGradient>
+                </defs>
+
+                <circle cx="12" cy="12" r="12" fill="url(#goldCircle)" />
+
+                <g stroke="#0B1F3A" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+
+                  <path d="M12 4.5L4.5 9h15L12 4.5z" fill="none" />
+
+                  <path d="M5.5 17.5h13" />
+                  <path d="M4.5 19.5h15" />
+
+                  <path d="M7 9v8.5" />
+                  <path d="M10.33 9v8.5" />
+                  <path d="M13.66 9v8.5" />
+                  <path d="M17 9v8.5" />
+                </g>
+              </svg>
+              <p class="text-[clamp(8px,1dvh,9px)] uppercase tracking-widest text-center" style="color:white;">Capital Gestionado</p>
+              <p class="font-semibold text-white text-[clamp(14px,2dvh,18px)] leading-none">€100M+</p>
+            </div>
+            <div class="glass rounded-lg flex-1 p-2 flex flex-col items-center gap-1">
+              <svg class="w-6 h-6 sm:w-7 sm:h-7" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="ROI Médio - Gráfico de Crescimento">
+
+                <defs>
+                  <linearGradient id="goldCircle2" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#f9e8b3" />
+                    <stop offset="25%" stop-color="#e9d291" />
+                    <stop offset="50%" stop-color="#c5a574" />
+                    <stop offset="75%" stop-color="#a68653" />
+                    <stop offset="100%" stop-color="#93723f" />
+                  </linearGradient>
+                </defs>
+
+                <circle cx="12" cy="12" r="12" fill="url(#goldCircle2)" />
+
+                <g stroke="#0B1F3A" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+
+                  <rect x="5.5" y="14" width="2.5" height="4" rx="0.5" />
+                  <rect x="10.5" y="12" width="2.5" height="6" rx="0.5" />
+                  <rect x="15.5" y="9" width="2.5" height="9" rx="0.5" />
+
+                  <path d="M4 12L9 7.5L13 10L18 4" />
+                  <path d="M14 4h4v4" />
+                </g>
+              </svg>
+              <p class="text-[clamp(8px,1dvh,9px)] uppercase tracking-widest text-center" style="color:white;">ROI Médio</p>
+              <p class="font-semibold text-white text-[clamp(14px,2dvh,18px)] leading-none">8.5%
+                <span class="text-[10px] align-super" style="color:#C5A059;">*</span>
+              </p>
+            </div>
+          </div>
+          <p class="text-center text-[clamp(8px,1dvh,9px)] leading-relaxed shrink-0 mt-1" style="color:rgba(255,255,255,0.3);">
+            *Declaram-se carácter de rentabilidade histórica.<br />Rendimentos passados não garantem rentabilidade futura.
+          </p>
+        </div>
+
+      </div>
+    </main>
+
+    <section class="hidden lg:flex relative w-1/2 flex-col items-center justify-end pointer-events-none" aria-label="Indicadores de desempenho">
+
+      <div class="relative z-10 flex gap-5 p-8 pointer-events-auto lg:mb-4" aria-label="Painel de Indicadores">
+
+        <div class="glass rounded-xl w-40 p-5 flex flex-col items-center gap-3 transition-transform hover:scale-105 duration-300">
+          <svg class="w-10 h-10" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="goldCircleDesk1" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#f9e8b3" />
+                <stop offset="25%" stop-color="#e9d291" />
+                <stop offset="50%" stop-color="#c5a574" />
+                <stop offset="75%" stop-color="#a68653" />
+                <stop offset="100%" stop-color="#93723f" />
+              </linearGradient>
+            </defs>
+            <circle cx="12" cy="12" r="12" fill="url(#goldCircleDesk1)" />
+            <g stroke="#0B1F3A" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 4.5L4.5 9h15L12 4.5z" />
+              <path d="M5.5 17.5h13M4.5 19.5h15" />
+              <path d="M7 9v8.5M10.33 9v8.5M13.66 9v8.5M17 9v8.5" />
+            </g>
+          </svg>
+          <div class="text-center">
+            <p class="text-[9px] font-inter uppercase tracking-[0.2em] text-white/80 mb-1">Capital Gestionado</p>
+            <p class="font-bold text-white text-2xl leading-none" style="color:#d3b68b;">€100M+</p>
+          </div>
+        </div>
+
+        <div class="glass rounded-xl w-40 p-5 flex flex-col items-center gap-3 transition-transform hover:scale-105 duration-300">
+          <svg class="w-10 h-10" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="goldCircleDesk2" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#f9e8b3" />
+                <stop offset="25%" stop-color="#e9d291" />
+                <stop offset="50%" stop-color="#c5a574" />
+                <stop offset="75%" stop-color="#a68653" />
+                <stop offset="100%" stop-color="#93723f" />
+              </linearGradient>
+            </defs>
+            <circle cx="12" cy="12" r="12" fill="url(#goldCircleDesk2)" />
+            <g stroke="#0B1F3A" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="5.5" y="14" width="2.5" height="4" rx="0.5" />
+              <rect x="10.5" y="12" width="2.5" height="6" rx="0.5" />
+              <rect x="15.5" y="9" width="2.5" height="9" rx="0.5" />
+              <path d="M4 12L9 7.5L13 10L18 4" />
+              <path d="M14 4h4v4" />
+            </g>
+          </svg>
+          <div class="text-center">
+            <p class="text-[9px] font-inter uppercase tracking-[0.2em] text-white/80 mb-1">ROI Médio</p>
+            <p class="font-bold text-white text-2xl leading-none ml-2" style="color:#d3b68b;">8.5%<span class="text-sm align-super text-[#C5A059] ml-1">*</span></p>
+            <p class="text-[7.5px] text-white/40 mt-1.5 leading-tight">* Rendimento Histórico</p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </div>
+
+  <script src="js/login.js"></script>
+</body>
+
+</html>

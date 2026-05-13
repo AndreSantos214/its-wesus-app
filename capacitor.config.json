@@ -1,0 +1,11 @@
+{
+  "appId": "com.itswesus.portal",
+  "appName": "It's Wesus",
+  "webDir": "www",
+  "bundledWebRuntime": false,
+  "plugins": {
+    "Keyboard": {
+      "resize": "none"
+    }
+  }
+}
