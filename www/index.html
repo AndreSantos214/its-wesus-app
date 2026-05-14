@@ -18,26 +18,78 @@
   <link rel="stylesheet" href="css/tailwind-output.css" />
 
   <style>
-    /* Clean UI Mobile - Ativado pelo Capacitor quando o teclado abre */
+    /* Configurações do Background Mobile no Body */
+    @media (max-width: 1023px) {
+      body {
+        background-image: url('img/casa-background-mobile-xsmall.webp');
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+        background-repeat: no-repeat;
+        background-color: #0B1F3A;
+        /* Fallback */
+      }
+
+      /* Overlay escuro fixo para não ser afetado pelo teclado */
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background: rgba(11, 31, 58, 0.85);
+        z-index: -1;
+      }
+
+      /* Remove o fundo do wrapper principal para mostrar o do body */
+      #main-wrapper {
+        background-color: transparent !important;
+      }
+    }
+
+    /* Prepara as animações de GPU */
+    .img-logo,
+    #loginForm,
+    #mobile-header-text,
+    #mobile-signup-text,
+    #mobile-stats {
+      /* Anima apenas o que a placa de vídeo aguenta processar suavemente */
+      transition: transform 0.35s cubic-bezier(0.25, 1, 0.5, 1),
+        opacity 0.3s ease-out,
+        visibility 0.3s linear;
+      will-change: transform, opacity;
+    }
+
+    /* Bloqueio de Scroll e Rubber-banding */
+    body.keyboard-open {
+      overflow: hidden !important;
+      overscroll-behavior: none !important;
+      touch-action: none !important;
+    }
+
+    /* Título desaparece suavemente */
     body.keyboard-open #mobile-header-text,
     body.keyboard-open #mobile-signup-text,
     body.keyboard-open #mobile-stats {
-      display: none !important;
+      opacity: 0 !important;
+      visibility: hidden !important;
+      pointer-events: none !important;
+      transform: translateY(-20px);
     }
 
-    /* Suaviza e encolhe o logo para dar espaço ao formulário */
+    /* Logo encolhe e sobe */
     body.keyboard-open .img-logo {
-      width: 600px !important;
-      margin-top: -10rem !important;
-      margin-bottom: -6.5rem !important;
-      transition: all 0.3s ease-in-out;
+      transform: translateY(5px) !important;
+    }
+
+    /* Formulário sobe para dar espaço ao teclado */
+    body.keyboard-open #loginForm {
+      transform: translateY(-80px) !important;
     }
   </style>
 </head>
 
 <body class="h-full">
 
-  <div class="h-[100dvh] w-full flex flex-col lg:flex-row relative overflow-hidden bg-[#0B1F3A]">
+  <div id="main-wrapper" class="h-[100dvh] w-full flex flex-col lg:flex-row relative overflow-hidden bg-[#0B1F3A]">
 
     <div class="absolute inset-0 hidden lg:block" aria-hidden="true">
       <img src="img/casa-background-desktop-small.webp" alt="Fundo Portal It's Wesus" class="w-full h-full object-cover object-center" loading="eager" decoding="async" />
@@ -136,7 +188,7 @@
 
         <p id="mobile-signup-text" class="text-[clamp(10px,1.4dvh,12px)] shrink-0 mb-3 lg:mb-0" style="color:rgba(255,255,255,0.5);">
           Ainda não tem acesso?
-          <a href="#" class="transition-colors duration-200 ml-1 underline underline-offset-2" style="color:#C5A059;" onmouseover="this.style.color='#E8D08D'" onmouseout="this.style.color='#C5A059'">
+          <a href="#" class="transition-colors duration-200 ml-1 underline underline-offset-2" style="margin-bottom: clamp(80px, 5vh, 160px); color:#C5A059;" onmouseover="this.style.color='#E8D08D'" onmouseout="this.style.color='#C5A059'">
             Solicitar Acesso
           </a>
         </p>
@@ -213,9 +265,9 @@
       </div>
     </main>
 
-    <section class="hidden lg:flex relative w-1/2 flex-col items-center justify-end pointer-events-none" aria-label="Indicadores de desempenho">
+    <section class="hidden lg:flex relative w-1/2 flex-col lg:items-start lg:pl-12 justify-end pointer-events-none" aria-label="Indicadores de desempenho">
 
-      <div class="relative z-10 flex gap-5 p-8 pointer-events-auto lg:mb-4" aria-label="Painel de Indicadores">
+      <div class="relative z-10 flex gap-5 p-1 pointer-events-auto justify-center" aria-label="Painel de Indicadores" style="margin-bottom: clamp(80px, 5vh, 160px);">
 
         <div class="glass rounded-xl w-40 p-5 flex flex-col items-center gap-3 transition-transform hover:scale-105 duration-300">
           <svg class="w-10 h-10" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
