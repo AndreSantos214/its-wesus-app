@@ -198,10 +198,28 @@
   }
 })();
 
-/* ── Trava de Fundo Anti-Teclado ──────────────────────────── */
-const mobileBg = document.getElementById("mobile-bg");
-if (mobileBg) {
-  // Mede a altura física absoluta da tela do telemóvel e tranca em pixels.
-  // Assim, quando o teclado sobe e encolhe o 'viewport', a imagem ignora.
-  mobileBg.style.height = window.screen.height + "px";
-}
+/* ── Lógica Nativa Mobile (Fundo + Teclado) ──────────────────────────── */
+document.addEventListener("DOMContentLoaded", () => {
+  // 1. Trancar a altura do fundo mobile no momento em que a app abre
+  const mobileBgWrapper = document.querySelector(
+    '.lg\\:hidden > img[src*="casa-background-mobile"]',
+  ).parentElement;
+  if (mobileBgWrapper) {
+    const initialHeight = window.innerHeight;
+    mobileBgWrapper.style.height = `${initialHeight}px`;
+    mobileBgWrapper.style.position = "absolute"; // Garante que não é esmagado
+  }
+
+  // 2. Escutar o teclado do Capacitor para ativar o "Clean UI"
+  if (window.Capacitor && window.Capacitor.Plugins.Keyboard) {
+    const { Keyboard } = window.Capacitor.Plugins;
+
+    Keyboard.addListener("keyboardWillShow", () => {
+      document.body.classList.add("keyboard-open");
+    });
+
+    Keyboard.addListener("keyboardWillHide", () => {
+      document.body.classList.remove("keyboard-open");
+    });
+  }
+});

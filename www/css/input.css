@@ -1,0 +1,343 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─── Google Fonts ─────────────────────────────────────────────────── */
+@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap");
+
+/* ─── Resets & Capacitor Optimizations ─────────────────────────────── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  height: 100%;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: "Inter", system-ui, sans-serif;
+  background-color: #0b1f3a;
+
+  /* Native feel — no text selection, no tap highlight */
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+
+  /* GPU compositing for 60 fps */
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+
+/* ─── Capacitor safe-area support ──────────────────────────────────── */
+.safe-top {
+  padding-top: env(safe-area-inset-top, 0px);
+}
+.safe-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* ─── Custom scrollbar (hidden on mobile) ──────────────────────────── */
+::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+/* ─── Botão Dourado (Feixe de Luz e Animação de Sweep) ────────────────── */
+.btn-gold-effects {
+  position: relative;
+  overflow: hidden; /* Garante que a animação da luz não sai do botão */
+
+  /* Gradiente com background-size 100% usando a sua paleta */
+  background: linear-gradient(
+    110deg,
+    #93723f 0%,
+    /* Tom mais escuro na ponta esquerda */ #a68653 20%,
+    /* Transição escura */ #c5a574 40%,
+    /* Ouro médio */ #f9e8b3 55%,
+    /* FEIXE DE LUZ CENTRAL (Mais claro) */ #e9d291 70%,
+    /* Ouro claro */ #c5a574 85%,
+    /* Retorno ao médio */ #93723f 100% /* Tom mais escuro na ponta direita */
+  );
+
+  /* Background estático como solicitado */
+  background-size: 100% 100%;
+
+  color: #0b2954;
+  border: 1px solid rgba(249, 232, 179, 0.6); /* Borda com a cor mais clara */
+
+  /* Volume base do botão */
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.5),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.25), 0 6px 16px rgba(166, 134, 83, 0.3);
+
+  transition: all 0.4s ease;
+}
+
+/* ─── Nova Animação GPU: Reflexo que atravessa o botão ────────────────── */
+.btn-gold-effects::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0; /* Fixamos o left no início */
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(249, 232, 179, 0.6),
+    transparent
+  );
+  /* Colocamos o skew diretamente no transform inicial */
+  transform: translateX(-200%) skewX(-25deg);
+  /* Adicionamos will-change para forçar o browser a criar uma camada GPU */
+  will-change: transform;
+  animation: sweep-light-gpu 4s infinite;
+}
+
+@keyframes sweep-light-gpu {
+  0% {
+    transform: translateX(-200%) skewX(-25deg);
+  }
+  20% {
+    transform: translateX(300%) skewX(-25deg);
+  }
+  100% {
+    transform: translateX(300%) skewX(-25deg);
+  }
+}
+
+/* Animação que faz o brilho deslizar (apenas ativa em Desktop para poupar a CPU mobile) */
+@media (min-width: 1024px) {
+  .text-gold-glossy {
+    animation: shine-text 6s linear infinite;
+  }
+}
+
+/* ─── Interações (Hover e Active) ────────────────── */
+.btn-gold-effects:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.1); /* Ilumina todo o botão no hover */
+  box-shadow: inset 0 2px 3px rgba(255, 255, 255, 0.6),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.2), 0 8px 20px rgba(166, 134, 83, 0.4);
+}
+
+.btn-gold-effects:active {
+  transform: scale(0.98);
+  box-shadow: inset 0 3px 6px rgba(0, 0, 0, 0.4),
+    0 2px 8px rgba(166, 134, 83, 0.2);
+}
+
+/* ─── Glass card Premium (Mais Sutil e Refinado) ────────────────── */
+.glass {
+  /* 1. Opacidade reduzida: Fundo menos "leitoso" e mais transparente */
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.14) 0%,
+    rgba(255, 255, 255, 0.04) 100%
+  );
+
+  /* 2. Desfoque mais sutil: Reduzido de 28px para 12px/16px */
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(16px);
+
+  /* 3. Borda visualmente mais fina: Redução drástica da opacidade da cor */
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-top-color: rgba(255, 255, 255, 0.35); /* Reflexo superior suave */
+  border-left-color: rgba(255, 255, 255, 0.25); /* Reflexo lateral suave */
+
+  /* Sombra suavizada para acompanhar a nova leveza do card */
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35),
+    inset 0 1px 1px rgba(255, 255, 255, 0.15);
+}
+
+/* ─── Inputs do Vidro (Ajustados para o novo fundo) ─────────────────── */
+.glass-input {
+  /* Fundo reduzido de 0.15 para 0.08 */
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+
+  /* Borda reduzida de 0.3 para 0.15 */
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-top-color: rgba(0, 0, 0, 0.15);
+
+  color: #fff;
+  outline: none;
+  box-shadow: inset 0 3px 6px rgba(0, 0, 0, 0.12); /* Profundidade interior mais suave */
+  transition: border-color 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
+}
+
+.glass-input::placeholder {
+  color: rgba(255, 255, 255, 0.6); /* Placeholder um pouco mais visível */
+}
+
+.glass-input:focus {
+  /* Quando clicado, o input ilumina-se com o tom dourado da marca */
+  border-color: rgba(227, 181, 54, 0.8);
+  background: rgba(255, 255, 255, 0.22);
+  box-shadow: inset 0 3px 6px rgba(0, 0, 0, 0.1),
+    0 0 12px rgba(227, 181, 54, 0.3);
+}
+
+/* ─── Ambient glow orbs ─────────────────────────────────────────────── */
+.glow-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(100px);
+  pointer-events: none;
+  will-change: opacity;
+}
+
+/* ─── Staggered animation delays ────────────────────────────────────── */
+.delay-100 {
+  animation-delay: 0.1s;
+}
+.delay-200 {
+  animation-delay: 0.2s;
+}
+.delay-300 {
+  animation-delay: 0.3s;
+}
+.delay-400 {
+  animation-delay: 0.4s;
+}
+.delay-500 {
+  animation-delay: 0.5s;
+}
+.delay-600 {
+  animation-delay: 0.6s;
+}
+
+/* ─── Logo bull SVG colour ──────────────────────────────────────────── */
+.logo-bull path {
+  fill: #c5a059;
+}
+
+/* ─── Texto Dourado Reluzente Animado ───────────────────────────────── */
+.text-gold-glossy {
+  /* O mesmo conceito das duas faixas de luz finas, mas horizontal (to right) */
+  background: linear-gradient(
+    to right,
+    #9c7424 0%,
+    /* Sombra inicial */ #e3b536 15%,
+    /* Ouro base */ #fff8d6 22%,
+    /* Início da luz */ #ffffff 25%,
+    /* PICO de luz fina e branca */ #fff8d6 28%,
+    /* Fim da luz */ #a67b27 50%,
+    /* Sombra de contraste no meio */ #e3b536 65%,
+    /* Ouro base */ #fff8d6 77%,
+    /* Início da 2ª luz */ #ffffff 80%,
+    /* PICO da 2ª luz */ #fff8d6 83%,
+    /* Fim da 2ª luz */ #8a5a19 100% /* Sombra final profunda */
+  );
+
+  /* Faz o gradiente ter o dobro do tamanho para a luz poder viajar */
+  background-size: 200% auto;
+
+  /* Corta o fundo pelo formato das letras e esconde a cor real do texto */
+  color: transparent;
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
+/* Keyframe para o loop da luz no texto */
+@keyframes shine-text {
+  0% {
+    background-position: 0% center;
+  }
+  100% {
+    background-position: 200% center;
+  }
+}
+
+/* ─── Eye button ────────────────────────────────────────────────────── */
+/* ─── Eye button ────────────────────────────────────────────────────── */
+.eye-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: rgba(255, 255, 255, 0.5);
+  padding: 12px;
+  margin-right: -12px; /* Compensa o padding para não empurrar o ícone */
+  display: flex;
+  align-items: center;
+  transition: color 0.2s;
+}
+.eye-btn:hover {
+  color: #c5a059;
+}
+
+/* ─── Correção Crítica para Inputs Nativos ────────────────────────── */
+input,
+textarea {
+  user-select: auto !important;
+  -webkit-user-select: auto !important;
+}
+
+.font-playfair {
+  font-family: "Playfair", serif;
+  font-weight: 200;
+  letter-spacing: 1.2px;
+}
+
+.img-logo {
+  width: 350px !important;
+  margin-bottom: -5.5rem;
+  margin-top: -6.5rem;
+}
+
+@media (min-width: 1024px) {
+  /* Estilos para telas de 992px ou maiores */
+  .img-logo {
+    width: 400px !important;
+    margin-bottom: 1rem;
+    margin-top: -1rem;
+  }
+
+  header h1 {
+    margin-top: -1rem;
+  }
+}
+
+@media (min-height: 900px) and (min-width: 1200px) {
+  /* Estilos para telas de 992px ou maiores */
+  .img-logo {
+    width: 600px !important;
+    margin-bottom: 3rem;
+    margin-top: -1rem;
+  }
+
+  header {
+    margin-bottom: 3rem;
+  }
+}
+
+@media (min-width: 640px) and (min-height: 650px) {
+  header {
+    margin-top: -1rem;
+  }
+}
+
+@media (max-width: 992px) {
+  /* Estilos para telas de 992px ou maiores */
+  header h1 {
+    font-size: 1.9rem !important;
+  }
+}
+
+@media (max-width: 300px) {
+  /* Estilos para telas de 992px ou maiores */
+  .img-logo {
+    width: 600px !important;
+    margin-bottom: -3rem;
+    margin-top: -6rem;
+  }
+}
