@@ -45,17 +45,19 @@
       }
     }
 
+
     /* Prepara as animações de GPU */
     .img-logo,
     #loginForm,
     #mobile-header-text,
     #mobile-signup-text,
-    #mobile-stats {
-      /* Anima apenas o que a placa de vídeo aguenta processar suavemente */
+    #mobile-stats,
+    #desktop-stats {
+      /* Adicionado aqui */
       transition: transform 0.35s cubic-bezier(0.25, 1, 0.5, 1),
         opacity 0.3s ease-out,
         visibility 0.3s linear;
-      will-change: transform, opacity;
+      will-change: transform;
     }
 
     /* Bloqueio de Scroll e Rubber-banding */
@@ -65,10 +67,12 @@
       touch-action: none !important;
     }
 
-    /* Título desaparece suavemente */
+    /* Título, Stats Mobile e Cartões Desktop desaparecem suavemente */
     body.keyboard-open #mobile-header-text,
     body.keyboard-open #mobile-signup-text,
-    body.keyboard-open #mobile-stats {
+    body.keyboard-open #mobile-stats,
+    body.keyboard-open #desktop-stats {
+      /* Adicionado aqui */
       opacity: 0 !important;
       visibility: hidden !important;
       pointer-events: none !important;
@@ -82,7 +86,7 @@
 
     /* Formulário sobe para dar espaço ao teclado */
     body.keyboard-open #loginForm {
-      transform: translateY(-80px) !important;
+      transform: translateY(-100px) !important;
     }
   </style>
 </head>
@@ -103,7 +107,7 @@
     </div>
 
     <main class="
-    relative flex flex-col items-center justify-center
+    relative z-20 flex flex-col items-center justify-center
     w-full lg:w-1/2
     h-full
     px-4 py-4 lg:py-12 lg:px-16 
@@ -265,7 +269,7 @@
       </div>
     </main>
 
-    <section class="hidden lg:flex relative w-1/2 flex-col lg:items-start lg:pl-12 justify-end pointer-events-none" aria-label="Indicadores de desempenho">
+    <section id="desktop-stats" class="hidden lg:flex relative w-1/2 flex-col lg:items-start lg:pl-12 justify-end pointer-events-none" aria-label="Indicadores de desempenho">
 
       <div class="relative z-10 flex gap-5 p-1 pointer-events-auto justify-center" aria-label="Painel de Indicadores" style="margin-bottom: clamp(80px, 5vh, 160px);">
 

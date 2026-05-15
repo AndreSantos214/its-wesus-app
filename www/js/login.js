@@ -198,19 +198,68 @@
   }
 })();
 
-/* ── Lógica Nativa Mobile (Fundo + Teclado) ──────────────────────────── */
-document.addEventListener("DOMContentLoaded", () => {
-  // 1. Trancar a altura do fundo mobile no momento em que a app abre
+/* ── Lógica Nativa Mobile (Fundo + Teclado + Rotação) ──────────────────────────── */
+
+// 1. Isolamos a lógica de cálculo numa função para podermos reaproveitar
+function updateBackgroundHeights() {
+  const marginOfError = 100;
+  const safeHeight = window.innerHeight + marginOfError;
+
+  // Fundo Mobile
   const mobileBgWrapper = document.querySelector(
     '.lg\\:hidden > img[src*="casa-background-mobile"]',
-  ).parentElement;
+  )?.parentElement;
   if (mobileBgWrapper) {
-    const initialHeight = window.innerHeight;
-    mobileBgWrapper.style.height = `${initialHeight}px`;
-    mobileBgWrapper.style.position = "absolute"; // Garante que não é esmagado
+    mobileBgWrapper.style.height = `${safeHeight}px`;
+    mobileBgWrapper.style.position = "absolute";
   }
 
-  // 2. Escutar o teclado do Capacitor para ativar o "Clean UI"
+  // Fundo Desktop/Tablet
+  const desktopBgImg = document.querySelector(
+    '.lg\\:block > img[src*="casa-background-desktop"]',
+  );
+  if (desktopBgImg && desktopBgImg.parentElement) {
+    desktopBgImg.parentElement.style.height = `${safeHeight}px`;
+    desktopBgImg.parentElement.style.position = "fixed";
+  }
+
+  // Gradiente Desktop/Tablet
+  const desktopGradientWrapper = document.querySelector(
+    ".lg\\:block.w-\\[60\\%\\]",
+  );
+  if (desktopGradientWrapper) {
+    desktopGradientWrapper.style.height = `${safeHeight}px`;
+    desktopGradientWrapper.style.position = "fixed";
+  }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  // 2. Executa o cálculo inicial quando a app abre
+  updateBackgroundHeights();
+
+  // 3. O DETETOR DE ROTAÇÃO DA TELA
+  // Usamos orientationchange em vez de 'resize' para que não dispare quando o teclado abre
+  window.addEventListener("orientationchange", () => {
+    // Um pequeno timeout (150ms) é crucial em WebViews (Capacitor/Ionic)
+    // porque o sistema operativo demora uma fração de segundo a atualizar
+    // os valores do window.innerHeight depois do dispositivo girar fisicamente.
+    setTimeout(updateBackgroundHeights, 150);
+    // Fallback de segurança para aparelhos mais lentos
+    setTimeout(updateBackgroundHeights, 500);
+  });
+
+  // 4. Bloqueio absoluto do movimento da tela (overscroll)
+  document.addEventListener(
+    "touchmove",
+    function (e) {
+      if (document.body.classList.contains("keyboard-open")) {
+        e.preventDefault();
+      }
+    },
+    { passive: false },
+  );
+
+  // 5. Escutar o teclado do Capacitor para ativar as animações visuais
   if (window.Capacitor && window.Capacitor.Plugins.Keyboard) {
     const { Keyboard } = window.Capacitor.Plugins;
 
