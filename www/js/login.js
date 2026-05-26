@@ -123,60 +123,15 @@
     return valid;
   }
 
-  /* ── Simulated authentication (replace with real API) */
-  async function authenticate(email, password) {
-    // Simulate network delay (replace with fetch/axios call)
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        // Demo: any @wesus.com email + any 8+ char password succeeds
-        if (email.endsWith("@wesus.com") && password.length >= 8) {
-          resolve({ token: "demo-jwt-token", user: { email } });
-        } else {
-          reject(
-            new Error(
-              "Credenciais inválidas. Verifique o seu e-mail e palavra-passe.",
-            ),
-          );
-        }
-      }, 1600);
-    });
-  }
-
   /* ── Submit handler ───────────────────────────────── */
-  form.addEventListener("submit", async (e) => {
+  form.addEventListener("submit", (e) => {
     e.preventDefault();
     if (isLoading) return;
-    if (!validate()) return;
 
-    setLoading(true);
-
-    try {
-      const result = await authenticate(
-        emailInput.value.trim(),
-        passwordInput.value,
-      );
-
-      // Success — store token & redirect
-      sessionStorage.setItem("wesus_token", result.token);
-      sessionStorage.setItem("wesus_user", JSON.stringify(result.user));
-
-      // Smooth exit animation before navigation
-      document.body.style.transition = "opacity 0.4s ease";
-      document.body.style.opacity = "0";
-      setTimeout(() => {
-        // Replace with your dashboard route
-        window.location.href = "dashboard.html";
-      }, 400);
-    } catch (err) {
-      setLoading(false);
-      showFieldError(
-        formError,
-        err.message || "Erro inesperado. Tente novamente.",
-      );
-
-      // Shake animation on the form card
-      const card = form;
-      card.animate(
+    // Mantido apenas para testar o comportamento visual da validação local
+    if (!validate()) {
+      // Shake animation se a validação falhar
+      form.animate(
         [
           { transform: "translateX(0)" },
           { transform: "translateX(-8px)" },
@@ -187,7 +142,25 @@
         ],
         { duration: 400, easing: "ease-out" },
       );
+      return;
     }
+
+    setLoading(true);
+
+    // Sucesso direto — define dados dummy para testes no dashboard
+    sessionStorage.setItem("wesus_token", "token-de-teste-temporario");
+    sessionStorage.setItem(
+      "wesus_user",
+      JSON.stringify({ email: emailInput.value.trim() }),
+    );
+
+    // Executa a animação suave de saída antes de redirecionar
+    document.body.style.transition = "opacity 0.4s ease";
+    document.body.style.opacity = "0";
+
+    setTimeout(() => {
+      window.location.href = "dashboard.html";
+    }, 400);
   });
 
   /* ── Page entrance: ensure fonts are loaded before animating ── */
@@ -200,7 +173,6 @@
 
 /* ── Lógica Nativa Mobile (Fundo + Teclado + Rotação) ──────────────────────────── */
 
-// 1. Isolamos a lógica de cálculo numa função para podermos reaproveitar
 function updateBackgroundHeights() {
   const marginOfError = 100;
   const safeHeight = window.innerHeight + marginOfError;
@@ -234,21 +206,13 @@ function updateBackgroundHeights() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  // 2. Executa o cálculo inicial quando a app abre
   updateBackgroundHeights();
 
-  // 3. O DETETOR DE ROTAÇÃO DA TELA
-  // Usamos orientationchange em vez de 'resize' para que não dispare quando o teclado abre
   window.addEventListener("orientationchange", () => {
-    // Um pequeno timeout (150ms) é crucial em WebViews (Capacitor/Ionic)
-    // porque o sistema operativo demora uma fração de segundo a atualizar
-    // os valores do window.innerHeight depois do dispositivo girar fisicamente.
     setTimeout(updateBackgroundHeights, 150);
-    // Fallback de segurança para aparelhos mais lentos
     setTimeout(updateBackgroundHeights, 500);
   });
 
-  // 4. Bloqueio absoluto do movimento da tela (overscroll)
   document.addEventListener(
     "touchmove",
     function (e) {
@@ -259,7 +223,6 @@ document.addEventListener("DOMContentLoaded", () => {
     { passive: false },
   );
 
-  // 5. Escutar o teclado do Capacitor para ativar as animações visuais
   if (window.Capacitor && window.Capacitor.Plugins.Keyboard) {
     const { Keyboard } = window.Capacitor.Plugins;
 
