@@ -126,6 +126,47 @@
       /* DESATIVAR POPUPS NATIVOS: Impede o iOS/Android de abrir o menu */
       /* de "Copiar/Definir" ou a lupa de zoom ao pressionar o dedo */
       -webkit-touch-callout: none !important;
+
+      /* ─────────────────────────────────────────────────────────────
+       BLINDAGEM DE CLASSES ADICIONAIS PARA ABA DE CONTRATOS
+       Fita de segurança para contornar o Purge do output-dashboard.css
+       ───────────────────────────────────────────────────────────── */
+      @media (min-width: 1024px) {
+        .lg\:grid-cols-12 {
+          grid-template-columns: repeat(12, minmax(0, 1fr)) !important;
+        }
+
+        .lg\:col-span-4 {
+          grid-column: span 4 / span 4 !important;
+        }
+
+        .lg\:col-span-2 {
+          grid-column: span 2 / span 2 !important;
+        }
+
+        .lg\:flex-col {
+          flex-direction: column !important;
+        }
+
+        .lg\:justify-end {
+          justify-content: flex-end !important;
+        }
+
+        .lg\:pl-2 {
+          padding-left: 0.5rem !important;
+        }
+
+        .lg\:mt-0 {
+          margin-top: 0 !important;
+        }
+
+        /* Container enxuto que impede os cards de irem até as bordas da tela */
+        .contracts-desktop-enxuto {
+          max-width: 1000px !important;
+          margin-left: auto !important;
+          margin-right: auto !important;
+        }
+      }
     }
   </style>
 
@@ -775,7 +816,7 @@
             </header>
 
             <section aria-label="Contratos de Investimento de Rendimento Fixo">
-              <div class="flex items-center gap-2" style="margin-bottom: 2rem;">
+              <div class="flex items-center gap-2" style="margin-top: 2.5rem; margin-bottom: 1rem;">
                 <div class="w-1.5 h-4 bg-gradient-to-b from-gold to-gold-light rounded-full"></div>
                 <h3 class="font-playfair text-base font-bold text-white/80 tracking-wide">Contratos de Rendimento Fixo</h3>
               </div>
@@ -897,7 +938,7 @@
               <div class="widget-card-backlight" aria-hidden="true"></div>
 
               <!-- Título de Respiro da Seção (Exibido perfeitamente no Mobile e Desktop) -->
-              <div class="flex items-center gap-2" style="margin-bottom: 2rem;">
+              <div class="flex items-center gap-2" style="margin-bottom: 1rem;">
                 <div class="w-1.5 h-4 bg-gradient-to-b from-gold to-gold-light rounded-full"></div>
                 <h3 class="font-playfair text-base font-bold text-white/80 tracking-wide">Ofertas Especiais</h3>
               </div>
@@ -964,17 +1005,162 @@
 
           </div>
 
+          <!-- ═══════════════════════════════════════════════════════
+     ABA 3: CONTRATOS (MODULAR COMPACTO DE ALTA DENSIDADE V22)
+     ═══════════════════════════════════════════════════════ -->
+          <div id="tab-documentos" class="tab-content hidden select-none">
 
-          <div id="tab-documentos" class="tab-content hidden space-y-6">
-            <header class="mb-4">
-              <h2 class="font-playfair text-2xl font-bold text-white/90 tracking-wide">
-                Contratos e <span class="text-gold-liquid">Documentos</span>
-              </h2>
-              <p class="text-xs text-white/50 font-inter mt-1">Aceda aos seus documentos legais e relatórios assinados.</p>
+            <header class="contracts-desktop-enxuto flex flex-col lg:flex-row lg:items-end justify-between gap-2 lg:gap-4 mb-2 relative" style="margin-bottom: 3rem;">
+
+              <div class="flex lg:hidden items-center justify-center" style="margin-top: -1.5rem;">
+                <img src="img/logo-its-wesus-branco.webp" fetchpriority="high" width="250" height="250" alt="It's Wesus" class="img-mobile hidden dark:block w-full max-w-[250px] h-auto object-contain drop-shadow-md lg:-mb-8 lg:-mt-12" />
+                <img src="img/logo-its-wesus-azul.webp" fetchpriority="high" width="160" height="64" alt="It's Wesus" class="img-mobile block dark:hidden w-auto h-16 object-contain drop-shadow-md" />
+              </div>
+
+              <div class="flex flex-col items-center lg:items-start text-center lg:text-left -mt-16 lg:-mt-0 w-full">
+                <h2 class="font-playfair text-2xl lg:text-3xl font-bold text-white/90 tracking-wide">
+                  Meus <span class="text-gold-liquid">Contratos</span>
+                </h2>
+                <p class="text-xs text-white/50 font-inter mt-1">Consulte os seus termos assinados, prazos de mútuo e certidões de alocação de capital.</p>
+              </div>
             </header>
-            <div class="hero-card-crystal p-6 text-center text-white/40 text-sm font-inter">
-              Área de arquivos em sincronização segura com o cofre Supabase...
-            </div>
+
+            <section aria-label="Contratos em Execução Ativos" class="space-y-6 contracts-desktop-enxuto">
+              <div class="flex items-center gap-2">
+                <div class="w-1.5 h-4 bg-gradient-to-b from-[#6FCF97] to-green-700 rounded-full shadow-[0_0_8px_rgba(111,207,151,0.4)]"></div>
+                <h3 class="font-playfair text-xs font-bold text-white/60 uppercase tracking-widest">Contratos em Execução</h3>
+              </div>
+
+              <div class="hero-card-crystal p-5 rounded-3xl grid grid-cols-1 lg:grid-cols-12 items-center gap-4 lg:gap-2 relative overflow-hidden w-full group hover:bg-white/[0.02] transition-all duration-300">
+                <div class="absolute inset-0 bg-gradient-to-br from-white/[0.01] to-transparent opacity-20 pointer-events-none"></div>
+
+                <div class="flex items-center gap-4 min-w-0 lg:col-span-4 w-full">
+                  <div class="w-11 h-11 rounded-xl bg-[#071326] flex items-center justify-center border border-white/5 shrink-0 shadow-inner">
+                    <svg class="w-5 h-5 text-gold drop-shadow-[0_0_4px_rgba(197,160,89,0.3)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                  </div>
+                  <div class="min-w-0">
+                    <h4 class="text-white font-bold text-sm lg:text-base truncate tracking-wide">Mútuo - Prédio Arroios (Fração E)</h4>
+                    <div class="flex items-center gap-2 mt-1">
+                      <span class="text-[9px] font-bold uppercase px-2 py-0.5 rounded-full bg-gold/10 text-gold-light tracking-wider">3 Meses</span>
+                      <span class="text-[9px] font-bold uppercase px-2 py-0.5 rounded-full bg-white/5 text-white/40 tracking-wider">Taxa: 10%</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="flex justify-between lg:flex-col gap-1 lg:col-span-2 w-full lg:pl-2">
+                  <p class="text-[9px] uppercase text-white/40 tracking-widest font-semibold">Vencimento</p>
+                  <p class="text-xs lg:text-sm text-white/90 font-medium">03/08/2026</p>
+                </div>
+
+                <div class="flex justify-between lg:flex-col gap-1 lg:col-span-2 w-full">
+                  <p class="text-[9px] uppercase text-white/40 tracking-widest font-semibold">Capital Investido</p>
+                  <p class="text-xs lg:text-sm text-white/90 font-medium">€ 50.000,00</p>
+                </div>
+
+                <div class="flex justify-between lg:flex-col gap-1 lg:col-span-2 w-full">
+                  <p class="text-[9px] uppercase text-white/40 tracking-widest font-semibold">Status do Termo</p>
+                  <p class="text-xs lg:text-sm font-bold text-[#6FCF97] tracking-wide">Ativo em Curso</p>
+                </div>
+
+                <div class="w-full lg:col-span-2 flex lg:justify-end mt-2 lg:mt-0">
+                  <button class="w-full btn-gold-lingot !py-2.5 !px-4 !text-[10px] !h-auto whitespace-nowrap" style="color: #ffffff !important; letter-spacing: 0.12em;">
+                    Baixar Doc
+                  </button>
+                </div>
+              </div>
+            </section>
+
+            <section aria-label="Contratos Antigos Finalizados" style="margin-top: 4rem;" class="space-y-6 contracts-desktop-enxuto">
+              <div class="flex items-center gap-2">
+                <div class="w-1.5 h-4 bg-gradient-to-b from-white/30 to-white/10 rounded-full"></div>
+                <h3 class="font-playfair text-xs font-bold text-white/60 uppercase tracking-widest">Contratos Antigos (Histórico)</h3>
+              </div>
+
+              <div class="hero-card-crystal p-5 rounded-3xl grid grid-cols-1 lg:grid-cols-12 items-center gap-4 lg:gap-2 relative overflow-hidden w-full group hover:bg-white/[0.02] transition-all duration-300">
+                <div class="absolute inset-0 bg-gradient-to-br from-white/[0.01] to-transparent opacity-10 pointer-events-none"></div>
+
+                <div class="flex items-center gap-4 min-w-0 lg:col-span-4 w-full">
+                  <div class="w-11 h-11 rounded-xl bg-[#071326]/60 flex items-center justify-center border border-white/5 shrink-0">
+                    <svg class="w-5 h-5 text-white/30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                  </div>
+                  <div class="min-w-0">
+                    <h4 class="text-white/80 font-bold text-sm lg:text-base truncate tracking-wide">Operação Alquimia Lux</h4>
+                    <div class="flex items-center gap-2 mt-1">
+                      <span class="text-[9px] font-bold uppercase px-2 py-0.5 rounded-full bg-white/5 text-white/40 tracking-wider">3 Meses</span>
+                      <span class="text-[9px] font-bold uppercase px-2 py-0.5 rounded-full bg-white/5 text-white/40 tracking-wider">Taxa: 15%</span>
+                      <span class="text-[9px] font-bold uppercase px-2 py-0.5 rounded-full bg-green-500/10 text-[#6FCF97]/80 tracking-wider">Liquidado</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="flex justify-between lg:flex-col gap-1 lg:col-span-2 w-full lg:pl-2">
+                  <p class="text-[9px] uppercase text-white/40 tracking-widest font-semibold">Término</p>
+                  <p class="text-xs lg:text-sm text-white/60 font-medium">10/12/2025</p>
+                </div>
+
+                <div class="flex justify-between lg:flex-col gap-1 lg:col-span-2 w-full">
+                  <p class="text-[9px] uppercase text-white/40 tracking-widest font-semibold">Capital Investido</p>
+                  <p class="text-xs lg:text-sm text-white/60 font-medium">€ 100.000,00</p>
+                </div>
+
+                <div class="flex justify-between lg:flex-col gap-1 lg:col-span-2 w-full">
+                  <p class="text-[9px] uppercase text-white/40 tracking-widest font-semibold">Rendimento Líquido</p>
+                  <p class="text-xs lg:text-sm font-bold text-[#6FCF97]">Ref. + € 10.000,00</p>
+                </div>
+
+                <div class="w-full lg:col-span-2 flex lg:justify-end mt-2 lg:mt-0">
+                  <button class="w-full btn-gold-lingot !py-2.5 !px-4 !text-[10px] !h-auto whitespace-nowrap" style="color: #ffffff !important; letter-spacing: 0.1em;">
+                    Baixar Doc
+                  </button>
+                </div>
+              </div>
+
+              <div class="hero-card-crystal p-5 rounded-3xl grid grid-cols-1 lg:grid-cols-12 items-center gap-4 lg:gap-2 relative overflow-hidden w-full group hover:bg-white/[0.02] transition-all duration-300">
+                <div class="absolute inset-0 bg-gradient-to-br from-white/[0.01] to-transparent opacity-10 pointer-events-none"></div>
+
+                <div class="flex items-center gap-4 min-w-0 lg:col-span-4 w-full">
+                  <div class="w-11 h-11 rounded-xl bg-[#071326]/60 flex items-center justify-center border border-white/5 shrink-0">
+                    <svg class="w-5 h-5 text-white/30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                  </div>
+                  <div class="min-w-0">
+                    <h4 class="text-white/80 font-bold text-sm lg:text-base truncate tracking-wide">Edifício Aliados - Cota A</h4>
+                    <div class="flex items-center gap-2 mt-1">
+                      <span class="text-[9px] font-bold uppercase px-2 py-0.5 rounded-full bg-white/5 text-white/40 tracking-wider">6 Meses</span>
+                      <span class="text-[9px] font-bold uppercase px-2 py-0.5 rounded-full bg-white/5 text-white/40 tracking-wider">Taxa: 12,5%</span>
+                      <span class="text-[9px] font-bold uppercase px-2 py-0.5 rounded-full bg-green-500/10 text-[#6FCF97]/80 tracking-wider">Liquidado</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="flex justify-between lg:flex-col gap-1 lg:col-span-2 w-full lg:pl-2">
+                  <p class="text-[9px] uppercase text-white/40 tracking-widest font-semibold">Término</p>
+                  <p class="text-xs lg:text-sm text-white/60 font-medium">15/09/2025</p>
+                </div>
+
+                <div class="flex justify-between lg:flex-col gap-1 lg:col-span-2 w-full">
+                  <p class="text-[9px] uppercase text-white/40 tracking-widest font-semibold">Capital Investido</p>
+                  <p class="text-xs lg:text-sm text-white/60 font-medium">€ 40.000,00</p>
+                </div>
+
+                <div class="flex justify-between lg:flex-col gap-1 lg:col-span-2 w-full">
+                  <p class="text-[9px] uppercase text-white/40 tracking-widest font-semibold">Rendimento Líquido</p>
+                  <p class="text-xs lg:text-sm font-bold text-[#6FCF97]">Ref. + € 2.500,00</p>
+                </div>
+
+                <div class="w-full lg:col-span-2 flex lg:justify-end mt-2 lg:mt-0">
+                  <button class="w-full btn-gold-lingot !py-2.5 !px-4 !text-[10px] !h-auto whitespace-nowrap" style="color: #ffffff !important; letter-spacing: 0.1em;">
+                    Baixar Doc
+                  </button>
+                </div>
+              </div>
+
+            </section>
           </div>
 
           <div id="tab-conta" class="tab-content hidden space-y-6">
