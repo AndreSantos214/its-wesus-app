@@ -60,21 +60,54 @@ const ThemeController = (() => {
   return { init };
 })();
 
-/* ── NAVIGATION CONTROLLER ────────────────────────────────── */
+/* ── NAVIGATION CONTROLLER (SPA TAB SWITCH ENGINE) ────────── */
 const NavigationController = (() => {
-  function _setActive(clicked, siblings) {
-    siblings.forEach((el) => el.classList.remove("active"));
-    clicked.classList.add("active");
+  function _setActive(sectionName) {
+    const allNavItems = document.querySelectorAll(
+      ".nav-item, .bottom-nav-item",
+    );
+    allNavItems.forEach((el) => {
+      if (el.getAttribute("data-section") === sectionName) {
+        el.classList.add("active");
+      } else {
+        el.classList.remove("active");
+      }
+    });
+  }
+
+  function _switchTab(sectionName) {
+    // Esconde todas as abas de conteúdo de uma só vez
+    const tabs = document.querySelectorAll(".tab-content");
+    tabs.forEach((tab) => tab.classList.add("hidden"));
+
+    // Mostra a aba clicada
+    const targetTab = document.getElementById(`tab-${sectionName}`);
+    if (targetTab) {
+      targetTab.classList.remove("hidden");
+    }
+
+    // 🔥 CRUCIAL PARA PERFORMANCE Gráfica:
+    // Se voltar para o dashboard, força a GPU a recalcular a colagem correta do tooltip
+    if (
+      sectionName === "dashboard" &&
+      typeof ChartDataController !== "undefined"
+    ) {
+      ChartDataController.alignTooltip();
+    }
   }
 
   function init() {
-    [".nav-item", ".bottom-nav-item"].forEach((selector) => {
-      const items = document.querySelectorAll(selector);
-      items.forEach((item) => {
-        item.addEventListener("click", (e) => {
-          e.preventDefault();
-          _setActive(item, items);
-        });
+    const allNavItems = document.querySelectorAll(
+      ".nav-item, .bottom-nav-item",
+    );
+    allNavItems.forEach((item) => {
+      item.addEventListener("click", (e) => {
+        e.preventDefault();
+        const sectionName = item.getAttribute("data-section");
+        if (sectionName) {
+          _setActive(sectionName);
+          _switchTab(sectionName);
+        }
       });
     });
   }
@@ -205,24 +238,18 @@ const ChartDataController = (() => {
 
     if (!node || !tooltip || !svg) return;
 
-    // Pega nas coordenadas reais da bolinha do gráfico dentro do ecrã
     const svgPoint = node.getBoundingClientRect();
     const containerRect = svg.parentElement.getBoundingClientRect();
 
-    // Calcula o ponto central exato do nó do gráfico
     const x = svgPoint.left - containerRect.left + svgPoint.width / 2;
     const y = svgPoint.top - containerRect.top + svgPoint.height / 2;
 
-    // Aplica as coordenadas base
     tooltip.style.left = `${x}px`;
     tooltip.style.top = `${y}px`;
 
-    // 💡 CONDICIONAL DE MUDANÇA DE POSIÇÃO (A partir de 460px)
     if (window.innerWidth <= 460) {
-      // Traduz -50% no X (centraliza) e 25px positivo no Y (empurra para BAIXO do ponto)
       tooltip.style.transform = "translate(-80%, 25px)";
     } else {
-      // Traduz -80% no X e -120% negativo no Y (empurra para CIMA do ponto)
       tooltip.style.transform = "translate(-80%, -120%)";
     }
   }
@@ -233,14 +260,12 @@ const ChartDataController = (() => {
       tooltipValue.textContent = clientData.roiTotal;
     }
 
-    // Executa o alinhamento inicial
     alignTooltip();
-
-    // Se o ecrã rodar ou mudar de tamanho (Desktop), ele recalcula sozinho
     window.addEventListener("resize", alignTooltip);
   }
 
-  return { init };
+  // 🔥 EXPONDO A FUNÇÃO: Agora o NavigationController consegue invocar esta função externamente
+  return { init, alignTooltip };
 })();
 
 /* ── ENTRY POINT ──────────────────────────────────────────── */
