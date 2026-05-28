@@ -22,20 +22,18 @@
 
   <style>
     /* ─────────────────────────────────────────────────────────────
-   PATCH CRISTAL PREMIUM V8 - SILK PLATINUM & CHAMPAGNE EDGE
+   PATCH CRISTAL PREMIUM V36 - SILK PLATINUM & CHAMPAGNE EDGE
    Bordas de Alta Definição + Máximo Contraste + 100% Estático GPU
    ───────────────────────────────────────────────────────────── */
 
     @media (max-width: 1023px) {
 
-      /* 1. Manter auras traseiras desligadas para performance pura */
       .hero-card-backlight,
       .widget-card-backlight,
       .widget-backlight-champagne {
         display: none !important;
       }
 
-      /* 2. Otimização de Contraste e Lapidação do Vidro */
       section[aria-labelledby="patrimonyHeading"] .hero-card-crystal,
       section[aria-label="Oportunidades Exclusivas"] .hero-card-crystal,
       .hero-card-crystal {
@@ -44,38 +42,24 @@
         backface-visibility: hidden !important;
         perspective: 1000px !important;
         overflow: hidden !important;
-
-        /* Desfoque luxuoso da V4 preservado */
         backdrop-filter: blur(20px) saturate(180%) !important;
         -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
-
-        /* Espessura perfeita de fio de cristal */
         border: 2.2px solid transparent !important;
 
-        /* GRADIENTE LINEAR ASSIMÉTRICO: Platina no topo, Champagne na base */
         background:
-          /* Fundo Escuro Corporativo Premium da V4 */
           linear-gradient(135deg, rgba(11, 31, 58, 0.85), rgba(7, 19, 38, 0.94) 50%, rgba(11, 31, 58, 0.82)) padding-box,
-          /* Transição linear suave que imita iluminação real de estúdio */
           linear-gradient(145deg,
             rgba(255, 255, 255, 0.38) 0%,
-            /* Brilho platina nítido no canto superior esquerdo */
             rgba(255, 255, 255, 0.04) 35%,
-            /* Transparência elegante no corpo do card */
             rgba(197, 160, 89, 0.12) 70%,
-            /* Sopro sutil de dourado Wesus na transição */
-            rgba(232, 208, 141, 0.35) 100%
-            /* Toque final champagne no canto inferior direito */
-          ) border-box !important;
+            rgba(232, 208, 141, 0.35) 100%) border-box !important;
 
         background-clip: padding-box, border-box !important;
         background-origin: padding-box, border-box !important;
         background-size: auto, 100% 100% !important;
-
         box-shadow: 0 22px 45px -12px rgba(0, 0, 0, 0.65) !important;
       }
 
-      /* 3. Linha de reflexo interna diagonal (Suave e Invisível no scroll rápido) */
       .hero-card-crystal:after {
         content: "" !important;
         position: absolute !important;
@@ -84,7 +68,6 @@
             transparent 42%,
             rgba(255, 255, 255, 0.01) 47%,
             rgba(255, 255, 255, 0.04) 50%,
-            /* Linha de luz branca cristalina interna */
             rgba(255, 255, 255, 0.01) 53%,
             transparent 58%) !important;
         pointer-events: none !important;
@@ -96,8 +79,6 @@
       }
     }
 
-    /* 4. ELIMINAR TOTALMENTE AS BARRAS DE ROLAGEM (Mobile/Capacitor) */
-    /* Remove o rastro visual do scroll em qualquer div ou carrossel */
     ::-webkit-scrollbar {
       display: none !important;
       width: 0 !important;
@@ -109,67 +90,200 @@
     #mainContent,
     .assets-carousel {
       -ms-overflow-style: none !important;
-      /* IE/Edge */
       scrollbar-width: none !important;
-      /* Firefox */
     }
 
-    /* 5. BLOQUEIO ABSOLUTO DE SELEÇÃO DE TEXTO (Previne pegas congeladas) */
-    /* Força o override das classes "select-all" antigas apenas no ambiente mobile */
     *,
     .select-all {
       -webkit-user-select: none !important;
       -moz-user-select: none !important;
       -ms-user-select: none !important;
       user-select: none !important;
-
-      /* DESATIVAR POPUPS NATIVOS: Impede o iOS/Android de abrir o menu */
-      /* de "Copiar/Definir" ou a lupa de zoom ao pressionar o dedo */
       -webkit-touch-callout: none !important;
+    }
 
-      /* ─────────────────────────────────────────────────────────────
-       BLINDAGEM DE CLASSES ADICIONAIS PARA ABA DE CONTRATOS
-       Fita de segurança para contornar o Purge do output-dashboard.css
-       ───────────────────────────────────────────────────────────── */
-      @media (min-width: 1024px) {
-        .lg\:grid-cols-12 {
-          grid-template-columns: repeat(12, minmax(0, 1fr)) !important;
-        }
+    @media (min-width: 1024px) {
+      .lg\:grid-cols-12 {
+        grid-template-columns: repeat(12, minmax(0, 1fr)) !important;
+      }
 
-        .lg\:col-span-4 {
-          grid-column: span 4 / span 4 !important;
-        }
+      .lg\:col-span-4 {
+        grid-column: span 4 / span 4 !important;
+      }
 
-        .lg\:col-span-2 {
-          grid-column: span 2 / span 2 !important;
-        }
+      .lg\:col-span-2 {
+        grid-column: span 2 / span 2 !important;
+      }
 
-        .lg\:flex-col {
-          flex-direction: column !important;
-        }
+      .lg\:flex-col {
+        flex-direction: column !important;
+      }
 
-        .lg\:justify-end {
-          justify-content: flex-end !important;
-        }
+      .lg\:justify-end {
+        justify-content: flex-end !important;
+      }
 
-        .lg\:pl-2 {
-          padding-left: 0.5rem !important;
-        }
+      .lg\:pl-2 {
+        padding-left: 0.5rem !important;
+      }
 
-        .lg\:mt-0 {
-          margin-top: 0 !important;
-        }
+      .lg\:mt-0 {
+        margin-top: 0 !important;
+      }
 
-        /* Container enxuto que impede os cards de irem até as bordas da tela */
-        .contracts-desktop-enxuto {
-          max-width: 1000px !important;
-          margin-left: auto !important;
-          margin-right: auto !important;
-        }
+      .contracts-desktop-enxuto {
+        max-width: 1000px !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
       }
     }
-  </style>
 
+    @media (min-width: 1024px) {
+      .premium-account-grid {
+        display: grid !important;
+        grid-template-columns: 1.25fr 1fr !important;
+        gap: 2.5rem !important;
+        max-width: 1050px !important;
+        margin: 0 auto !important;
+        width: 100% !important;
+      }
+    }
+
+    .premium-avatar-lock {
+      width: 96px !important;
+      height: 96px !important;
+      max-width: 96px !important;
+      max-height: 96px !important;
+      aspect-ratio: 1 / 1 !important;
+      border-radius: 50% !important;
+      object-fit: cover !important;
+    }
+
+    .premium-form-group {
+      margin-bottom: 1.75rem !important;
+    }
+
+    .premium-notification-row {
+      display: flex !important;
+      align-items: center !important;
+      justify-content: space-between !important;
+      padding-top: 1.1rem !important;
+      padding-bottom: 1.1rem !important;
+    }
+
+    .premium-field-input {
+      width: 100% !important;
+      background: rgba(7, 19, 38, 0.4) !important;
+      border: 1px solid rgba(255, 255, 255, 0.08) !important;
+      border-radius: 0.85rem !important;
+      padding: 0.95rem 1.2rem !important;
+      color: #ffffff !important;
+      font-size: 0.85rem !important;
+      font-family: 'Inter', sans-serif !important;
+      transition: all 0.25s ease !important;
+    }
+
+    .premium-field-input:focus {
+      outline: none !important;
+      border-color: rgba(197, 160, 89, 0.4) !important;
+      background: rgba(7, 19, 38, 0.7) !important;
+      box-shadow: 0 0 15px rgba(197, 160, 89, 0.08) !important;
+    }
+
+    .premium-field-input:disabled {
+      background: rgba(255, 255, 255, 0.02) !important;
+      border-color: rgba(255, 255, 255, 0.04) !important;
+      color: rgba(255, 255, 255, 0.3) !important;
+    }
+
+    /* Botão Lingote Esmeralda Customizado para WhatsApp */
+    .btn-emerald-lingot {
+      background: linear-gradient(135deg, #0b663b 0%, #118f52 45%, #0a5c35 75%, #05301b 100%) !important;
+      border: 1px solid rgba(17, 143, 82, 0.4) !important;
+      box-shadow: 0 12px 24px -6px rgba(0, 0, 0, 0.6),
+        0 4px 12px -2px rgba(17, 143, 82, 0.3),
+        inset 0 1.5px 1.5px rgba(255, 255, 255, 0.25),
+        inset 0 -1.5px 2px rgba(0, 0, 0, 0.35) !important;
+    }
+
+    .btn-emerald-lingot:hover {
+      filter: brightness(1.1) drop-shadow(0 0 14px rgba(17, 143, 82, 0.3));
+      transform: translateY(-2px) scale(1.01) translateZ(0);
+    }
+
+    /* ─────────────────────────────────────────────────────────────
+       SISTEMA DE HIGHLIGHT EXCLUSIVO (ESTILO WHATSAPP DE PRECISÃO)
+       ───────────────────────────────────────────────────────────── */
+    @keyframes whatsappFlashEffect {
+
+      0%,
+      20% {
+        box-shadow: 0 0 0 3px rgba(111, 207, 151, 0.85), 0 0 25px rgba(111, 207, 151, 0.5) !important;
+        transform: scale(1.012) translateZ(0);
+      }
+
+      100% {
+        box-shadow: 0 22px 45px -12px rgba(0, 0, 0, 0.65) !important;
+        transform: scale(1) translateZ(0);
+      }
+    }
+
+    .contract-highlight-pulse {
+      animation: whatsappFlashEffect 2s cubic-bezier(0.25, 1, 0.5, 1) forwards !important;
+      z-index: 40 !important;
+    }
+
+    .premium-field-input:disabled {
+      background: rgba(255, 255, 255, 0.02) !important;
+      border-color: rgba(255, 255, 255, 0.04) !important;
+      color: rgba(255, 255, 255, 0.3) !important;
+    }
+
+    .premium-toggle-container {
+      position: relative !important;
+      display: inline-block !important;
+      width: 42px !important;
+      height: 22px !important;
+      flex-shrink: 0 !important;
+    }
+
+    .premium-toggle-input {
+      display: none !important;
+    }
+
+    .premium-toggle-slider {
+      position: absolute !important;
+      cursor: pointer !important;
+      inset: 0 !important;
+      background-color: rgba(255, 255, 255, 0.06) !important;
+      border: 1px solid rgba(255, 255, 255, 0.1) !important;
+      border-radius: 34px !important;
+      transition: cubic-bezier(0.4, 0, 0.2, 1) 0.3s !important;
+    }
+
+    .premium-toggle-slider:before {
+      position: absolute !important;
+      content: "" !important;
+      height: 14px !important;
+      width: 14px !important;
+      left: 3px !important;
+      bottom: 3px !important;
+      background-color: rgba(255, 255, 255, 0.4) !important;
+      border-radius: 50% !important;
+      transition: cubic-bezier(0.4, 0, 0.2, 1) 0.3s !important;
+    }
+
+    .premium-toggle-input:checked+.premium-toggle-slider {
+      background-color: rgba(111, 207, 151, 0.1) !important;
+      border-color: rgba(111, 207, 151, 0.3) !important;
+    }
+
+    .premium-toggle-input:checked+.premium-toggle-slider:before {
+      transform: translateX(20px) !important;
+      background-color: #6FCF97 !important;
+      filter: drop-shadow(0 0 4px rgba(111, 207, 151, 0.6)) !important;
+    }
+  </style>
 </head>
 
 <body class="font-inter bg-wesus text-white dark:bg-wesus dark:text-white lg:overflow-hidden select-none">
@@ -179,8 +293,7 @@
 
   <div class="app-root min-h-screen lg:h-[100dvh] w-full flex flex-col lg:flex-row lg:overflow-hidden">
 
-    <aside class="sidebar hidden lg:flex flex-col w-64 shrink-0 border-r border-white/10 dark:border-white/10  z-30">
-
+    <aside class="sidebar hidden lg:flex flex-col w-64 shrink-0 border-r border-white/10 dark:border-white/10 z-30">
       <div class="sidebar-logo flex items-center justify-center -mb-10">
         <img src="img/logo-its-wesus-branco.webp" width="250" height="250" alt="It's Wesus" class="hidden dark:block w-full max-w-[250px] h-auto object-contain drop-shadow-md lg:-mb-8 lg:-mt-12" />
         <img src="img/logo-its-wesus-azul.webp" width="250" height="250" alt="It's Wesus" class="block dark:hidden w-full max-w-[250px] h-auto object-contain drop-shadow-md " />
@@ -203,7 +316,7 @@
           <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
           </svg>
-          <span>Contratos e Documentos</span>
+          <span>Contratos</span>
         </a>
 
         <div class="border-t border-white/10 my-4"></div>
@@ -225,9 +338,11 @@
 
       <div class="px-4 py-5 border-t border-white/10">
         <div class="glass-card-sm flex items-center gap-3 p-3 rounded-xl">
-          <div class="avatar-ring w-9 h-9 rounded-full bg-gradient-to-br from-gold to-gold-light flex items-center justify-center text-wesus text-sm font-bold shrink-0">A</div>
+          <div class="avatar-ring w-9 h-9 rounded-full bg-[#071326] border border-gold/30 overflow-hidden shrink-0">
+            <img src="img/danilson-photo.webp" alt="Danilson Carvalho" class="w-full h-full object-cover" />
+          </div>
           <div class="flex-1 min-w-0">
-            <p class="text-xs font-semibold truncate">Alexandre Santos</p>
+            <p class="text-xs font-semibold truncate">Danilson Carvalho</p>
             <p class="text-[10px] text-white/40 truncate">Investidor Premium</p>
           </div>
           <button id="themeToggleDesktop" class="theme-btn ml-auto p-1.5 rounded-lg hover:bg-white/10 transition-all" aria-label="Alternar tema">
@@ -240,8 +355,7 @@
     </aside>
 
     <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
-
-      <main id="mainContent" class="flex-1 overflow-visible lg:overflow-y-auto lg:overscroll-contain px-4 lg:px-8 py-5 lg:py-8 pb-safe-bottom" aria-label="Conteúdo principal">
+      <main id="mainContent" class="flex-1 overflow-visible lg:overflow-y-auto lg:overscroll-contain px-4 lg:px-8 py-5 lg:py-8 pb-safe-bottom">
         <div class="max-w-6xl mx-auto w-full space-y-6 px-2 lg:px-0">
 
           <div id="tab-dashboard" class="tab-content space-y-6">
@@ -252,7 +366,7 @@
                 <img src="img/logo-its-wesus-azul.webp" fetchpriority="high" width="160" height="64" alt="It's Wesus" class="img-mobile block dark:hidden w-auto h-16 object-contain drop-shadow-md" />
               </div>
 
-              <h1 class="font-playfair text-[26px] lg:text-[32px] text-white/90 text-center lg:text-left -mt-16 lg:-mt-0">Bom dia, Alexandre.</h1>
+              <h1 class="font-playfair text-[26px] lg:text-[32px] text-white/90 text-center lg:text-left -mt-16 lg:-mt-0">Bom dia, Danilson.</h1>
 
               <button class="button-eye header-action-btn absolute top-0 right-0 lg:relative lg:top-auto lg:right-auto p-2 lg:p-2.5 rounded-xl text-gold hover:bg-white/10 transition-colors" aria-label="Ocultar saldos">
                 <svg class="w-5 h-5 lg:w-6 lg:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -269,9 +383,6 @@
                 <div class="absolute inset-0 bg-hero-circuits-refined opacity-75 pointer-events-none z-0" aria-hidden="true"></div>
                 <div class="crystal-base-glow" aria-hidden="true"></div>
 
-
-
-
                 <div class="hidden lg:flex hero-logo-wrapper select-none">
                   <div class="hero-logo-glow" aria-hidden="true"></div>
                   <img src="img/logo-its-wesus-hero.webp" width="352" height="352" alt="It's Wesus Premium" class="h-full w-auto object-contain object-right opacity-60" aria-hidden="true" />
@@ -281,7 +392,7 @@
                   <p class="text-[10px] uppercase tracking-widest text-white/50 mb-2 font-semibold">Patrimônio Total Acumulado</p>
 
                   <h2 id="patrimonyHeading" class="text-[38px] lg:text-[48px] font-bold text-gold-liquid leading-none tracking-tight mb-4 select-all">
-                    € 254.500,00
+                    € 280.000,00
                   </h2>
 
                   <div class="w-full max-w-xs h-px bg-gradient-to-r from-gold/50 via-gold/15 to-transparent mb-5"></div>
@@ -294,7 +405,7 @@
                         </svg>
                         <p class="text-[9px] uppercase tracking-wider text-white/40 font-medium">Capital Investido</p>
                       </div>
-                      <p class="font-bold text-sm lg:text-base text-white/95">€ 230.000,00</p>
+                      <p class="font-bold text-sm lg:text-base text-white/95">€ 250.000,00</p>
                     </div>
 
                     <div class="flex flex-col">
@@ -305,29 +416,46 @@
                         <p class="text-[9px] uppercase tracking-wider text-white/40 font-medium">ROI Contratual</p>
                       </div>
                       <p class="font-bold text-sm lg:text-base text-[#6FCF97] drop-shadow-[0_0_8px_rgba(111,207,151,0.4)]">
-                        + € 24.500,00
+                        + € 30.000,00
                       </p>
                     </div>
                   </div>
                 </div>
-
               </div>
             </section>
 
-            <section class="grid grid-cols-1 lg:grid-cols-4 gap-5">
+            <div class="flex justify-between items-center relative z-10" style="margin-top: 2rem; margin-bottom: -0.5rem;">
+              <div>
+                <h3 class="font-playfair text-base font-bold text-white/80 tracking-wide">Informações dos Contratos Ativos</h3>
+                <p id="dashboardContractSubtitle" class="text-xs text-white/50 font-inter mt-0.5">Edifício Aliados (1 de 5)</p>
+              </div>
 
+              <div class="flex gap-2 shrink-0 select-none">
+                <button id="dashboardPrevContractBtn" class="p-2 rounded-xl bg-white/5 hover:bg-white/10 text-gold transition-colors border border-white/5">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                  </svg>
+                </button>
+                <button id="dashboardNextContractBtn" class="p-2 rounded-xl bg-white/5 hover:bg-white/10 text-gold transition-colors border border-white/5">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            <section onclick="window.navigateToContract();" class="grid grid-cols-1 lg:grid-cols-4 gap-5 cursor-pointer relative z-10">
               <div class="lg:col-span-3 relative group">
                 <div class="widget-card-backlight" aria-hidden="true"></div>
 
                 <div class="hero-card-crystal no-glare p-6 rounded-3xl relative z-10 flex flex-col justify-between min-h-[260px] h-full">
                   <div class="absolute inset-0 bg-hero-geometry-clean opacity-30 pointer-events-none"></div>
 
-                  <p class="text-[11px] font-medium tracking-widest uppercase text-white/60 mb-2 relative z-10">
-                    Projeção de Rendimentos (3 Meses)
+                  <p id="dynamicChartTitle" class="text-[11px] font-medium tracking-widest uppercase text-white/60 mb-2 relative z-10">
+                    Projeção de Rendimentos (Edifício Aliados)
                   </p>
 
                   <div id="chartContainer" class="w-full flex-1 relative z-10 flex flex-col justify-end mt-2 min-h-[140px]">
-
                     <svg id="staticPlasmaChart" class="w-full h-32 sm:h-44 lg:h-64 overflow-visible" viewBox="0 0 1000 200" preserveAspectRatio="none">
                       <defs>
                         <linearGradient id="cleanGoldLineGrad" x1="0%" y1="0%" x2="100%" y2="0%">
@@ -360,27 +488,23 @@
                     <div id="chartTooltip" class="premium-tooltip absolute left-[93%] top-[16%] -translate-x-[60%] translate-y-[30px] lg:-translate-x-1/2 lg:-translate-y-[60px]">
                       <div class="bg-wesus/95 backdrop-blur-md border border-white/20 px-3 py-1.5 rounded-xl shadow-[0_15px_30px_rgba(0,0,0,0.5)] flex flex-col items-center">
                         <p class="text-[8px] text-white/50 uppercase tracking-wider mb-0.5 whitespace-nowrap">Retorno Total</p>
-                        <p id="tooltipValue" class="text-xs font-bold text-[#6FCF97] leading-none whitespace-nowrap">+ € 0,00</p>
+                        <p id="tooltipValue" class="text-xs font-bold text-[#6FCF97] leading-none whitespace-nowrap">+ € 5.000,00</p>
                       </div>
                     </div>
 
                     <div id="chartXAxis" class="flex justify-between items-center text-[9px] text-white/40 uppercase tracking-widest mt-4 border-t border-white/10 pt-3 relative z-10">
                       <span>Mês 1</span>
                       <span>Mês 2</span>
-                      <span class="text-gold font-semibold">Mês 3 (Vencimento)</span>
+                      <span id="dynamicXAxisEnd" class="text-gold font-semibold">Mês 3 (Vencimento)</span>
                     </div>
                   </div>
                 </div>
               </div>
 
               <aside class="grid grid-cols-2 lg:grid-cols-1 gap-3 lg:gap-5">
-
                 <div class="relative group">
                   <div class="widget-card-backlight" aria-hidden="true"></div>
-
                   <div class="hero-card-crystal p-4 lg:p-6 rounded-3xl flex flex-col justify-center items-center text-center relative z-10 overflow-hidden min-h-[140px] h-full">
-
-
                     <div class="flex items-center justify-center gap-1.5 mb-6 -mt-8 z-10 w-full border-b border-white/5 pb-2 lg:mb-0 lg:-mt-0">
                       <svg class="w-3.5 h-3.5 icon-seal-gold shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
@@ -389,7 +513,7 @@
                     </div>
 
                     <div class="flex items-start justify-center z-10 mt-1 select-all">
-                      <span class="text-4xl lg:text-5xl font-bold text-gold-liquid leading-none tracking-tight ml-2">10</span>
+                      <span id="dynamicTaxValue" class="text-4xl lg:text-5xl font-bold text-gold-liquid leading-none tracking-tight ml-2">10</span>
                       <span class="text-[#E8D08D] font-bold text-lg lg:text-xl ml-0.5 mt-0.5 select-none">%</span>
                     </div>
                     <span class="text-[8px] text-white/30 uppercase tracking-widest mt-3 z-10 font-medium">Retorno Fixo</span>
@@ -398,7 +522,6 @@
 
                 <div class="relative group h-full">
                   <div class="widget-card-backlight" aria-hidden="true"></div>
-
                   <div class="hero-card-crystal p-4 lg:p-6 rounded-3xl flex flex-col justify-center items-center text-center relative z-10 overflow-hidden min-h-[140px] h-full">
                     <div class="absolute inset-0 bg-gradient-to-br from-gold/5 to-transparent opacity-40"></div>
                     <div class="widget-backlight-champagne" aria-hidden="true"></div>
@@ -412,46 +535,30 @@
 
                     <div class="relative w-28 h-28 lg:w-32 lg:h-32 flex items-center justify-center z-10 mt-1 select-none">
                       <svg class="w-full h-full -rotate-90 overflow-visible" viewBox="0 0 100 100">
-                        <defs>
-                          <linearGradient id="bezelGoldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" stop-color="#8A662D" />
-                            <stop offset="30%" stop-color="#E8D08D" />
-                            <stop offset="70%" stop-color="#C5A059" />
-                            <stop offset="100%" stop-color="#8A662D" />
-                          </linearGradient>
+                        <circle cx="50" cy="50" r="48" fill="none" stroke="#c5a059" stroke-width="1.2" opacity="0.85" />
+                        <circle cx="50" cy="50" r="46" fill="rgba(6,17,32,0.75)" stroke="rgba(197,160,89,0.2)" stroke-width="1" />
+                        <circle cx="50" cy="50" r="46" fill="none" stroke="url(#cleanGoldLineGrad)" stroke-width="1.5" />
+                        <circle cx="50" cy="50" r="42" fill="none" stroke="rgba(255,255,255,0.04)" stroke-width="0.5" />
+                        <circle cx="50" cy="50" r="36" fill="none" stroke="rgba(255,255,255,0.04)" stroke-width="0.5" />
 
-                          <filter id="nativeChronoGlow" x="-50%" y="-50%" width="200%" height="200%">
-                            <feGaussianBlur stdDeviation="2" result="blur" />
-                            <feMerge>
-                              <feMergeNode in="blur" />
-                              <feMergeNode in="SourceGraphic" />
-                            </feMerge>
-                          </filter>
-                        </defs>
-
-                        <circle cx="50" cy="50" r="46" class="chrono-dial-case" />
-                        <circle cx="50" cy="50" r="46" class="chrono-bezel-ring" />
-                        <circle cx="50" cy="50" r="42" class="chrono-railway-border" />
-                        <circle cx="50" cy="50" r="36" class="chrono-railway-border" />
-                        <circle cx="50" cy="50" r="39" class="chrono-ticks-minutes" />
-                        <circle cx="50" cy="50" r="39" class="chrono-indices-hours" />
+                        <circle cx="50" cy="50" r="39" fill="none" stroke="rgba(197,160,89,0.2)" stroke-width="0.75" stroke-dasharray="0.4,3.68" />
+                        <circle cx="50" cy="50" r="39" fill="none" stroke="#c5a059" stroke-width="2.2" stroke-dasharray="1.5,18.92" />
 
                         <line x1="50" y1="7" x2="50" y2="13" stroke="#E8D08D" stroke-width="2.5" stroke-linecap="round" />
                         <line x1="93" y1="50" x2="87" y2="50" stroke="#C5A059" stroke-width="2" stroke-linecap="round" />
                         <line x1="50" y1="93" x2="50" y2="87" stroke="#C5A059" stroke-width="2" stroke-linecap="round" />
                         <line x1="7" y1="50" x2="13" y2="50" stroke="#C5A059" stroke-width="2" stroke-linecap="round" />
 
-                        <circle cx="50" cy="50" r="42" fill="none" class="chrono-active-arc" stroke-dasharray="264" stroke-dashoffset="66" filter="url(#nativeChronoGlow)" />
+                        <circle cx="50" cy="50" r="42" fill="none" id="dynamicChronoArc" stroke="#e8d08d" stroke-width="3.5" stroke-linecap="round" stroke-dasharray="264" stroke-dashoffset="66" filter="url(#nativeChronoGlow)" />
                       </svg>
 
                       <div class="absolute inset-0 flex flex-col items-center justify-center z-20 select-all">
-                        <span class="text-3xl lg:text-4xl font-bold text-gold-liquid leading-none tracking-tight">12</span>
+                        <span id="dynamicDaysValue" class="text-3xl lg:text-4xl font-bold text-gold-liquid leading-none tracking-tight">12</span>
                         <span class="text-[8px] lg:text-[9px] text-white/50 uppercase tracking-widest font-bold mt-1.5">Dias</span>
                       </div>
                     </div>
                   </div>
                 </div>
-
               </aside>
             </section>
 
@@ -465,26 +572,19 @@
               </div>
 
               <div class="assets-carousel lg:hidden flex gap-4 overflow-x-auto snap-x snap-mandatory scrollbar-hide pb-3 -mx-4 px-4 relative z-10">
-
                 <article class="snap-start shrink-0 w-80 carousel-asset-card rounded-2xl overflow-hidden p-5 flex flex-col justify-between min-h-[175px]">
                   <div class="carousel-asset-image-mask" style="background-image: url('img/casa-background-mobile-xsmall.webp');"></div>
                   <div class="relative z-10 h-full flex flex-col justify-between w-full">
                     <div class="flex justify-between items-start w-full gap-2">
-                      <div class="flex flex-col">
-                        <h3 class="font-playfair font-bold text-lg leading-tight text-white select-all">Edifício Aliados</h3>
-                        <a href="https://maps.google.com/?q=Porto,Portugal" target="_blank" class="flex items-center gap-1 text-[10px] text-gold/90 hover:text-white transition-colors w-fit mt-1.5 font-medium">
-                          <svg class="w-3 h-3 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                          </svg>
-                          Porto, Portugal
-                        </a>
+                      <div>
+                        <h3 class="font-playfair font-bold text-lg leading-tight text-white">Edifício Aliados</h3>
+                        <p class="text-[10px] text-gold/90 mt-1">Porto, Portugal</p>
                       </div>
                       <span class="status-badge-construction shrink-0">Em Construção</span>
                     </div>
                     <div class="mt-5 border-t border-white/5 pt-3">
                       <p class="text-[9px] text-white/40 uppercase tracking-widest font-semibold mb-0.5">Investimento Total</p>
-                      <p class="font-bold text-white text-base select-all">€ 1.200.000,00</p>
+                      <p class="font-bold text-white text-base">€ 1.200.000,00</p>
                     </div>
                   </div>
                 </article>
@@ -493,21 +593,15 @@
                   <div class="carousel-asset-image-mask" style="background-image: url('img/asset-villa-infante.webp');"></div>
                   <div class="relative z-10 h-full flex flex-col justify-between w-full">
                     <div class="flex justify-between items-start w-full gap-2">
-                      <div class="flex flex-col">
-                        <h3 class="font-playfair font-bold text-lg leading-tight text-white select-all">Villa Infante</h3>
-                        <a href="https://maps.google.com/?q=Porto,Portugal" target="_blank" class="flex items-center gap-1 text-[10px] text-gold/90 hover:text-white transition-colors w-fit mt-1.5 font-medium">
-                          <svg class="w-3 h-3 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                          </svg>
-                          Lisboa, Portugal
-                        </a>
+                      <div>
+                        <h3 class="font-playfair font-bold text-lg leading-tight text-white">Villa Infante</h3>
+                        <p class="text-[10px] text-gold/90 mt-1">Lisboa, Portugal</p>
                       </div>
                       <span class="status-badge-construction shrink-0">Em Construção</span>
                     </div>
                     <div class="mt-5 border-t border-white/5 pt-3">
                       <p class="text-[9px] text-white/40 uppercase tracking-widest font-semibold mb-0.5">Investimento Total</p>
-                      <p class="font-bold text-white text-base select-all">€ 850.000,00</p>
+                      <p class="font-bold text-white text-base">€ 850.000,00</p>
                     </div>
                   </div>
                 </article>
@@ -516,21 +610,15 @@
                   <div class="carousel-asset-image-mask" style="background-image: url('img/asset-palacio-estoril.webp');"></div>
                   <div class="relative z-10 h-full flex flex-col justify-between w-full">
                     <div class="flex justify-between items-start w-full gap-2">
-                      <div class="flex flex-col">
-                        <h3 class="font-playfair font-bold text-lg leading-tight text-white select-all">Palácio Estoril</h3>
-                        <a href="https://maps.google.com/?q=Porto,Portugal" target="_blank" class="flex items-center gap-1 text-[10px] text-gold/90 hover:text-white transition-colors w-fit mt-1.5 font-medium">
-                          <svg class="w-3 h-3 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                          </svg>
-                          Cascais, Portugal
-                        </a>
+                      <div>
+                        <h3 class="font-playfair font-bold text-lg leading-tight text-white">Palácio Estoril</h3>
+                        <p class="text-[10px] text-gold/90 mt-1">Cascais, Portugal</p>
                       </div>
                       <span class="status-badge-construction shrink-0">Em Construção</span>
                     </div>
                     <div class="mt-5 border-t border-white/5 pt-3">
                       <p class="text-[9px] text-white/40 uppercase tracking-widest font-semibold mb-0.5">Investimento Total</p>
-                      <p class="font-bold text-white text-base select-all">€ 2.100.000,00</p>
+                      <p class="font-bold text-white text-base">€ 2.100.000,00</p>
                     </div>
                   </div>
                 </article>
@@ -539,21 +627,15 @@
                   <div class="carousel-asset-image-mask" style="background-image: url('img/asset-douro-marina.webp');"></div>
                   <div class="relative z-10 h-full flex flex-col justify-between w-full">
                     <div class="flex justify-between items-start w-full gap-2">
-                      <div class="flex flex-col">
-                        <h3 class="font-playfair font-bold text-lg leading-tight text-white select-all">Douro Marina</h3>
-                        <a href="https://maps.google.com/?q=Porto,Portugal" target="_blank" class="flex items-center gap-1 text-[10px] text-gold/90 hover:text-white transition-colors w-fit mt-1.5 font-medium">
-                          <svg class="w-3 h-3 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                          </svg>
-                          Gaia, Portugal
-                        </a>
+                      <div>
+                        <h3 class="font-playfair font-bold text-lg leading-tight text-white">Douro Marina</h3>
+                        <p class="text-[10px] text-gold/90 mt-1">Gaia, Portugal</p>
                       </div>
                       <span class="status-badge-construction shrink-0">Em Construção</span>
                     </div>
                     <div class="mt-5 border-t border-white/5 pt-3">
                       <p class="text-[9px] text-white/40 uppercase tracking-widest font-semibold mb-0.5">Investimento Total</p>
-                      <p class="font-bold text-white text-base select-all">€ 950.000,00</p>
+                      <p class="font-bold text-white text-base">€ 950.000,00</p>
                     </div>
                   </div>
                 </article>
@@ -562,25 +644,18 @@
                   <div class="carousel-asset-image-mask" style="background-image: url('img/asset-lumina-chiado.webp');"></div>
                   <div class="relative z-10 h-full flex flex-col justify-between w-full">
                     <div class="flex justify-between items-start w-full gap-2">
-                      <div class="flex flex-col">
-                        <h3 class="font-playfair font-bold text-lg leading-tight text-white select-all">Lumina Chiado</h3>
-                        <a href="https://maps.google.com/?q=Porto,Portugal" target="_blank" class="flex items-center gap-1 text-[10px] text-gold/90 hover:text-white transition-colors w-fit mt-1.5 font-medium">
-                          <svg class="w-3 h-3 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                          </svg>
-                          Lisboa, Portugal
-                        </a>
+                      <div>
+                        <h3 class="font-playfair font-bold text-lg leading-tight text-white">Lumina Chiado</h3>
+                        <p class="text-[10px] text-gold/90 mt-1">Lisboa, Portugal</p>
                       </div>
                       <span class="status-badge-construction shrink-0">Em Construção</span>
                     </div>
                     <div class="mt-5 border-t border-white/5 pt-3">
                       <p class="text-[9px] text-white/40 uppercase tracking-widest font-semibold mb-0.5">Investimento Total</p>
-                      <p class="font-bold text-white text-base select-all">€ 1.450.000,00</p>
+                      <p class="font-bold text-white text-base">€ 1.450.000,00</p>
                     </div>
                   </div>
                 </article>
-
               </div>
 
               <div class="hidden lg:block hero-card-crystal rounded-2xl relative z-10 overflow-hidden">
@@ -596,29 +671,22 @@
                     </tr>
                   </thead>
                   <tbody>
-
                     <tr class="assets-row">
                       <td class="assets-td">
                         <div class="flex items-center gap-3.5">
                           <div class="asset-thumbnail-wrapper w-12 h-12 shrink-0">
-                            <img src="img/casa-background-mobile-xsmall.webp" width="48" height="48" alt="Edifício Aliados" class="w-full h-full object-cover transition-transform duration-500 hover:scale-105" />
+                            <img src="img/casa-background-mobile-xsmall.webp" width="48" height="48" alt="Edifício Aliados" class="w-full h-full object-cover" />
                           </div>
-                          <p class="font-bold text-sm text-white/95 tracking-wide select-all">Edifício Aliados</p>
+                          <p class="font-bold text-sm text-white/95 tracking-wide">Edifício Aliados</p>
                         </div>
                       </td>
                       <td class="assets-td">
-                        <a href="https://maps.google.com/?q=Porto,Portugal" target="_blank" class="inline-flex items-center gap-1.5 text-xs text-white/80 hover:text-gold-light transition-colors bg-white/5 hover:bg-white/10 px-2.5 py-1.5 rounded-lg border border-white/5">
-                          <svg class="w-3.5 h-3.5 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                          </svg>
-                          Porto, Portugal
-                        </a>
+                        <span class="inline-flex items-center gap-1.5 text-xs text-white/80 bg-white/5 px-2.5 py-1.5 rounded-lg border border-white/5">Porto, Portugal</span>
                       </td>
                       <td class="assets-td text-center">
                         <span class="status-badge-construction">Em Construção</span>
                       </td>
-                      <td class="assets-td text-right font-bold text-sm text-white/95 select-all tracking-wide">
+                      <td class="assets-td text-right font-bold text-sm text-white/95 tracking-wide">
                         € 1.200.000,00
                       </td>
                     </tr>
@@ -627,24 +695,18 @@
                       <td class="assets-td">
                         <div class="flex items-center gap-3.5">
                           <div class="asset-thumbnail-wrapper w-12 h-12 shrink-0">
-                            <img src="img/asset-villa-infante.webp" width="48" height="48" alt="Villa Infante" class="w-full h-full object-cover transition-transform duration-500 hover:scale-105" onerror="this.src='img/casa-background-mobile-xsmall.webp'" />
+                            <img src="img/asset-villa-infante.webp" width="48" height="48" alt="Villa Infante" class="w-full h-full object-cover" onerror="this.src='img/casa-background-mobile-xsmall.webp'" />
                           </div>
-                          <p class="font-bold text-sm text-white/95 tracking-wide select-all">Villa Infante</p>
+                          <p class="font-bold text-sm text-white/95 tracking-wide">Villa Infante</p>
                         </div>
                       </td>
                       <td class="assets-td">
-                        <a href="https://maps.google.com/?q=Porto,Portugal" target="_blank" class="inline-flex items-center gap-1.5 text-xs text-white/80 hover:text-gold-light transition-colors bg-white/5 hover:bg-white/10 px-2.5 py-1.5 rounded-lg border border-white/5">
-                          <svg class="w-3.5 h-3.5 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                          </svg>
-                          Lisboa, Portugal
-                        </a>
+                        <span class="inline-flex items-center gap-1.5 text-xs text-white/80 bg-white/5 px-2.5 py-1.5 rounded-lg border border-white/5">Lisboa, Portugal</span>
                       </td>
                       <td class="assets-td text-center">
                         <span class="status-badge-construction">Em Construção</span>
                       </td>
-                      <td class="assets-td text-right font-bold text-sm text-white/95 select-all tracking-wide">
+                      <td class="assets-td text-right font-bold text-sm text-white/95 tracking-wide">
                         € 850.000,00
                       </td>
                     </tr>
@@ -653,24 +715,18 @@
                       <td class="assets-td">
                         <div class="flex items-center gap-3.5">
                           <div class="asset-thumbnail-wrapper w-12 h-12 shrink-0">
-                            <img src="img/asset-palacio-estoril.webp" width="48" height="48" alt="Palácio Estoril" class="w-full h-full object-cover transition-transform duration-500 hover:scale-105" onerror="this.src='img/casa-background-mobile-xsmall.webp'" />
+                            <img src="img/asset-palacio-estoril.webp" width="48" height="48" alt="Palácio Estoril" class="w-full h-full object-cover" onerror="this.src='img/casa-background-mobile-xsmall.webp'" />
                           </div>
-                          <p class="font-bold text-sm text-white/95 tracking-wide select-all">Palácio Estoril</p>
+                          <p class="font-bold text-sm text-white/95 tracking-wide">Palácio Estoril</p>
                         </div>
                       </td>
                       <td class="assets-td">
-                        <a href="https://maps.google.com/?q=Porto,Portugal" target="_blank" class="inline-flex items-center gap-1.5 text-xs text-white/80 hover:text-gold-light transition-colors bg-white/5 hover:bg-white/10 px-2.5 py-1.5 rounded-lg border border-white/5">
-                          <svg class="w-3.5 h-3.5 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                          </svg>
-                          Cascais, Portugal
-                        </a>
+                        <span class="inline-flex items-center gap-1.5 text-xs text-white/80 bg-white/5 px-2.5 py-1.5 rounded-lg border border-white/5">Cascais, Portugal</span>
                       </td>
                       <td class="assets-td text-center">
                         <span class="status-badge-construction">Em Construção</span>
                       </td>
-                      <td class="assets-td text-right font-bold text-sm text-white/95 select-all tracking-wide">
+                      <td class="assets-td text-right font-bold text-sm text-white/95 tracking-wide">
                         € 2.100.000,00
                       </td>
                     </tr>
@@ -679,24 +735,18 @@
                       <td class="assets-td">
                         <div class="flex items-center gap-3.5">
                           <div class="asset-thumbnail-wrapper w-12 h-12 shrink-0">
-                            <img src="img/asset-douro-marina.webp" width="48" height="48" alt="Douro Marina" class="w-full h-full object-cover transition-transform duration-500 hover:scale-105" onerror="this.src='img/casa-background-mobile-xsmall.webp'" />
+                            <img src="img/asset-douro-marina.webp" width="48" height="48" alt="Douro Marina" class="w-full h-full object-cover" onerror="this.src='img/casa-background-mobile-xsmall.webp'" />
                           </div>
-                          <p class="font-bold text-sm text-white/95 tracking-wide select-all">Douro Marina</p>
+                          <p class="font-bold text-sm text-white/95 tracking-wide">Douro Marina</p>
                         </div>
                       </td>
                       <td class="assets-td">
-                        <a href="https://maps.google.com/?q=Porto,Portugal" target="_blank" class="inline-flex items-center gap-1.5 text-xs text-white/80 hover:text-gold-light transition-colors bg-white/5 hover:bg-white/10 px-2.5 py-1.5 rounded-lg border border-white/5">
-                          <svg class="w-3.5 h-3.5 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                          </svg>
-                          Gaia, Portugal
-                        </a>
+                        <span class="inline-flex items-center gap-1.5 text-xs text-white/80 bg-white/5 px-2.5 py-1.5 rounded-lg border border-white/5">Gaia, Portugal</span>
                       </td>
                       <td class="assets-td text-center">
                         <span class="status-badge-construction">Em Construção</span>
                       </td>
-                      <td class="assets-td text-right font-bold text-sm text-white/95 select-all tracking-wide">
+                      <td class="assets-td text-right font-bold text-sm text-white/95 tracking-wide">
                         € 950.000,00
                       </td>
                     </tr>
@@ -705,28 +755,21 @@
                       <td class="assets-td">
                         <div class="flex items-center gap-3.5">
                           <div class="asset-thumbnail-wrapper w-12 h-12 shrink-0">
-                            <img src="img/asset-lumina-chiado.webp" width="48" height="48" alt="Lumina Chiado" class="w-full h-full object-cover transition-transform duration-500 hover:scale-105" onerror="this.src='img/casa-background-mobile-xsmall.webp'" />
+                            <img src="img/asset-lumina-chiado.webp" width="48" height="48" alt="Lumina Chiado" class="w-full h-full object-cover" onerror="this.src='img/casa-background-mobile-xsmall.webp'" />
                           </div>
-                          <p class="font-bold text-sm text-white/95 tracking-wide select-all">Lumina Chiado</p>
+                          <p class="font-bold text-sm text-white/95 tracking-wide">Lumina Chiado</p>
                         </div>
                       </td>
                       <td class="assets-td">
-                        <a href="https://maps.google.com/?q=Porto,Portugal" target="_blank" class="inline-flex items-center gap-1.5 text-xs text-white/80 hover:text-gold-light transition-colors bg-white/5 hover:bg-white/10 px-2.5 py-1.5 rounded-lg border border-white/5">
-                          <svg class="w-3.5 h-3.5 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                          </svg>
-                          Lisboa, Portugal
-                        </a>
+                        <span class="inline-flex items-center gap-1.5 text-xs text-white/80 bg-white/5 px-2.5 py-1.5 rounded-lg border border-white/5">Lisboa, Portugal</span>
                       </td>
                       <td class="assets-td text-center">
                         <span class="status-badge-construction">Em Construção</span>
                       </td>
-                      <td class="assets-td text-right font-bold text-sm text-white/95 select-all tracking-wide">
+                      <td class="assets-td text-right font-bold text-sm text-white/95 tracking-wide">
                         € 1.450.000,00
                       </td>
                     </tr>
-
                   </tbody>
                 </table>
               </div>
@@ -736,12 +779,9 @@
               <div class="widget-card-backlight" aria-hidden="true"></div>
 
               <div class="hero-card-crystal p-6 lg:p-8 flex flex-col xl:flex-row items-center justify-between gap-6 lg:gap-8 relative overflow-hidden group w-full rounded-3xl">
-
-                <!-- Fusão perfeita do mármore com o fundo do cristal -->
                 <img src="img/oferta-relampago.webp" alt="" class="absolute inset-0 w-full h-full object-cover pointer-events-none z-0" style="opacity: 0.55; mix-blend-mode: overlay;" />
 
                 <div class="relative z-10 flex flex-col items-center lg:items-start text-center lg:text-left flex-1 min-w-0 w-full">
-
                   <div class="lg:hidden flex justify-center mb-3 w-full">
                     <div class="icon-badge-shield w-8 h-8 rounded-xl flex items-center justify-center text-[#E8D08D] shrink-0">
                       <svg class="w-4 h-4 drop-shadow-[0_0_4px_rgba(197,160,89,0.5)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -758,7 +798,6 @@
                   </div>
 
                   <div class="flex flex-row items-center gap-3 mb-3.5 justify-center lg:justify-start w-full">
-
                     <div class="hidden lg:flex icon-badge-shield w-8 h-8 rounded-xl items-center justify-center text-[#E8D08D] shrink-0">
                       <svg class="w-4 h-4 drop-shadow-[0_0_4px_rgba(197,160,89,0.5)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
@@ -791,22 +830,18 @@
                     Solicitar Acesso
                   </button>
                 </div>
-
               </div>
             </section>
           </div>
 
           <div id="tab-oportunidades" class="tab-content hidden select-none">
 
-            <!-- Header Principal com Logo Mobile Integrada e Amplo Respiro -->
             <header class="flex flex-col lg:flex-row lg:items-end justify-between gap-2 lg:gap-4 mb-2 relative">
-              <!-- Adicione o margin-top negativo aqui (ajuste o valor de -1.5rem como quiser até ficar perfeito) -->
               <div class="flex lg:hidden items-center justify-center" style="margin-top: -1.5rem;">
                 <img src="img/logo-its-wesus-branco.webp" fetchpriority="high" width="250" height="250" alt="It's Wesus" class="img-mobile hidden dark:block w-full max-w-[250px] h-auto object-contain drop-shadow-md lg:-mb-8 lg:-mt-12" />
                 <img src="img/logo-its-wesus-azul.webp" fetchpriority="high" width="160" height="64" alt="It's Wesus" class="img-mobile block dark:hidden w-auto h-16 object-contain drop-shadow-md" />
               </div>
 
-              <!-- Textos do Cabeçalho: Deslocados no mobile para compensar a logo -->
               <div class="flex flex-col items-center lg:items-start text-center lg:text-left -mt-16 lg:-mt-0 w-full">
                 <h2 class="font-playfair text-2xl lg:text-3xl font-bold text-white/90 tracking-wide">
                   Oportunidades <span class="text-gold-liquid">Disponíveis</span>
@@ -933,22 +968,17 @@
               </div>
             </section>
 
-            <!-- ── SEÇÃO 2: CONTRATOS DE OFERTA RELÂMPAGO (REPLICAÇÃO DA ABA 1 + TÍTULO MOBILE) ── -->
             <section aria-label="Oportunidades Exclusivas" style="margin-top: 4.5rem;" class="relative">
               <div class="widget-card-backlight" aria-hidden="true"></div>
 
-              <!-- Título de Respiro da Seção (Exibido perfeitamente no Mobile e Desktop) -->
               <div class="flex items-center gap-2" style="margin-bottom: 1rem;">
                 <div class="w-1.5 h-4 bg-gradient-to-b from-gold to-gold-light rounded-full"></div>
                 <h3 class="font-playfair text-base font-bold text-white/80 tracking-wide">Ofertas Especiais</h3>
               </div>
 
-              <!-- Card com Mármore e Filtro de Proteção de Contraste -->
               <div class="hero-card-crystal p-6 lg:p-8 flex flex-col xl:flex-row items-center justify-between gap-6 lg:gap-8 relative overflow-hidden group w-full rounded-3xl">
-
                 <img src="img/oferta-relampago.webp" alt="" class="absolute inset-0 w-full h-full object-cover pointer-events-none z-0" style="opacity: 0.5; mix-blend-mode: overlay;" />
 
-                <!-- Conteúdo Esquerdo -->
                 <div class="relative z-10 flex flex-col items-center lg:items-start text-center lg:text-left flex-1 min-w-0 w-full">
                   <div class="lg:hidden flex justify-center mb-3 w-full">
                     <div class="icon-badge-shield w-8 h-8 rounded-xl flex items-center justify-center text-[#E8D08D] shrink-0">
@@ -981,7 +1011,6 @@
                   </p>
                 </div>
 
-                <!-- Métricas Centrais -->
                 <div class="relative z-10 flex flex-row gap-6 sm:gap-10 border-t border-b sm:border-b-0 sm:border-t-0 sm:border-l border-white/10 py-4 sm:py-0 px-2 sm:px-8 shrink-0 justify-center items-center select-none">
                   <div class="flex flex-col items-center sm:items-start">
                     <p class="text-[8px] tracking-widest text-white/40 uppercase font-semibold mb-1">Retorno Fixo</p>
@@ -993,28 +1022,21 @@
                   </div>
                 </div>
 
-                <!-- Botão de Disparo -->
                 <div class="w-full xl:w-auto flex justify-center shrink-0 z-10">
-                  <button class="w-full xl:w-auto btn-gold-lingot" style="color: #ffffff !important;">
+                  <button class="w-full xl:w-auto btn-gold-lingot">
                     Solicitar Acesso
                   </button>
                 </div>
-
               </div>
             </section>
-
           </div>
 
-          <!-- ═══════════════════════════════════════════════════════
-     ABA 3: CONTRATOS (MODULAR COMPACTO DE ALTA DENSIDADE V22)
-     ═══════════════════════════════════════════════════════ -->
           <div id="tab-documentos" class="tab-content hidden select-none">
 
             <header class="contracts-desktop-enxuto flex flex-col lg:flex-row lg:items-end justify-between gap-2 lg:gap-4 mb-2 relative" style="margin-bottom: 3rem;">
-
               <div class="flex lg:hidden items-center justify-center" style="margin-top: -1.5rem;">
                 <img src="img/logo-its-wesus-branco.webp" fetchpriority="high" width="250" height="250" alt="It's Wesus" class="img-mobile hidden dark:block w-full max-w-[250px] h-auto object-contain drop-shadow-md lg:-mb-8 lg:-mt-12" />
-                <img src="img/logo-its-wesus-azul.webp" fetchpriority="high" width="160" height="64" alt="It's Wesus" class="img-mobile block dark:hidden w-auto h-16 object-contain drop-shadow-md" />
+                <img src="img/logo-its-wesus-azul.webp" fetchpriority="high" width="160" height="64" alt="It's Wesus" class="block dark:hidden w-auto h-16 object-contain drop-shadow-md img-mobile" />
               </div>
 
               <div class="flex flex-col items-center lg:items-start text-center lg:text-left -mt-16 lg:-mt-0 w-full">
@@ -1028,47 +1050,162 @@
             <section aria-label="Contratos em Execução Ativos" class="space-y-6 contracts-desktop-enxuto">
               <div class="flex items-center gap-2">
                 <div class="w-1.5 h-4 bg-gradient-to-b from-[#6FCF97] to-green-700 rounded-full shadow-[0_0_8px_rgba(111,207,151,0.4)]"></div>
-                <h3 class="font-playfair text-xs font-bold text-white/60 uppercase tracking-widest">Contratos em Execução</h3>
+                <h3 class="font-playfair text-xs font-bold text-white/60 uppercase tracking-widest">Contratos em Execução (5)</h3>
               </div>
 
-              <div class="hero-card-crystal p-5 rounded-3xl grid grid-cols-1 lg:grid-cols-12 items-center gap-4 lg:gap-2 relative overflow-hidden w-full group hover:bg-white/[0.02] transition-all duration-300">
+              <div id="contract-aliados" class="hero-card-crystal p-5 rounded-3xl grid grid-cols-1 lg:grid-cols-12 items-center gap-4 lg:gap-2 relative overflow-hidden w-full group hover:bg-white/[0.02] transition-all duration-300">
                 <div class="absolute inset-0 bg-gradient-to-br from-white/[0.01] to-transparent opacity-20 pointer-events-none"></div>
-
                 <div class="flex items-center gap-4 min-w-0 lg:col-span-4 w-full">
                   <div class="w-11 h-11 rounded-xl bg-[#071326] flex items-center justify-center border border-white/5 shrink-0 shadow-inner">
-                    <svg class="w-5 h-5 text-gold drop-shadow-[0_0_4px_rgba(197,160,89,0.3)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="w-5 h-5 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                     </svg>
                   </div>
-                  <div class="min-w-0">
-                    <h4 class="text-white font-bold text-sm lg:text-base truncate tracking-wide">Mútuo - Prédio Arroios (Fração E)</h4>
+                  <div class="min-w-0 flex-1">
+                    <h4 class="text-white font-bold text-sm lg:text-base truncate tracking-wide">Mútuo - Edifício Aliados</h4>
                     <div class="flex items-center gap-2 mt-1">
                       <span class="text-[9px] font-bold uppercase px-2 py-0.5 rounded-full bg-gold/10 text-gold-light tracking-wider">3 Meses</span>
                       <span class="text-[9px] font-bold uppercase px-2 py-0.5 rounded-full bg-white/5 text-white/40 tracking-wider">Taxa: 10%</span>
                     </div>
                   </div>
                 </div>
-
                 <div class="flex justify-between lg:flex-col gap-1 lg:col-span-2 w-full lg:pl-2">
                   <p class="text-[9px] uppercase text-white/40 tracking-widest font-semibold">Vencimento</p>
                   <p class="text-xs lg:text-sm text-white/90 font-medium">03/08/2026</p>
                 </div>
-
                 <div class="flex justify-between lg:flex-col gap-1 lg:col-span-2 w-full">
                   <p class="text-[9px] uppercase text-white/40 tracking-widest font-semibold">Capital Investido</p>
                   <p class="text-xs lg:text-sm text-white/90 font-medium">€ 50.000,00</p>
                 </div>
-
                 <div class="flex justify-between lg:flex-col gap-1 lg:col-span-2 w-full">
                   <p class="text-[9px] uppercase text-white/40 tracking-widest font-semibold">Status do Termo</p>
                   <p class="text-xs lg:text-sm font-bold text-[#6FCF97] tracking-wide">Ativo em Curso</p>
                 </div>
+                <div class="w-full lg:col-span-2 flex lg:justify-end mt-2 lg:mt-0"><button class="w-full btn-gold-lingot !py-2.5 !px-4 !text-[10px] !h-auto whitespace-nowrap" style="color: #ffffff !important; letter-spacing: 0.12em;">Baixar Doc</button></div>
+              </div>
 
-                <div class="w-full lg:col-span-2 flex lg:justify-end mt-2 lg:mt-0">
-                  <button class="w-full btn-gold-lingot !py-2.5 !px-4 !text-[10px] !h-auto whitespace-nowrap" style="color: #ffffff !important; letter-spacing: 0.12em;">
-                    Baixar Doc
-                  </button>
+              <div id="contract-villa" class="hero-card-crystal p-5 rounded-3xl grid grid-cols-1 lg:grid-cols-12 items-center gap-4 lg:gap-2 relative overflow-hidden w-full group hover:bg-white/[0.02] transition-all duration-300">
+                <div class="absolute inset-0 bg-gradient-to-br from-white/[0.01] to-transparent opacity-20 pointer-events-none"></div>
+                <div class="flex items-center gap-4 min-w-0 lg:col-span-4 w-full">
+                  <div class="w-11 h-11 rounded-xl bg-[#071326] flex items-center justify-center border border-white/5 shrink-0 shadow-inner">
+                    <svg class="w-5 h-5 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                  </div>
+                  <div class="min-w-0 flex-1">
+                    <h4 class="text-white font-bold text-sm lg:text-base truncate tracking-wide">Mútuo - Villa Infante</h4>
+                    <div class="flex items-center gap-2 mt-1">
+                      <span class="text-[9px] font-bold uppercase px-2 py-0.5 rounded-full bg-gold/10 text-gold-light tracking-wider">6 Meses</span>
+                      <span class="text-[9px] font-bold uppercase px-2 py-0.5 rounded-full bg-white/5 text-white/40 tracking-wider">Taxa: 12,5%</span>
+                    </div>
+                  </div>
                 </div>
+                <div class="flex justify-between lg:flex-col gap-1 lg:col-span-2 w-full lg:pl-2">
+                  <p class="text-[9px] uppercase text-white/40 tracking-widest font-semibold">Vencimento</p>
+                  <p class="text-xs lg:text-sm text-white/90 font-medium">15/11/2026</p>
+                </div>
+                <div class="flex justify-between lg:flex-col gap-1 lg:col-span-2 w-full">
+                  <p class="text-[9px] uppercase text-white/40 tracking-widest font-semibold">Capital Investido</p>
+                  <p class="text-xs lg:text-sm text-white/90 font-medium">€ 50.000,00</p>
+                </div>
+                <div class="flex justify-between lg:flex-col gap-1 lg:col-span-2 w-full">
+                  <p class="text-[9px] uppercase text-white/40 tracking-widest font-semibold">Status do Termo</p>
+                  <p class="text-xs lg:text-sm font-bold text-[#6FCF97] tracking-wide">Ativo em Curso</p>
+                </div>
+                <div class="w-full lg:col-span-2 flex lg:justify-end mt-2 lg:mt-0"><button class="w-full btn-gold-lingot !py-2.5 !px-4 !text-[10px] !h-auto whitespace-nowrap" style="color: #ffffff !important; letter-spacing: 0.12em;">Baixar Doc</button></div>
+              </div>
+
+              <div id="contract-estoril" class="hero-card-crystal p-5 rounded-3xl grid grid-cols-1 lg:grid-cols-12 items-center gap-4 lg:gap-2 relative overflow-hidden w-full group hover:bg-white/[0.02] transition-all duration-300">
+                <div class="absolute inset-0 bg-gradient-to-br from-white/[0.01] to-transparent opacity-20 pointer-events-none"></div>
+                <div class="flex items-center gap-4 min-w-0 lg:col-span-4 w-full">
+                  <div class="w-11 h-11 rounded-xl bg-[#071326] flex items-center justify-center border border-white/5 shrink-0 shadow-inner">
+                    <svg class="w-5 h-5 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                  </div>
+                  <div class="min-w-0 flex-1">
+                    <h4 class="text-white font-bold text-sm lg:text-base truncate tracking-wide">Mútuo - Palácio Estoril</h4>
+                    <div class="flex items-center gap-2 mt-1">
+                      <span class="text-[9px] font-bold uppercase px-2 py-0.5 rounded-full bg-gold/10 text-gold-light tracking-wider">12 Meses</span>
+                      <span class="text-[9px] font-bold uppercase px-2 py-0.5 rounded-full bg-white/5 text-white/40 tracking-wider">Taxa: 15%</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="flex justify-between lg:flex-col gap-1 lg:col-span-2 w-full lg:pl-2">
+                  <p class="text-[9px] uppercase text-white/40 tracking-widest font-semibold">Vencimento</p>
+                  <p class="text-xs lg:text-sm text-white/90 font-medium">20/05/2027</p>
+                </div>
+                <div class="flex justify-between lg:flex-col gap-1 lg:col-span-2 w-full">
+                  <p class="text-[9px] uppercase text-white/40 tracking-widest font-semibold">Capital Investido</p>
+                  <p class="text-xs lg:text-sm text-white/90 font-medium">€ 50.000,00</p>
+                </div>
+                <div class="flex justify-between lg:flex-col gap-1 lg:col-span-2 w-full">
+                  <p class="text-[9px] uppercase text-white/40 tracking-widest font-semibold">Status do Termo</p>
+                  <p class="text-xs lg:text-sm font-bold text-[#6FCF97] tracking-wide">Ativo em Curso</p>
+                </div>
+                <div class="w-full lg:col-span-2 flex lg:justify-end mt-2 lg:mt-0"><button class="w-full btn-gold-lingot !py-2.5 !px-4 !text-[10px] !h-auto whitespace-nowrap" style="color: #ffffff !important; letter-spacing: 0.12em;">Baixar Doc</button></div>
+              </div>
+
+              <div id="contract-marina" class="hero-card-crystal p-5 rounded-3xl grid grid-cols-1 lg:grid-cols-12 items-center gap-4 lg:gap-2 relative overflow-hidden w-full group hover:bg-white/[0.02] transition-all duration-300">
+                <div class="absolute inset-0 bg-gradient-to-br from-white/[0.01] to-transparent opacity-20 pointer-events-none"></div>
+                <div class="flex items-center gap-4 min-w-0 lg:col-span-4 w-full">
+                  <div class="w-11 h-11 rounded-xl bg-[#071326] flex items-center justify-center border border-white/5 shrink-0 shadow-inner">
+                    <svg class="w-5 h-5 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                  </div>
+                  <div class="min-w-0 flex-1">
+                    <h4 class="text-white font-bold text-sm lg:text-base truncate tracking-wide">Mútuo - Douro Marina</h4>
+                    <div class="flex items-center gap-2 mt-1">
+                      <span class="text-[9px] font-bold uppercase px-2 py-0.5 rounded-full bg-gold/10 text-gold-light tracking-wider">2 Meses</span>
+                      <span class="text-[9px] font-bold uppercase px-2 py-0.5 rounded-full bg-white/5 text-white/40 tracking-wider">Taxa: 8,5%</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="flex justify-between lg:flex-col gap-1 lg:col-span-2 w-full lg:pl-2">
+                  <p class="text-[9px] uppercase text-white/40 tracking-widest font-semibold">Vencimento</p>
+                  <p class="text-xs lg:text-sm text-white/90 font-medium">10/07/2026</p>
+                </div>
+                <div class="flex justify-between lg:flex-col gap-1 lg:col-span-2 w-full">
+                  <p class="text-[9px] uppercase text-white/40 tracking-widest font-semibold">Capital Investido</p>
+                  <p class="text-xs lg:text-sm text-white/90 font-medium">€ 50.000,00</p>
+                </div>
+                <div class="flex justify-between lg:flex-col gap-1 lg:col-span-2 w-full">
+                  <p class="text-[9px] uppercase text-white/40 tracking-widest font-semibold">Status do Termo</p>
+                  <p class="text-xs lg:text-sm font-bold text-[#6FCF97] tracking-wide">Ativo em Curso</p>
+                </div>
+                <div class="w-full lg:col-span-2 flex lg:justify-end mt-2 lg:mt-0"><button class="w-full btn-gold-lingot !py-2.5 !px-4 !text-[10px] !h-auto whitespace-nowrap" style="color: #ffffff !important; letter-spacing: 0.12em;">Baixar Doc</button></div>
+              </div>
+
+              <div id="contract-chiado" class="hero-card-crystal p-5 rounded-3xl grid grid-cols-1 lg:grid-cols-12 items-center gap-4 lg:gap-2 relative overflow-hidden w-full group hover:bg-white/[0.02] transition-all duration-300">
+                <div class="absolute inset-0 bg-gradient-to-br from-white/[0.01] to-transparent opacity-20 pointer-events-none"></div>
+                <div class="flex items-center gap-4 min-w-0 lg:col-span-4 w-full">
+                  <div class="w-11 h-11 rounded-xl bg-[#071326] flex items-center justify-center border border-white/5 shrink-0 shadow-inner">
+                    <svg class="w-5 h-5 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                  </div>
+                  <div class="min-w-0 flex-1">
+                    <h4 class="text-white font-bold text-sm lg:text-base truncate tracking-wide">Mútuo - Lumina Chiado</h4>
+                    <div class="flex items-center gap-2 mt-1">
+                      <span class="text-[9px] font-bold uppercase px-2 py-0.5 rounded-full bg-gold/10 text-gold-light tracking-wider">18 Meses</span>
+                      <span class="text-[9px] font-bold uppercase px-2 py-0.5 rounded-full bg-white/5 text-white/40 tracking-wider">Taxa: 14%</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="flex justify-between lg:flex-col gap-1 lg:col-span-2 w-full lg:pl-2">
+                  <p class="text-[9px] uppercase text-white/40 tracking-widest font-semibold">Vencimento</p>
+                  <p class="text-xs lg:text-sm text-white/90 font-medium">30/11/2027</p>
+                </div>
+                <div class="flex justify-between lg:flex-col gap-1 lg:col-span-2 w-full">
+                  <p class="text-[9px] uppercase text-white/40 tracking-widest font-semibold">Capital Investido</p>
+                  <p class="text-xs lg:text-sm text-white/90 font-medium">€ 50.000,00</p>
+                </div>
+                <div class="flex justify-between lg:flex-col gap-1 lg:col-span-2 w-full">
+                  <p class="text-[9px] uppercase text-white/40 tracking-widest font-semibold">Status do Termo</p>
+                  <p class="text-xs lg:text-sm font-bold text-[#6FCF97] tracking-wide">Ativo em Curso</p>
+                </div>
+                <div class="w-full lg:col-span-2 flex lg:justify-end mt-2 lg:mt-0"><button class="w-full btn-gold-lingot !py-2.5 !px-4 !text-[10px] !h-auto whitespace-nowrap" style="color: #ffffff !important; letter-spacing: 0.12em;">Baixar Doc</button></div>
               </div>
             </section>
 
@@ -1080,98 +1217,282 @@
 
               <div class="hero-card-crystal p-5 rounded-3xl grid grid-cols-1 lg:grid-cols-12 items-center gap-4 lg:gap-2 relative overflow-hidden w-full group hover:bg-white/[0.02] transition-all duration-300">
                 <div class="absolute inset-0 bg-gradient-to-br from-white/[0.01] to-transparent opacity-10 pointer-events-none"></div>
-
                 <div class="flex items-center gap-4 min-w-0 lg:col-span-4 w-full">
                   <div class="w-11 h-11 rounded-xl bg-[#071326]/60 flex items-center justify-center border border-white/5 shrink-0">
                     <svg class="w-5 h-5 text-white/30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                     </svg>
                   </div>
-                  <div class="min-w-0">
+                  <div class="min-w-0 flex-1">
                     <h4 class="text-white/80 font-bold text-sm lg:text-base truncate tracking-wide">Operação Alquimia Lux</h4>
-                    <div class="flex items-center gap-2 mt-1">
-                      <span class="text-[9px] font-bold uppercase px-2 py-0.5 rounded-full bg-white/5 text-white/40 tracking-wider">3 Meses</span>
-                      <span class="text-[9px] font-bold uppercase px-2 py-0.5 rounded-full bg-white/5 text-white/40 tracking-wider">Taxa: 15%</span>
-                      <span class="text-[9px] font-bold uppercase px-2 py-0.5 rounded-full bg-green-500/10 text-[#6FCF97]/80 tracking-wider">Liquidado</span>
+                    <div class="flex justify-between items-center w-full mt-1">
+                      <div class="flex items-center gap-2">
+                        <span class="text-[9px] font-bold uppercase px-2 py-0.5 rounded-full bg-white/5 text-white/40 tracking-wider">3 Meses</span>
+                        <span class="text-[9px] font-bold uppercase px-2 py-0.5 rounded-full bg-white/5 text-white/40 tracking-wider">Taxa: 15%</span>
+                      </div>
+                      <span class="text-[9px] font-bold uppercase text-gold-liquid tracking-widest">Vendido</span>
                     </div>
                   </div>
                 </div>
-
                 <div class="flex justify-between lg:flex-col gap-1 lg:col-span-2 w-full lg:pl-2">
                   <p class="text-[9px] uppercase text-white/40 tracking-widest font-semibold">Término</p>
                   <p class="text-xs lg:text-sm text-white/60 font-medium">10/12/2025</p>
                 </div>
-
                 <div class="flex justify-between lg:flex-col gap-1 lg:col-span-2 w-full">
                   <p class="text-[9px] uppercase text-white/40 tracking-widest font-semibold">Capital Investido</p>
                   <p class="text-xs lg:text-sm text-white/60 font-medium">€ 100.000,00</p>
                 </div>
-
                 <div class="flex justify-between lg:flex-col gap-1 lg:col-span-2 w-full">
                   <p class="text-[9px] uppercase text-white/40 tracking-widest font-semibold">Rendimento Líquido</p>
-                  <p class="text-xs lg:text-sm font-bold text-[#6FCF97]">Ref. + € 10.000,00</p>
+                  <p class="text-xs lg:text-sm font-bold text-[#6FCF97]">+ € 10.000,00</p>
                 </div>
-
-                <div class="w-full lg:col-span-2 flex lg:justify-end mt-2 lg:mt-0">
-                  <button class="w-full btn-gold-lingot !py-2.5 !px-4 !text-[10px] !h-auto whitespace-nowrap" style="color: #ffffff !important; letter-spacing: 0.1em;">
-                    Baixar Doc
-                  </button>
-                </div>
+                <div class="w-full lg:col-span-2 flex lg:justify-end mt-2 lg:mt-0"><button class="w-full btn-gold-lingot !py-2.5 !px-4 !text-[10px] !h-auto whitespace-nowrap" style="color: #ffffff !important; letter-spacing: 0.1em;">Baixar Doc</button></div>
               </div>
 
               <div class="hero-card-crystal p-5 rounded-3xl grid grid-cols-1 lg:grid-cols-12 items-center gap-4 lg:gap-2 relative overflow-hidden w-full group hover:bg-white/[0.02] transition-all duration-300">
                 <div class="absolute inset-0 bg-gradient-to-br from-white/[0.01] to-transparent opacity-10 pointer-events-none"></div>
-
                 <div class="flex items-center gap-4 min-w-0 lg:col-span-4 w-full">
                   <div class="w-11 h-11 rounded-xl bg-[#071326]/60 flex items-center justify-center border border-white/5 shrink-0">
                     <svg class="w-5 h-5 text-white/30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                     </svg>
                   </div>
-                  <div class="min-w-0">
+                  <div class="min-w-0 flex-1">
                     <h4 class="text-white/80 font-bold text-sm lg:text-base truncate tracking-wide">Edifício Aliados - Cota A</h4>
-                    <div class="flex items-center gap-2 mt-1">
-                      <span class="text-[9px] font-bold uppercase px-2 py-0.5 rounded-full bg-white/5 text-white/40 tracking-wider">6 Meses</span>
-                      <span class="text-[9px] font-bold uppercase px-2 py-0.5 rounded-full bg-white/5 text-white/40 tracking-wider">Taxa: 12,5%</span>
-                      <span class="text-[9px] font-bold uppercase px-2 py-0.5 rounded-full bg-green-500/10 text-[#6FCF97]/80 tracking-wider">Liquidado</span>
+                    <div class="flex justify-between items-center w-full mt-1">
+                      <div class="flex items-center gap-2">
+                        <span class="text-[9px] font-bold uppercase px-2 py-0.5 rounded-full bg-white/5 text-white/40 tracking-wider">6 Meses</span>
+                        <span class="text-[9px] font-bold uppercase px-2 py-0.5 rounded-full bg-white/5 text-white/40 tracking-wider">Taxa: 12,5%</span>
+                      </div>
+                      <span class="text-[9px] font-bold uppercase text-gold-liquid tracking-widest">Vendido</span>
                     </div>
                   </div>
                 </div>
-
                 <div class="flex justify-between lg:flex-col gap-1 lg:col-span-2 w-full lg:pl-2">
                   <p class="text-[9px] uppercase text-white/40 tracking-widest font-semibold">Término</p>
                   <p class="text-xs lg:text-sm text-white/60 font-medium">15/09/2025</p>
                 </div>
-
                 <div class="flex justify-between lg:flex-col gap-1 lg:col-span-2 w-full">
                   <p class="text-[9px] uppercase text-white/40 tracking-widest font-semibold">Capital Investido</p>
                   <p class="text-xs lg:text-sm text-white/60 font-medium">€ 40.000,00</p>
                 </div>
-
                 <div class="flex justify-between lg:flex-col gap-1 lg:col-span-2 w-full">
                   <p class="text-[9px] uppercase text-white/40 tracking-widest font-semibold">Rendimento Líquido</p>
-                  <p class="text-xs lg:text-sm font-bold text-[#6FCF97]">Ref. + € 2.500,00</p>
+                  <p class="text-xs lg:text-sm font-bold text-[#6FCF97]">+ € 2.500,00</p>
+                </div>
+                <div class="w-full lg:col-span-2 flex lg:justify-end mt-2 lg:mt-0"><button class="w-full btn-gold-lingot !py-2.5 !px-4 !text-[10px] !h-auto whitespace-nowrap" style="color: #ffffff !important; letter-spacing: 0.1em;">Baixar Doc</button></div>
+              </div>
+            </section>
+          </div>
+
+          <div id="tab-conta" class="tab-content hidden select-none">
+
+            <header style="max-width: 1050px; margin: 0 auto 3.5rem auto;" class="flex flex-col lg:flex-row lg:items-end justify-between gap-2 lg:gap-4 mb-2 relative">
+              <div class="flex lg:hidden items-center justify-center" style="margin-top: -1.5rem;">
+                <img src="img/logo-its-wesus-branco.webp" width="250" height="250" alt="It's Wesus" class="img-mobile hidden dark:block w-full max-w-[250px] h-auto object-contain drop-shadow-md lg:-mb-8 lg:-mt-12" />
+                <img src="img/logo-its-wesus-azul.webp" width="160" height="64" alt="It's Wesus" class="img-mobile block dark:hidden w-auto h-16 object-contain drop-shadow-md" />
+              </div>
+
+              <div class="flex flex-col items-center lg:items-start text-center lg:text-left -mt-16 lg:-mt-0 w-full">
+                <h2 class="font-playfair text-2xl lg:text-3xl font-bold text-white/90 tracking-wide">
+                  Definições da <span class="text-gold-liquid">Conta</span>
+                </h2>
+                <p class="text-xs text-white/50 font-inter mt-1">Gerencie os seus dados de perfil, credenciais de segurança e alertas de portfólio.</p>
+              </div>
+            </header>
+
+            <div class="premium-account-grid space-y-6 lg:space-y-0">
+
+              <div class="hero-card-crystal p-6 rounded-3xl relative overflow-hidden flex flex-col justify-between">
+                <div class="absolute inset-0 bg-gradient-to-br from-white/[0.01] to-transparent opacity-20 pointer-events-none"></div>
+
+                <div>
+                  <div class="flex items-center gap-2 pb-3" style="margin-bottom: 2rem; border-b: 1px solid rgba(255, 255, 255, 0.05);">
+                    <div class="w-1.5 h-4 bg-gradient-to-b from-gold to-gold-light rounded-full"></div>
+                    <h3 class="font-playfair text-xs font-bold text-white/60 uppercase tracking-widest">Identidade do Investidor</h3>
+                  </div>
+
+                  <div class="flex flex-col items-center text-center justify-center bg-white/[0.01] p-6 rounded-2xl border border-white/5 group" style="margin-bottom: 2.5rem;">
+                    <div class="relative premium-avatar-lock bg-[#071326] border-2 border-gold/40 flex items-center justify-center shadow-lg shrink-0 overflow-hidden avatar-ring cursor-pointer">
+                      <img src="img/danilson-photo.webp" alt="Danilson Carvalho Photo" class="premium-avatar-lock object-cover transition-transform duration-500 group-hover:scale-105" />
+                    </div>
+
+                    <div class="mt-4">
+                      <h4 class="text-white font-bold text-lg tracking-wide">Danilson Carvalho</h4>
+                      <p class="text-[10px] text-gold-light font-bold uppercase tracking-widest mt-0.5">Investidor Premium</p>
+                      <p class="text-[9px] text-white/30 mt-1">Membro exclusivo desde 2024</p>
+                    </div>
+                  </div>
+
+                  <div class="space-y-4 font-inter text-xs">
+                    <div class="premium-form-group space-y-2">
+                      <label class="text-white/40 uppercase tracking-wider text-[9px] font-semibold">Nome Completo</label>
+                      <input type="text" value="Danilson Carvalho" class="premium-field-input" />
+                    </div>
+                    <div class="premium-form-group space-y-2">
+                      <label class="text-white/40 uppercase tracking-wider text-[9px] font-semibold">Endereço de E-mail</label>
+                      <input type="email" value="danilson.carvalho@exemplo.com" class="premium-field-input" />
+                    </div>
+                    <div class="premium-form-group space-y-2">
+                      <label class="text-white/40 uppercase tracking-wider text-[9px] font-semibold">Telemóvel</label>
+                      <input type="text" value="+351 912 345 678" class="premium-field-input" />
+                    </div>
+                    <div class="premium-form-group space-y-2">
+                      <label class="text-white/30 uppercase tracking-wider text-[9px] font-semibold">NIF (Auditoria Estática)</label>
+                      <input type="text" value="234 567 890" disabled class="premium-field-input cursor-not-allowed select-none" />
+                    </div>
+                  </div>
                 </div>
 
-                <div class="w-full lg:col-span-2 flex lg:justify-end mt-2 lg:mt-0">
-                  <button class="w-full btn-gold-lingot !py-2.5 !px-4 !text-[10px] !h-auto whitespace-nowrap" style="color: #ffffff !important; letter-spacing: 0.1em;">
-                    Baixar Doc
+                <div class="flex justify-end pt-4" style="margin-top: 1rem;">
+                  <button class="w-full sm:w-auto btn-gold-lingot !py-2.5 !px-6 !text-[10px]" style="color: #ffffff !important; letter-spacing: 0.12em;">
+                    Salvar Alterações
                   </button>
                 </div>
               </div>
 
-            </section>
+              <div class="flex flex-col gap-6 w-full">
+                <div class="hero-card-crystal p-6 rounded-3xl relative overflow-hidden flex flex-col justify-between min-h-[290px]">
+                  <div class="absolute inset-0 bg-gradient-to-br from-white/[0.01] to-transparent opacity-10 pointer-events-none"></div>
+
+                  <div>
+                    <div class="flex items-center gap-2 pb-2" style="margin-bottom: 1.5rem; border-b: 1px solid rgba(255, 255, 255, 0.05);">
+                      <div class="w-1.5 h-4 bg-gradient-to-b from-gold to-gold-light rounded-full"></div>
+                      <h3 class="font-playfair text-xs font-bold text-white/60 uppercase tracking-widest">Segurança do Acesso</h3>
+                    </div>
+
+                    <div class="space-y-4 font-inter text-xs">
+                      <div class="premium-form-group space-y-2">
+                        <label class="text-white/40 uppercase tracking-wider text-[9px] font-semibold">Senha Atual</label>
+                        <input type="password" placeholder="••••••••" class="premium-field-input" />
+                      </div>
+                      <div class="premium-form-group space-y-2">
+                        <label class="text-white/40 uppercase tracking-wider text-[9px] font-semibold">Nova Senha</label>
+                        <input type="password" placeholder="Mínimo 8 caracteres" class="premium-field-input" />
+                      </div>
+                    </div>
+
+                    <div class="flex items-center justify-between pt-4 text-xs font-inter" style="margin-top: 1rem; border-t: 1px solid rgba(255, 255, 255, 0.05);">
+                      <div>
+                        <p class="text-white/90 font-bold tracking-wide">Autenticação de Dois Fatores (2FA)</p>
+                        <p class="text-[10px] text-white/40 mt-0.5">Camada extra para login e termos</p>
+                      </div>
+
+                      <label class="premium-toggle-container">
+                        <input type="checkbox" class="premium-toggle-input" checked>
+                        <span class="premium-toggle-slider"></span>
+                      </label>
+                    </div>
+                  </div>
+
+                  <div class="pt-4" style="margin-top: 2rem;">
+                    <button class="w-full btn-gold-lingot !py-2.5 !text-[10px]" style="color: #ffffff !important; letter-spacing: 0.12em;">
+                      Atualizar Senha
+                    </button>
+                  </div>
+                </div>
+
+                <div class="hero-card-crystal p-6 rounded-3xl relative overflow-hidden flex flex-col justify-between min-h-[340px]">
+                  <div class="absolute inset-0 bg-gradient-to-br from-white/[0.01] to-transparent opacity-10 pointer-events-none"></div>
+
+                  <div>
+                    <div class="flex items-center gap-2 pb-2" style="margin-bottom: 0.5rem; border-b: 1px solid rgba(255, 255, 255, 0.05);">
+                      <div class="w-1.5 h-4 bg-gradient-to-b from-gold to-gold-light rounded-full"></div>
+                      <h3 class="font-playfair text-xs font-bold text-white/60 uppercase tracking-widest">Preferências e Suporte</h3>
+                    </div>
+
+                    <div class="font-inter text-xs">
+                      <div class="premium-notification-row">
+                        <div class="pr-4">
+                          <p class="text-white/90 font-bold tracking-wide">Oportunidades Relâmpago</p>
+                          <p class="text-[10px] text-white/40 mt-0.5">Avisos imediatos de cotas e pools restritos</p>
+                        </div>
+                        <label class="premium-toggle-container">
+                          <input type="checkbox" class="premium-toggle-input" checked>
+                          <span class="premium-toggle-slider"></span>
+                        </label>
+                      </div>
+
+                      <div class="premium-notification-row" style="border-t: 1px solid rgba(255, 255, 255, 0.03);">
+                        <div class="pr-4">
+                          <p class="text-white/90 font-bold tracking-wide">Alertas de Vencimento</p>
+                          <p class="text-[10px] text-white/40 mt-0.5">Notificações de prazos e liquidações de mútuo</p>
+                        </div>
+                        <label class="premium-toggle-container">
+                          <input type="checkbox" class="premium-toggle-input" checked>
+                          <span class="premium-toggle-slider"></span>
+                        </label>
+                      </div>
+
+                      <div class="premium-notification-row" style="border-t: 1px solid rgba(255, 255, 255, 0.03);">
+                        <div class="pr-4">
+                          <p class="text-white/90 font-bold tracking-wide">Modo de Visualização</p>
+                          <p class="text-[10px] text-white/40 mt-0.5">Alternar o tema do portal (Claro / Escuro)</p>
+                        </div>
+                        <button onclick="document.getElementById('themeToggleDesktop').click();" class="p-2 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 text-gold transition-colors shadow-sm" aria-label="Alternar Tema">
+                          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                          </svg>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Botão de Suporte Direto para o WhatsApp (Variante Lingote Esmeralda) -->
+                  <div class="pt-4" style="margin-top: 1rem; border-top: 1px solid rgba(255, 255, 255, 0.05);">
+                    <a href="https://wa.me/351929408352?text=Olá! Preciso de suporte técnico no Portal do Investidor." target="_blank" class="w-full flex items-center justify-center gap-2 btn-gold-lingot btn-emerald-lingot !py-2.5 !text-[10px] text-center" style="color: #ffffff !important; letter-spacing: 0.12em;">
+                      <svg class="w-4 h-4 fill-current shrink-0" viewBox="0 0 24 24">
+                        <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397 0 11.93 0c3.165.001 6.14 1.233 8.377 3.469 2.237 2.235 3.469 5.211 3.469 8.378 0 6.582-5.336 11.93-11.87 11.93h-.004c-2.012 0-3.987-.544-5.732-1.583L0 24zm6.158-3.466l.356.211c1.6.953 3.546 1.456 5.368 1.456h.003c5.497 0 9.969-4.473 9.973-9.972.002-2.664-1.033-5.167-2.915-7.05-1.88-1.882-4.383-2.917-7.046-2.917-5.5 0-9.972 4.474-9.975 9.973-.001 1.894.494 3.743 1.433 5.361l.232.401L1.87 21.673l3.52-.924zM16.43 13.13c-.26-.13-1.536-.758-1.772-.844-.237-.086-.41-.13-.582.13-.172.26-.665.844-.813 1.012-.148.17-.297.187-.557.057-.26-.13-1.1-.405-2.096-1.293-.775-.692-1.3-1.547-1.452-1.807-.152-.26-.016-.4.114-.53.117-.116.26-.303.39-.455.13-.152.173-.26.26-.433.086-.173.043-.325-.022-.455-.065-.13-.582-1.4-.798-1.92-.21-.51-.424-.44-.582-.44H8.04c-.172 0-.453.065-.69.325-.238.26-.908.887-.908 2.162 0 1.275.928 2.506 1.057 2.679.13.173 1.826 2.79 4.425 3.913.618.267 1.1.426 1.475.545.622.197 1.187.17 1.634.1.5-.074 1.536-.628 1.75-1.235.213-.607.213-1.127.15-1.235-.064-.11-.237-.174-.497-.304z" />
+                      </svg>
+                      Contatar Suporte Técnico
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
 
-          <div id="tab-conta" class="tab-content hidden space-y-6">
-            <header class="mb-4">
-              <h2 class="font-playfair text-2xl font-bold text-white/90 tracking-wide">
-                Definições da <span class="text-gold-liquid">Conta</span>
+          <div id="tab-suporte" class="tab-content hidden select-none">
+            <header class="contracts-desktop-enxuto" style="margin-bottom: 3rem;">
+              <h2 class="font-playfair text-2xl lg:text-3xl font-bold text-white/90 tracking-wide">
+                Suporte <span class="text-gold-liquid">Técnico</span>
               </h2>
-              <p class="text-xs text-white/50 font-inter mt-1">Gerencie os seus dados de perfil e chaves de segurança criptográfica.</p>
+              <p class="text-xs text-white/50 font-inter mt-1">Encontrou alguma anomalia ou precisa de auxílio? Fale diretamente com o engenheiro responsável pelo ecossistema.</p>
             </header>
-            <div class="hero-card-crystal p-6 text-center text-white/40 text-sm font-inter">
-              Configurações de investidor restrito.
+
+            <div class="contracts-desktop-enxuto">
+              <div class="hero-card-crystal p-6 lg:p-8 rounded-3xl relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-6 max-w-3xl mx-auto">
+                <div class="absolute inset-0 bg-gradient-to-br from-white/[0.01] to-transparent opacity-20 pointer-events-none"></div>
+
+                <div class="flex items-center gap-5 min-w-0 flex-1">
+                  <div class="w-12 h-12 rounded-2xl bg-[#071326] flex items-center justify-center border border-white/5 shrink-0 shadow-inner">
+                    <svg class="w-5 h-5 text-gold drop-shadow-[0_0_4px_rgba(197,160,89,0.3)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+                    </svg>
+                  </div>
+
+                  <div class="min-w-0 space-y-1">
+                    <div class="flex items-center gap-2">
+                      <h4 class="text-white font-bold text-base tracking-wide">Canal Direto de Engenharia</h4>
+                      <span class="premium-live-badge !py-0.5 !px-2 !text-[8px] !border-[#6FCF97]/30 !text-[#6FCF97]">
+                        <span class="premium-live-dot"></span> Ativo
+                      </span>
+                    </div>
+                    <p class="text-xs text-white/60 font-inter leading-relaxed">
+                      Este canal faz a ponte criptografada com o desenvolvedor privado do portal. Clique ao lado para abrir uma sessão segura no WhatsApp e relatar comportamentos inesperados ou sugerir melhorias de performance.
+                    </p>
+                  </div>
+                </div>
+
+                <div class="w-full md:w-auto shrink-0 flex justify-center">
+                  <a href="https://wa.me/351912345678?text=Olá! Estou no Portal do Investidor e preciso de reportar um problema técnico para a equipa de engenharia." target="_blank" class="w-full md:w-auto flex items-center justify-center gap-2 btn-gold-lingot btn-emerald-lingot !py-3 !px-6 !text-[10px] text-center" style="color: #ffffff !important; letter-spacing: 0.12em;">
+                    <svg class="w-4 h-4 fill-current shrink-0" viewBox="0 0 24 24">
+                      <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397 0 11.93 0c3.165.001 6.14 1.233 8.377 3.469 2.237 2.235 3.469 5.211 3.469 8.378 0 6.582-5.336 11.93-11.87 11.93h-.004c-2.012 0-3.987-.544-5.732-1.583L0 24zm6.158-3.466l.356.211c1.6.953 3.546 1.456 5.368 1.456h.003c5.497 0 9.969-4.473 9.973-9.972.002-2.664-1.033-5.167-2.915-7.05-1.88-1.882-4.383-2.917-7.046-2.917-5.5 0-9.972 4.474-9.975 9.973-.001 1.894.494 3.743 1.433 5.361l.232.401L1.87 21.673l3.52-.924zM16.43 13.13c-.26-.13-1.536-.758-1.772-.844-.237-.086-.41-.13-.582.13-.172.26-.665.844-.813 1.012-.148.17-.297.187-.557.057-.26-.13-1.1-.405-2.096-1.293-.775-.692-1.3-1.547-1.452-1.807-.152-.26-.016-.4.114-.53.117-.116.26-.303.39-.455.13-.152.173-.26.26-.433.086-.173.043-.325-.022-.455-.065-.13-.582-1.4-.798-1.92-.21-.51-.424-.44-.582-.44H8.04c-.172 0-.453.065-.69.325-.238.26-.908.887-.908 2.162 0 1.275.928 2.506 1.057 2.679.13.173 1.826 2.79 4.425 3.913.618.267 1.1.426 1.475.545.622.197 1.187.17 1.634.1.5-.074 1.536-.628 1.75-1.235.213-.607.213-1.127.15-1.235-.064-.11-.237-.174-.497-.304z" />
+                    </svg>
+                    Reportar Problema
+                  </a>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -1179,9 +1500,7 @@
     </div>
   </div>
 
-
   <nav class="bottom-nav lg:hidden fixed bottom-0 left-0 right-0 z-40 flex border-t border-white/10" aria-label="Navegação inferior">
-
     <a href="#" class="bottom-nav-item active" aria-label="Início" aria-current="page" data-section="dashboard">
       <svg class="bottom-nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
@@ -1200,7 +1519,7 @@
       <svg class="bottom-nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
       </svg>
-      <span class="bottom-nav-label">Documentos</span>
+      <span class="bottom-nav-label">Contratos</span>
     </a>
 
     <a href="#" class="bottom-nav-item" aria-label="Conta" data-section="conta">
@@ -1209,7 +1528,6 @@
       </svg>
       <span class="bottom-nav-label">Conta</span>
     </a>
-
   </nav>
 
   <script src="js/dashboard.js" defer></script>

@@ -38,6 +38,13 @@ const ThemeController = (() => {
     dark ? HTML.classList.add("dark") : HTML.classList.remove("dark");
     _updateIcons();
     localStorage.setItem(STORAGE_KEY, dark ? "dark" : "light");
+
+    if (window.AndroidInterface && window.AndroidInterface.setSystemBarsColor) {
+      window.AndroidInterface.setSystemBarsColor(
+        dark ? "#071326" : "#FFFFFF",
+        !dark,
+      );
+    }
   }
 
   function toggle() {
@@ -63,10 +70,7 @@ const ThemeController = (() => {
 /* ── NAVIGATION CONTROLLER (SPA TAB SWITCH ENGINE) ────────── */
 const NavigationController = (() => {
   function _setActive(sectionName) {
-    const allNavItems = document.querySelectorAll(
-      ".nav-item, .bottom-nav-item",
-    );
-    allNavItems.forEach((el) => {
+    document.querySelectorAll(".nav-item, .bottom-nav-item").forEach((el) => {
       if (el.getAttribute("data-section") === sectionName) {
         el.classList.add("active");
       } else {
@@ -76,18 +80,12 @@ const NavigationController = (() => {
   }
 
   function _switchTab(sectionName) {
-    // Esconde todas as abas de conteúdo de uma só vez
-    const tabs = document.querySelectorAll(".tab-content");
-    tabs.forEach((tab) => tab.classList.add("hidden"));
-
-    // Mostra a aba clicada
+    document
+      .querySelectorAll(".tab-content")
+      .forEach((tab) => tab.classList.add("hidden"));
     const targetTab = document.getElementById(`tab-${sectionName}`);
-    if (targetTab) {
-      targetTab.classList.remove("hidden");
-    }
+    if (targetTab) targetTab.classList.remove("hidden");
 
-    // 🔥 CRUCIAL PARA PERFORMANCE Gráfica:
-    // Se voltar para o dashboard, força a GPU a recalcular a colagem correta do tooltip
     if (
       sectionName === "dashboard" &&
       typeof ChartDataController !== "undefined"
@@ -97,10 +95,7 @@ const NavigationController = (() => {
   }
 
   function init() {
-    const allNavItems = document.querySelectorAll(
-      ".nav-item, .bottom-nav-item",
-    );
-    allNavItems.forEach((item) => {
+    document.querySelectorAll(".nav-item, .bottom-nav-item").forEach((item) => {
       item.addEventListener("click", (e) => {
         e.preventDefault();
         const sectionName = item.getAttribute("data-section");
@@ -121,22 +116,15 @@ const ScrollController = (() => {
     if (crystalCards.length === 0) return;
 
     let ticking = false;
-
     function handleOrientation(event) {
       if (event.gamma === null || event.beta === null) return;
-
       if (!ticking) {
         window.requestAnimationFrame(() => {
-          // Limita a inclinação a no máximo 6 graus para ser um efeito ultra sutil (Estilo Apple)
-          // Gamma controla o eixo Y (esquerda/direita) | Beta controla o eixo X (frente/trás)
           const tiltX = Math.max(-6, Math.min(6, event.gamma * 0.2));
-          const tiltY = Math.max(-6, Math.min(6, (event.beta - 55) * 0.2)); // 55° é o ângulo médio de leitura na mão
-
+          const tiltY = Math.max(-6, Math.min(6, (event.beta - 55) * 0.2));
           crystalCards.forEach((card) => {
-            // Executado diretamente pelo hardware compositor da GPU (Zero layout repaint)
             card.style.transform = `perspective(1000px) translateZ(0) rotateX(${-tiltY}deg) rotateY(${tiltX}deg)`;
           });
-
           ticking = false;
         });
         ticking = true;
@@ -162,11 +150,9 @@ const ScrollController = (() => {
         window.addEventListener("deviceorientation", handleOrientation, true);
       }
     }
-
     document.addEventListener("click", activateSensors, { once: true });
     document.addEventListener("touchstart", activateSensors, { once: true });
   }
-
   return { init };
 })();
 
@@ -216,9 +202,13 @@ const GreetingController = (() => {
     return "Boa noite";
   }
   function init() {
-    const text = `${_getGreeting()}, Alexandre.`;
+    const text = `${_getGreeting()}, André.`;
     document.querySelectorAll("h1").forEach((el) => {
-      if (el.textContent.includes("Alexandre")) el.textContent = text;
+      if (
+        el.textContent.includes("André") ||
+        el.textContent.includes("Alexandre")
+      )
+        el.textContent = text;
     });
   }
   return { init };
@@ -226,11 +216,6 @@ const GreetingController = (() => {
 
 /* ── CONTRACT DATA CONTROLLER (AUTOMATIC TOOLTIP ALIGNMENT) ── */
 const ChartDataController = (() => {
-  const clientData = {
-    months: 3,
-    roiTotal: "+ € 24.500,00",
-  };
-
   function alignTooltip() {
     const node = document.getElementById("chartFinalNode");
     const tooltip = document.getElementById("chartTooltip");
@@ -255,18 +240,147 @@ const ChartDataController = (() => {
   }
 
   function init() {
-    const tooltipValue = document.getElementById("tooltipValue");
-    if (tooltipValue) {
-      tooltipValue.textContent = clientData.roiTotal;
-    }
-
     alignTooltip();
     window.addEventListener("resize", alignTooltip);
   }
-
-  // 🔥 EXPONDO A FUNÇÃO: Agora o NavigationController consegue invocar esta função externamente
   return { init, alignTooltip };
 })();
+
+/* ── MOTOR DE GESTÃO DINÂMICA E ROTEAMENTO (V36 - 5 CONTRATOS) ── */
+document.addEventListener("DOMContentLoaded", () => {
+  const subtitle = document.getElementById("dashboardContractSubtitle");
+  const prevBtn = document.getElementById("dashboardPrevContractBtn");
+  const nextBtn = document.getElementById("dashboardNextContractBtn");
+
+  const chartTitle = document.getElementById("dynamicChartTitle");
+  const xAxisEnd = document.getElementById("dynamicXAxisEnd");
+  const tooltipVal = document.getElementById("tooltipValue");
+  const taxValue = document.getElementById("dynamicTaxValue");
+  const daysValue = document.getElementById("dynamicDaysValue");
+  const chronoArc = document.getElementById("dynamicChronoArc");
+
+  if (!prevBtn || !nextBtn) return;
+
+  const portfolioContracts = [
+    {
+      building: "Edifício Aliados",
+      tax: "10",
+      days: "12",
+      arcOffset: 66,
+      roi: "+ € 5.000,00",
+      xAxis: "Mês 3 (Vencimento)",
+    },
+    {
+      building: "Villa Infante",
+      tax: "12,5",
+      days: "45",
+      arcOffset: 140,
+      roi: "+ € 6.250,00",
+      xAxis: "Mês 6 (Vencimento)",
+    },
+    {
+      building: "Palácio Estoril",
+      tax: "15",
+      days: "88",
+      arcOffset: 210,
+      roi: "+ € 7.500,00",
+      xAxis: "Mês 12 (Vencimento)",
+    },
+    {
+      building: "Douro Marina",
+      tax: "8,5",
+      days: "5",
+      arcOffset: 25,
+      roi: "+ € 4.250,00",
+      xAxis: "Mês 2 (Vencimento)",
+    },
+    {
+      building: "Lumina Chiado",
+      tax: "14",
+      days: "115",
+      arcOffset: 250,
+      roi: "+ € 7.000,00",
+      xAxis: "Mês 18 (Vencimento)",
+    },
+  ];
+
+  let currentIndex = 0;
+  window.currentContractIndex = currentIndex; // Sincroniza o estado para o escopo nativo
+
+  function renderContractState() {
+    const data = portfolioContracts[currentIndex];
+    window.currentContractIndex = currentIndex; // Atualiza a cada clique de seta
+
+    if (subtitle)
+      subtitle.textContent = `${data.building} (${currentIndex + 1} de ${
+        portfolioContracts.length
+      })`;
+    if (chartTitle)
+      chartTitle.textContent = `Projeção de Rendimentos (${data.building})`;
+    if (xAxisEnd) xAxisEnd.textContent = data.xAxis;
+    if (taxValue) taxValue.textContent = data.tax;
+    if (daysValue) daysValue.textContent = data.days;
+    if (tooltipVal) tooltipVal.textContent = data.roi;
+    if (chronoArc) chronoArc.setAttribute("stroke-dashoffset", data.arcOffset);
+
+    if (
+      typeof ChartDataController !== "undefined" &&
+      ChartDataController.alignTooltip
+    ) {
+      setTimeout(ChartDataController.alignTooltip, 40);
+    }
+  }
+
+  nextBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    currentIndex = (currentIndex + 1) % portfolioContracts.length;
+    renderContractState();
+  });
+
+  prevBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    currentIndex =
+      (currentIndex - 1 + portfolioContracts.length) %
+      portfolioContracts.length;
+    renderContractState();
+  });
+});
+
+/* 🔥 ROTEADOR PRE-CARREGADO COM ALVO DE SCROLL NATIVO (WHATSAPP PULSE) */
+window.navigateToContract = () => {
+  const contractMappingIds = [
+    "contract-aliados",
+    "contract-villa",
+    "contract-estoril",
+    "contract-marina",
+    "contract-chiado",
+  ];
+  const currentIndex = window.currentContractIndex || 0;
+  const targetId = contractMappingIds[currentIndex];
+
+  // 1. Aciona programaticamente a troca de abas do SPA para "Contratos"
+  const documentosTabTrigger = document.querySelector(
+    '[data-section="documentos"]',
+  );
+  if (documentosTabTrigger) documentosTabTrigger.click();
+
+  // 2. Aguarda a abertura da div oculta para calcular a física de rolagem suave
+  setTimeout(() => {
+    const targetCard = document.getElementById(targetId);
+    if (targetCard) {
+      // Move o scroll centralizando o card perfeitamente na viewport do telemóvel
+      targetCard.scrollIntoView({ behavior: "smooth", block: "center" });
+
+      // Injeta o efeito flash do WhatsApp
+      targetCard.classList.add("contract-highlight-pulse");
+
+      // Destrói a classe após a animação de 2 segundos para liberar o efeito Tilt do Giroscópio
+      setTimeout(() => {
+        targetCard.classList.remove("contract-highlight-pulse");
+      }, 2000);
+    }
+  }, 180);
+};
 
 /* ── ENTRY POINT ──────────────────────────────────────────── */
 document.addEventListener("DOMContentLoaded", () => {
