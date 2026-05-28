@@ -25,6 +25,13 @@
    PATCH CRISTAL PREMIUM V36 - SILK PLATINUM & CHAMPAGNE EDGE
    Bordas de Alta Definição + Máximo Contraste + 100% Estático GPU
    ───────────────────────────────────────────────────────────── */
+    html,
+    body {
+      background-color: #0B1F3A !important;
+      /* Cor exata do login */
+      height: 100%;
+      margin: 0;
+    }
 
     @media (max-width: 1023px) {
 
@@ -1402,6 +1409,17 @@
                     <div class="flex items-center gap-2 pb-2" style="margin-bottom: 0.5rem; border-b: 1px solid rgba(255, 255, 255, 0.05);">
                       <div class="w-1.5 h-4 bg-gradient-to-b from-gold to-gold-light rounded-full"></div>
                       <h3 class="font-playfair text-xs font-bold text-white/60 uppercase tracking-widest">Preferências e Suporte</h3>
+                    </div>
+
+                    <div class="premium-notification-row" style="border-t: 1px solid rgba(255, 255, 255, 0.03);">
+                      <div class="pr-4">
+                        <p class="text-white/90 font-bold tracking-wide">Autenticação Biométrica</p>
+                        <p class="text-[10px] text-white/40 mt-0.5">Login rápido com digital ou rosto</p>
+                      </div>
+                      <label class="premium-toggle-container">
+                        <input type="checkbox" class="premium-toggle-input">
+                        <span class="premium-toggle-slider"></span>
+                      </label>
                     </div>
 
                     <div class="font-inter text-xs">
