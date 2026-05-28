@@ -154,10 +154,13 @@
       JSON.stringify({ email: emailInput.value.trim() }),
     );
 
-    // Executa a animação suave de saída antes de redirecionar
-    document.body.style.transition = "opacity 0.4s ease";
-    document.body.style.opacity = "0";
+    // 🔥 CORREÇÃO: Dispara a animação apenas no cartão de conteúdo, preservando o fundo estável
+    const contentCard = document.getElementById("login-content-card");
+    if (contentCard) {
+      contentCard.classList.add("login-fade-out-trigger");
+    }
 
+    // Aguarda o término do fade antes de saltar de página
     setTimeout(() => {
       window.location.href = "dashboard.html";
     }, 400);

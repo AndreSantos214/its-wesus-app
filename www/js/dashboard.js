@@ -67,7 +67,7 @@ const ThemeController = (() => {
   return { init };
 })();
 
-/* ── NAVIGATION CONTROLLER (SPA TAB SWITCH ENGINE) ────────── */
+/* ── NAVIGATION CONTROLLER (SPA TAB SWITCH ENGINE CORRIGIDO) ── */
 const NavigationController = (() => {
   function _setActive(sectionName) {
     document.querySelectorAll(".nav-item, .bottom-nav-item").forEach((el) => {
@@ -80,12 +80,23 @@ const NavigationController = (() => {
   }
 
   function _switchTab(sectionName) {
+    // 1. Oculta as abas antigas e mostra a nova ativa
     document
       .querySelectorAll(".tab-content")
       .forEach((tab) => tab.classList.add("hidden"));
+
     const targetTab = document.getElementById(`tab-${sectionName}`);
     if (targetTab) targetTab.classList.remove("hidden");
 
+    // 2. 🔥 CORREÇÃO DEFINITIVA: Salto instantâneo puro ignorando o smooth scroll do CSS
+    window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+
+    const mainContent = document.getElementById("mainContent");
+    if (mainContent) {
+      mainContent.scrollTo({ top: 0, left: 0, behavior: "instant" });
+    }
+
+    // Alinha a tooltip se voltarmos ao painel principal
     if (
       sectionName === "dashboard" &&
       typeof ChartDataController !== "undefined"

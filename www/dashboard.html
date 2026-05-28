@@ -1312,15 +1312,18 @@
                     <h3 class="font-playfair text-xs font-bold text-white/60 uppercase tracking-widest">Identidade do Investidor</h3>
                   </div>
 
+                  <!-- BLOCO COMPACTO DA FOTO (Substitua apenas este pedaço) -->
                   <div class="flex flex-col items-center text-center justify-center bg-white/[0.01] p-6 rounded-2xl border border-white/5 group" style="margin-bottom: 2.5rem;">
-                    <div class="relative premium-avatar-lock bg-[#071326] border-2 border-gold/40 flex items-center justify-center shadow-lg shrink-0 overflow-hidden avatar-ring cursor-pointer">
-                      <img src="img/danilson-photo.webp" alt="Danilson Carvalho Photo" class="premium-avatar-lock object-cover transition-transform duration-500 group-hover:scale-105" />
+
+                    <!-- 🔥 FIX: Forçamos o tamanho elegante de 72px e a borda em ouro bem visível diretamente aqui -->
+                    <div class="relative flex items-center justify-center rounded-full bg-[#071326] shadow-lg shrink-0 overflow-hidden" style="width: 72px !important; height: 72px !important; border: 2.5px solid #e8d08d !important; box-shadow: 0 0 12px rgba(232, 208, 141, 0.35);">
+                      <img src="img/danilson-photo.webp" alt="Danilson Carvalho" class="object-cover transition-transform duration-500 group-hover:scale-105" style="width: 100% !important; height: 100% !important; border-radius: 50% !important;" />
                     </div>
 
                     <div class="mt-4">
-                      <h4 class="text-white font-bold text-lg tracking-wide">Danilson Carvalho</h4>
-                      <p class="text-[10px] text-gold-light font-bold uppercase tracking-widest mt-0.5">Investidor Premium</p>
-                      <p class="text-[9px] text-white/30 mt-1">Membro exclusivo desde 2024</p>
+                      <h4 class="text-white font-bold text-base tracking-wide">Danilson Carvalho</h4>
+                      <p class="text-[10px] text-gold-liquid font-bold uppercase tracking-[0.18em] mt-1 select-none">Investidor Premium</p>
+                      <p class="text-[9px] text-white/30 mt-1">Membro exclusivo since 2024</p>
                     </div>
                   </div>
 
