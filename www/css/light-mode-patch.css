@@ -1,0 +1,399 @@
+/* ═══════════════════════════════════════════════════════════════════
+   WESUS LIGHT MODE PATCH — VERSÃO FINAL ESTÁVEL E PREMIUM V3
+   Instrução: Substituir integralmente o conteúdo de css/light-mode-patch.css
+   Dark Mode: html.dark  |  Light Mode: html:not(.dark)
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ── 1. CSS VARIABLES — OVERRIDE PARA LIGHT MODE ─────────────────── */
+html:not(.dark) {
+  --glass-bg: rgba(255, 255, 255, 0.65);
+  --glass-border: rgba(197, 160, 89, 0.2);
+  --glass-shadow: 0 8px 32px rgba(11, 31, 58, 0.07),
+    0 2px 6px rgba(0, 0, 0, 0.05);
+  --gold: #b8913a;
+  --gold-light: #c5a059;
+  --gold-dim: rgba(184, 145, 58, 0.1);
+}
+
+/* ── 2. FUNDO GLOBAL & BLINDAGEM ANTI-ESTOURO MOBILE ─────────────── */
+html:not(.dark),
+html:not(.dark) body {
+  background-color: #ede9e1 !important; /* Linho quente */
+  color: #0b1f3a !important;
+  max-width: 100vw !important;
+  overflow-x: hidden !important; /* 🛡️ Trava de segurança: impede qualquer vazamento horizontal */
+}
+
+/* ── 3. ORBS AMBIENTE ────────────────────────────────────────────── */
+html:not(.dark) .deep-glow-gold-top {
+  background: radial-gradient(
+    circle,
+    rgba(197, 160, 89, 0.09) 0%,
+    transparent 70%
+  ) !important;
+}
+html:not(.dark) .deep-glow-platinum-mid {
+  background: radial-gradient(
+    circle,
+    rgba(197, 160, 89, 0.06) 0%,
+    transparent 65%
+  ) !important;
+}
+html:not(.dark) .deep-glow-bronze-base {
+  background: radial-gradient(
+    circle,
+    rgba(143, 118, 75, 0.07) 0%,
+    transparent 70%
+  ) !important;
+}
+
+/* ── 4. GLASS CARDS ──────────────────────────────────────────────── */
+html:not(.dark) .glass-card {
+  background: rgba(255, 255, 255, 0.65) !important;
+  border: 1px solid rgba(197, 160, 89, 0.18) !important;
+  box-shadow: 0 8px 32px rgba(11, 31, 58, 0.07), 0 2px 6px rgba(0, 0, 0, 0.04) !important;
+}
+html:not(.dark) .glass-card-sm {
+  background: rgba(255, 255, 255, 0.55) !important;
+  border: 1px solid rgba(197, 160, 89, 0.14) !important;
+}
+
+/* ── 5. HERO CRYSTAL CARD ────────────────────────────────────────── */
+html:not(.dark) .hero-card-crystal {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.78),
+    rgba(247, 243, 236, 0.88) 50%,
+    rgba(255, 255, 255, 0.7)
+  ) !important;
+  box-shadow: 0 24px 48px -14px rgba(11, 31, 58, 0.14),
+    0 4px 12px rgba(0, 0, 0, 0.05), inset 0 1px 1px rgba(255, 255, 255, 0.95),
+    inset 0 -1px 1px rgba(197, 160, 89, 0.08) !important;
+}
+html:not(.dark) .hero-card-crystal:before {
+  background-image: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.7) 0%,
+    rgba(197, 160, 89, 0.25) 25%,
+    transparent 50%,
+    rgba(197, 160, 89, 0.18) 75%,
+    rgba(255, 255, 255, 0.6) 100%
+  ) !important;
+}
+html:not(.dark) .hero-card-crystal:after {
+  background: linear-gradient(
+    115deg,
+    transparent 42%,
+    rgba(255, 255, 255, 0.02) 48%,
+    rgba(255, 255, 255, 0.07) 50%,
+    rgba(255, 255, 255, 0.02) 52%,
+    transparent 58%
+  ) !important;
+}
+html:not(.dark) .crystal-base-glow {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(197, 160, 89, 0.3),
+    rgba(197, 160, 89, 0.3),
+    transparent
+  ) !important;
+}
+
+/* ── 6. LARGURAS MOBILE ADAPTATIVAS (Sintaxe Corrigida) ──────────── */
+@media (max-width: 1023px) {
+  #mainContent,
+  .tab-content,
+  .hero-card-crystal,
+  .glass-card,
+  .opportunity-card-obsidian,
+  .premium-field-input {
+    width: 100% !important;
+    max-width: 100% !important; /* Corrigido: removeu a notação inválida do tailwind */
+    box-sizing: border-box !important;
+  }
+}
+
+/* ── 7. TEXTOS GLOBAIS (Estabilidade de Filtros Nativos) ─────────── */
+html:not(.dark) .text-white {
+  color: #0b1f3a !important;
+}
+html:not(.dark) .text-white\/95 {
+  color: rgba(11, 31, 58, 0.95) !important;
+}
+html:not(.dark) .text-white\/90 {
+  color: rgba(11, 31, 58, 0.9) !important;
+}
+html:not(.dark) .text-white\/80 {
+  color: rgba(11, 31, 58, 0.8) !important;
+}
+html:not(.dark) .text-white\/70 {
+  color: rgba(11, 31, 58, 0.7) !important;
+}
+html:not(.dark) .text-white\/60 {
+  color: rgba(11, 31, 58, 0.6) !important;
+}
+html:not(.dark) .text-white\/50 {
+  color: rgba(11, 31, 58, 0.52) !important;
+}
+html:not(.dark) .text-white\/45 {
+  color: rgba(11, 31, 58, 0.46) !important;
+}
+html:not(.dark) .text-white\/40 {
+  color: rgba(11, 31, 58, 0.4) !important;
+}
+html:not(.dark) .text-white\/30 {
+  color: rgba(11, 31, 58, 0.3) !important;
+}
+
+html:not(.dark) .text-gold-liquid {
+  background: linear-gradient(
+    135deg,
+    #4a3010,
+    #8a6628 35%,
+    #c5a059 70%,
+    #b8913a
+  ) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  filter: none !important; /* 🛡️ Corrigido: Remove drop-shadow que causava estouro em WebViews */
+}
+html:not(.dark) .metric-pop-value {
+  background: linear-gradient(135deg, #0b1f3a, #4a3010 50%, #c5a059) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  filter: none !important; /* 🛡️ Corrigido */
+}
+
+/* ── 8. BORDAS ───────────────────────────────────────────────────── */
+html:not(.dark) .border-white\/20 {
+  border-color: rgba(11, 31, 58, 0.12) !important;
+}
+html:not(.dark) .border-white\/10 {
+  border-color: rgba(11, 31, 58, 0.08) !important;
+}
+html:not(.dark) .border-white\/5 {
+  border-color: rgba(11, 31, 58, 0.04) !important;
+}
+
+/* ── 9. FUNDOS UTILITÁRIOS ──────────────────────────────────────── */
+html:not(.dark) .bg-wesus {
+  background-color: #ede9e1 !important;
+}
+html:not(.dark) .bg-wesus\/95 {
+  background-color: rgba(237, 233, 225, 0.95) !important;
+}
+html:not(.dark) .bg-white\/5 {
+  background-color: rgba(11, 31, 58, 0.04) !important;
+}
+html:not(.dark) .bg-white\/\[0\.01\] {
+  background-color: rgba(11, 31, 58, 0.01) !important;
+}
+html:not(.dark) .hover\:bg-white\/10:hover {
+  background-color: rgba(11, 31, 58, 0.07) !important;
+}
+
+/* ── 10. HEADER ACTION BUTTONS ──────────────────────────────────── */
+html:not(.dark) .header-action-btn {
+  background: rgba(11, 31, 58, 0.06) !important;
+  border: 1px solid rgba(11, 31, 58, 0.1) !important;
+}
+
+/* ── 11. SIDEBAR (desktop) ───────────────────────────────────────── */
+html:not(.dark) .sidebar {
+  background-color: rgba(247, 244, 239, 0.98) !important;
+  background-image: linear-gradient(
+    180deg,
+    rgba(247, 244, 239, 0.99) 0%,
+    rgba(242, 237, 228, 0.96) 35%,
+    rgba(238, 232, 220, 0.92) 75%,
+    rgba(247, 244, 239, 0.99) 100%
+  ) !important;
+  background-size: auto !important;
+}
+html:not(.dark) .nav-item {
+  color: rgba(11, 31, 58, 0.65) !important;
+}
+html:not(.dark) .nav-item.active {
+  color: #0b1f3a !important;
+  background: rgba(197, 160, 89, 0.15) !important;
+  border: 1px solid rgba(197, 160, 89, 0.28) !important;
+}
+html:not(.dark) .nav-item.active .nav-icon {
+  stroke: #b8913a !important;
+}
+
+/* ── 12. BARRA DE NAVEGAÇÃO INFERIOR MOBILE (Brilho e Destaque) ──── */
+html:not(.dark) .bottom-nav {
+  background: rgba(247, 244, 239, 0.96) !important;
+  border-top: 1px solid rgba(197, 160, 89, 0.15) !important;
+}
+
+/* 🔥 FIX: Ícones e textos inativos bem escuros (Azul Wesus) para contraste total com o fundo */
+html:not(.dark) .bottom-nav-item {
+  color: rgba(11, 31, 58, 0.5) !important;
+}
+html:not(.dark) .bottom-nav-label {
+  color: rgba(11, 31, 58, 0.65) !important;
+}
+
+/* Itens ativos mantêm o destaque dourado nobre */
+html:not(.dark) .bottom-nav-item.active {
+  color: #b8913a !important;
+}
+html:not(.dark) .bottom-nav-item.active .bottom-nav-icon {
+  stroke: #b8913a !important;
+}
+html:not(.dark) .bottom-nav-item.active .bottom-nav-label {
+  color: #b8913a !important;
+  font-weight: 700 !important;
+}
+html:not(.dark) .bottom-nav-item.active:before {
+  background: #b8913a !important;
+}
+
+/* ── 13. REMOVER FUNDO ESCURO DO RELÓGIO (Chrono Dial Clean) ────── */
+html:not(.dark) .chrono-dial-case,
+html:not(.dark) circle[fill="rgba(6,17,32,0.75)"] {
+  fill: transparent !important; /* 🟢 Limpo: remove a bolha azul/escura interna no light mode */
+}
+
+/* ── 14. PRESERVAÇÃO INTEGRAL DE OUTROS ELEMENTOS ORIGINALMENTE ACEITES ── */
+html:not(.dark) .opportunity-card-obsidian {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.75),
+    rgba(246, 241, 232, 0.88) 60%,
+    rgba(255, 255, 255, 0.68)
+  ) !important;
+}
+html:not(.dark) .assets-th {
+  color: rgba(11, 31, 58, 0.5) !important;
+  border-bottom: 1px solid rgba(11, 31, 58, 0.07) !important;
+}
+html:not(.dark) .assets-row {
+  border-bottom: 1px solid rgba(11, 31, 58, 0.04) !important;
+}
+html:not(.dark) .premium-field-input {
+  background: rgba(11, 31, 58, 0.04) !important;
+  border: 1px solid rgba(11, 31, 58, 0.1) !important;
+  color: #0b1f3a !important;
+}
+html:not(.dark) .btn-gold-lingot {
+  background: linear-gradient(
+    135deg,
+    #f5e3b5 0%,
+    #c5a059 50%,
+    #a38349 100%
+  ) !important;
+  color: #071326 !important;
+  border: 1px solid rgba(163, 131, 73, 0.25) !important;
+}
+
+/* ── 15. SELEÇÃO CIRÚRGICA: APENAS CARD "OFERTA RELÂMPAGO" ──────── */
+/* Retira as letras douradas reflexivas e re-estiliza badges/raio somente nesta seção */
+html:not(.dark)
+  section[aria-label="Oportunidades Exclusivas"]
+  .text-gold-liquid,
+html:not(.dark) section[aria-label="Oportunidades Exclusivas"] h3 span,
+html:not(.dark)
+  section[aria-label="Oportunidades Exclusivas"]
+  .metric-pop-value,
+html:not(.dark)
+  section[aria-label="Oportunidades Exclusivas"]
+  span.text-\[\#E8D08D\],
+html:not(.dark) section[aria-label="Oportunidades Exclusivas"] .text-xs span {
+  background: none !important;
+  -webkit-background-clip: initial !important;
+  -webkit-text-fill-color: initial !important;
+  color: #0b1f3a !important; /* Transforma o texto em Azul Wesus corporativo escuro para leitura perfeita */
+  text-shadow: none !important;
+}
+
+/* Modificação da classe premium-live-badge (Apenas na Linha de Ofertas Especiais) */
+html:not(.dark)
+  section[aria-label="Oportunidades Exclusivas"]
+  .premium-live-badge {
+  background: rgba(11, 31, 58, 0.05) !important;
+  border: 1px solid rgba(184, 145, 58, 0.4) !important;
+  color: #b8913a !important;
+}
+
+/* Modificação do ícone de caixa de raio (icon-badge-shield) nesta seção */
+html:not(.dark)
+  section[aria-label="Oportunidades Exclusivas"]
+  .icon-badge-shield {
+  background: rgba(184, 145, 58, 0.08) !important;
+  border: 1px solid rgba(184, 145, 58, 0.35) !important;
+  color: #b8913a !important;
+}
+
+/* ── 16. FILTRO DE COR DOS LOGOTIPOS EM LIGHT MODE (Sem Estouro) ── */
+/* Aplica o filtro de tom dourado premium apenas nos logotipos quando em Light Mode */
+html:not(.dark) img[src*="logo-its-wesus"] {
+  filter: invert(68%) sepia(19%) saturate(542%) hue-rotate(344deg)
+    brightness(91%) contrast(89%) !important;
+  opacity: 0.85 !important;
+}
+
+/* ── 🛡️ PATCH DE FORÇA MÁXIMA (Sobrescreve o CSS interno do HTML) ── */
+
+/* 1. Remove sombras e fundos azuis de TODOS os cards Hero */
+html:not(.dark) section[aria-labelledby="patrimonyHeading"] .hero-card-crystal,
+html:not(.dark)
+  section[aria-label="Oportunidades Exclusivas"]
+  .hero-card-crystal,
+html:not(.dark) .hero-card-crystal {
+  background: linear-gradient(135deg, #ffffff 0%, #f7f3ec 100%) !important;
+  border: 1px solid rgba(197, 160, 89, 0.25) !important;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05) !important; /* 🔥 Sombra Neutra (Sem azul) */
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+
+/* 2. Corrige estouro de tela mobile e centraliza */
+@media (max-width: 1023px) {
+  html:not(.dark) #mainContent {
+    width: 100% !important;
+    max-width: 100vw !important;
+    overflow-x: hidden !important;
+    padding-left: 0.5rem !important;
+    padding-right: 0.5rem !important;
+    box-sizing: border-box !important;
+  }
+}
+
+/* 3. Limpeza total de sombras azuis em outros elementos */
+html:not(.dark) .hero-card-backlight,
+html:not(.dark) .widget-card-backlight {
+  display: none !important;
+}
+
+/* ── ⚡ MOTOR DE ANIMAÇÃO POR HARDWARE (CAPACITOR HIGH-PERFORMANCE) ── */
+.wesus-hardware-card {
+  will-change: transform, opacity !important;
+  transition: transform 0.18s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.18s ease-in-out !important;
+  transform: translate3d(0, 0, 0); /* Força isolamento de camada de renderização na GPU */
+}
+
+/* Estado de Saída (Fading out) */
+.wesus-exit-left {
+  transform: translate3d(-40px, 0, 0) !important;
+  opacity: 0 !important;
+}
+.wesus-exit-right {
+  transform: translate3d(40px, 0, 0) !important;
+  opacity: 0 !important;
+}
+
+/* Estado de Entrada Preparada (Invisible background staging) */
+.wesus-enter-left {
+  transform: translate3d(-40px, 0, 0) !important;
+  opacity: 0 !important;
+}
+.wesus-enter-right {
+  transform: translate3d(40px, 0, 0) !important;
+  opacity: 0 !important;
+}
+
+/* ── FIM DO PATCH ────────────────────────────────────────────────── */

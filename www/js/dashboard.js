@@ -80,7 +80,6 @@ const NavigationController = (() => {
   }
 
   function _switchTab(sectionName) {
-    // 1. Oculta as abas antigas e mostra a nova ativa
     document
       .querySelectorAll(".tab-content")
       .forEach((tab) => tab.classList.add("hidden"));
@@ -88,7 +87,6 @@ const NavigationController = (() => {
     const targetTab = document.getElementById(`tab-${sectionName}`);
     if (targetTab) targetTab.classList.remove("hidden");
 
-    // 2. 🔥 CORREÇÃO DEFINITIVA: Salto instantâneo puro ignorando o smooth scroll do CSS
     window.scrollTo({ top: 0, left: 0, behavior: "instant" });
 
     const mainContent = document.getElementById("mainContent");
@@ -96,7 +94,6 @@ const NavigationController = (() => {
       mainContent.scrollTo({ top: 0, left: 0, behavior: "instant" });
     }
 
-    // Alinha a tooltip se voltarmos ao painel principal
     if (
       sectionName === "dashboard" &&
       typeof ChartDataController !== "undefined"
@@ -257,7 +254,7 @@ const ChartDataController = (() => {
   return { init, alignTooltip };
 })();
 
-/* ── MOTOR DE GESTÃO DINÂMICA E ROTEAMENTO (V36 - 5 CONTRATOS) ── */
+/* ── MOTOR DE GESTÃO DINÂMICA, GESTOS E ANIMAÇÃO FLUIDA DE PORTFÓLIO ── */
 document.addEventListener("DOMContentLoaded", () => {
   const subtitle = document.getElementById("dashboardContractSubtitle");
   const prevBtn = document.getElementById("dashboardPrevContractBtn");
@@ -270,7 +267,11 @@ document.addEventListener("DOMContentLoaded", () => {
   const daysValue = document.getElementById("dynamicDaysValue");
   const chronoArc = document.getElementById("dynamicChronoArc");
 
-  if (!prevBtn || !nextBtn) return;
+  const swipeSection = document.querySelector(
+    'section[onclick*="navigateToContract"]',
+  );
+
+  if (!prevBtn || !nextBtn || !swipeSection) return;
 
   const portfolioContracts = [
     {
@@ -316,11 +317,22 @@ document.addEventListener("DOMContentLoaded", () => {
   ];
 
   let currentIndex = 0;
-  window.currentContractIndex = currentIndex; // Sincroniza o estado para o escopo nativo
+  window.currentContractIndex = currentIndex;
+
+  // 🎯 Captura os elementos físicos das vistas de dados para aplicar animação acelerada por hardware
+  const targetCards = [
+    swipeSection.querySelector(".lg\\:col-span-3 .hero-card-crystal"),
+    ...swipeSection.querySelectorAll("aside .hero-card-crystal"),
+  ].filter(Boolean);
+
+  // Injeta a classe base de hardware em todos os alvos mapeados
+  targetCards.forEach((card) => card.classList.add("wesus-hardware-card"));
+
+  let isAnimating = false;
 
   function renderContractState() {
     const data = portfolioContracts[currentIndex];
-    window.currentContractIndex = currentIndex; // Atualiza a cada clique de seta
+    window.currentContractIndex = currentIndex;
 
     if (subtitle)
       subtitle.textContent = `${data.building} (${currentIndex + 1} de ${
@@ -338,23 +350,135 @@ document.addEventListener("DOMContentLoaded", () => {
       typeof ChartDataController !== "undefined" &&
       ChartDataController.alignTooltip
     ) {
-      setTimeout(ChartDataController.alignTooltip, 40);
+      setTimeout(ChartDataController.alignTooltip, 20);
     }
   }
 
+  /* ── PIPELINE DE TRANSIÇÃO FLUIDA 60FPS (GPU DRIVEN) ── */
+  function triggerTransition(direction) {
+    if (isAnimating) return;
+    isAnimating = true;
+
+    const isNext = direction === "next";
+    const exitClass = isNext ? "wesus-exit-left" : "wesus-exit-right";
+    const enterClass = isNext ? "wesus-enter-right" : "wesus-enter-left";
+
+    // 1. Desliza e esmaece os elementos atuais para fora da tela
+    targetCards.forEach((card) => card.classList.add(exitClass));
+
+    // 2. No ápice da invisibilidade (180ms), fazemos o hot-swap de dados
+    setTimeout(() => {
+      if (isNext) {
+        currentIndex = (currentIndex + 1) % portfolioContracts.length;
+      } else {
+        currentIndex =
+          (currentIndex - 1 + portfolioContracts.length) %
+          portfolioContracts.length;
+      }
+      renderContractState();
+
+      // 3. Move os cards instantaneamente para o lado oposto (ainda invisíveis)
+      targetCards.forEach((card) => {
+        card.classList.remove(exitClass);
+        card.classList.add(enterClass);
+
+        // 🔥 TRUQUE DE ENGENHARIA SÉNIOR: Força reflow no DOM para registrar o posicionamento instantâneo
+        void card.offsetHeight;
+
+        // 4. Remove a classe de entrada, ativando a transição nativa de volta ao centro (transform: none)
+        card.classList.remove(enterClass);
+      });
+
+      // Libera a trava do motor após a estabilização completa do frame
+      setTimeout(() => {
+        isAnimating = false;
+      }, 180);
+    }, 180);
+  }
+
+  // Listeners das setas físicas integrados ao pipeline fluido
   nextBtn.addEventListener("click", (e) => {
     e.stopPropagation();
-    currentIndex = (currentIndex + 1) % portfolioContracts.length;
-    renderContractState();
+    triggerTransition("next");
   });
 
   prevBtn.addEventListener("click", (e) => {
     e.stopPropagation();
-    currentIndex =
-      (currentIndex - 1 + portfolioContracts.length) %
-      portfolioContracts.length;
-    renderContractState();
+    triggerTransition("prev");
   });
+
+  /* ── DETEÇÃO DE SWIPE AVANÇADA COM CONTROLO DE FILTRO DE INTENÇÃO ── */
+  let touchStartX = 0;
+  let touchStartY = 0;
+  let isSwipeDetected = false;
+
+  swipeSection.addEventListener(
+    "touchstart",
+    (e) => {
+      touchStartX = e.changedTouches[0].screenX;
+      touchStartY = e.changedTouches[0].screenY;
+      isSwipeDetected = false;
+    },
+    { passive: true },
+  );
+
+  swipeSection.addEventListener(
+    "touchmove",
+    (e) => {
+      const currentX = e.changedTouches[0].screenX;
+      const currentY = e.changedTouches[0].screenY;
+
+      const diffX = Math.abs(currentX - touchStartX);
+      const diffY = Math.abs(currentY - touchStartY);
+
+      // Se o arrasto horizontal for significativamente maior que o vertical,
+      // interceptamos o fluxo nativo assumindo paginação por gesto.
+      if (diffX > 30 && diffX > diffY) {
+        isSwipeDetected = true;
+      }
+    },
+    { passive: true },
+  );
+
+  swipeSection.addEventListener(
+    "touchend",
+    (e) => {
+      if (!isSwipeDetected) return;
+
+      const touchEndX = e.changedTouches[0].screenX;
+      const touchEndY = e.changedTouches[0].screenY;
+
+      const deltaX = touchEndX - touchStartX;
+      const deltaY = touchEndY - touchStartY;
+
+      const SWIPE_THRESHOLD = 45; // Sensibilidade de pixels para o app rodar ágil
+      const VERTICAL_LOCK = 50; // Margem contra movimentos diagonais erráticos
+
+      if (
+        Math.abs(deltaX) > SWIPE_THRESHOLD &&
+        Math.abs(deltaY) < VERTICAL_LOCK
+      ) {
+        if (deltaX < 0) {
+          triggerTransition("next");
+        } else {
+          triggerTransition("prev");
+        }
+      }
+    },
+    { passive: true },
+  );
+
+  // Camada protetora contra triggers acidentais do onclick nativo do card durante o swipe
+  swipeSection.addEventListener(
+    "click",
+    (e) => {
+      if (isSwipeDetected) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+    },
+    true,
+  );
 });
 
 /* 🔥 ROTEADOR PRE-CARREGADO COM ALVO DE SCROLL NATIVO (WHATSAPP PULSE) */
@@ -369,29 +493,67 @@ window.navigateToContract = () => {
   const currentIndex = window.currentContractIndex || 0;
   const targetId = contractMappingIds[currentIndex];
 
-  // 1. Aciona programaticamente a troca de abas do SPA para "Contratos"
   const documentosTabTrigger = document.querySelector(
     '[data-section="documentos"]',
   );
   if (documentosTabTrigger) documentosTabTrigger.click();
 
-  // 2. Aguarda a abertura da div oculta para calcular a física de rolagem suave
   setTimeout(() => {
     const targetCard = document.getElementById(targetId);
     if (targetCard) {
-      // Move o scroll centralizando o card perfeitamente na viewport do telemóvel
       targetCard.scrollIntoView({ behavior: "smooth", block: "center" });
-
-      // Injeta o efeito flash do WhatsApp
       targetCard.classList.add("contract-highlight-pulse");
 
-      // Destrói a classe após a animação de 2 segundos para liberar o efeito Tilt do Giroscópio
       setTimeout(() => {
         targetCard.classList.remove("contract-highlight-pulse");
       }, 2000);
     }
   }, 180);
 };
+
+/* ── COMING SOON POPUP CONTROLLER ────────────────────────── */
+const ComingSoonController = (() => {
+  function init() {
+    const popup = document.getElementById("wesusComingSoonPopup");
+    const backdrop = document.getElementById("wesusComingSoonBackdrop");
+    const closeBtn = document.getElementById("wesusClosePopupBtn");
+
+    if (!popup) return;
+
+    const showPopup = (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      popup.classList.add("active");
+    };
+
+    const hidePopup = (e) => {
+      if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+      popup.classList.remove("active");
+    };
+
+    // Fechar ao clicar no botão ou no fundo
+    closeBtn.addEventListener("click", hidePopup);
+    backdrop.addEventListener("click", hidePopup);
+
+    // 🔥 CORREÇÃO: Ignora o botão do WhatsApp E o próprio botão de fechar o popup!
+    const actionButtons = document.querySelectorAll(
+      ".btn-gold-lingot:not(.btn-emerald-lingot):not(#wesusClosePopupBtn)",
+    );
+
+    actionButtons.forEach((btn) => {
+      btn.addEventListener("click", showPopup);
+    });
+  }
+
+  return { init };
+})();
+
+document.addEventListener("DOMContentLoaded", () => {
+  ComingSoonController.init();
+});
 
 /* ── ENTRY POINT ──────────────────────────────────────────── */
 document.addEventListener("DOMContentLoaded", () => {

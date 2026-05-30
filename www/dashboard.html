@@ -19,72 +19,25 @@
 
   <link rel="preload" as="style" href="css/output-dashboard.css" />
   <link rel="stylesheet" href="css/output-dashboard.css" />
+  <link rel="stylesheet" href="css/light-mode-patch.css" />
 
   <style>
-    /* ─────────────────────────────────────────────────────────────
-   PATCH CRISTAL PREMIUM V36 - SILK PLATINUM & CHAMPAGNE EDGE
-   Bordas de Alta Definição + Máximo Contraste + 100% Estático GPU
-   ───────────────────────────────────────────────────────────── */
-    html,
-    body {
+    html.dark,
+    html.dark body {
       background-color: #0B1F3A !important;
-      /* Cor exata do login */
       height: 100%;
       margin: 0;
     }
 
-    @media (max-width: 1023px) {
-
-      .hero-card-backlight,
-      .widget-card-backlight,
-      .widget-backlight-champagne {
-        display: none !important;
-      }
-
-      section[aria-labelledby="patrimonyHeading"] .hero-card-crystal,
-      section[aria-label="Oportunidades Exclusivas"] .hero-card-crystal,
-      .hero-card-crystal {
-        will-change: transform !important;
-        transform: translateZ(0);
-        backface-visibility: hidden !important;
-        perspective: 1000px !important;
-        overflow: hidden !important;
-        backdrop-filter: blur(20px) saturate(180%) !important;
-        -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
-        border: 2.2px solid transparent !important;
-
-        background:
-          linear-gradient(135deg, rgba(11, 31, 58, 0.85), rgba(7, 19, 38, 0.94) 50%, rgba(11, 31, 58, 0.82)) padding-box,
-          linear-gradient(145deg,
-            rgba(255, 255, 255, 0.38) 0%,
-            rgba(255, 255, 255, 0.04) 35%,
-            rgba(197, 160, 89, 0.12) 70%,
-            rgba(232, 208, 141, 0.35) 100%) border-box !important;
-
-        background-clip: padding-box, border-box !important;
-        background-origin: padding-box, border-box !important;
-        background-size: auto, 100% 100% !important;
-        box-shadow: 0 22px 45px -12px rgba(0, 0, 0, 0.65) !important;
-      }
-
-      .hero-card-crystal:after {
-        content: "" !important;
-        position: absolute !important;
-        inset: 0 !important;
-        background: linear-gradient(115deg,
-            transparent 42%,
-            rgba(255, 255, 255, 0.01) 47%,
-            rgba(255, 255, 255, 0.04) 50%,
-            rgba(255, 255, 255, 0.01) 53%,
-            transparent 58%) !important;
-        pointer-events: none !important;
-        z-index: 2 !important;
-      }
-
-      .hero-card-crystal:before {
-        display: none !important;
-      }
+    html:not(.dark),
+    html:not(.dark) body {
+      background-color: #EDE9E1 !important;
+      height: 100%;
+      margin: 0;
     }
+
+
+
 
     ::-webkit-scrollbar {
       display: none !important;
@@ -197,7 +150,7 @@
       box-shadow: 0 0 15px rgba(197, 160, 89, 0.08) !important;
     }
 
-    .premium-field-input:disabled {
+    html.dark .premium-field-input:disabled {
       background: rgba(255, 255, 255, 0.02) !important;
       border-color: rgba(255, 255, 255, 0.04) !important;
       color: rgba(255, 255, 255, 0.3) !important;
@@ -219,8 +172,8 @@
     }
 
     /* ─────────────────────────────────────────────────────────────
-       SISTEMA DE HIGHLIGHT EXCLUSIVO (ESTILO WHATSAPP DE PRECISÃO)
-       ───────────────────────────────────────────────────────────── */
+  SISTEMA DE HIGHLIGHT EXCLUSIVO (ESTILO WHATSAPP DE PRECISÃO)
+  ───────────────────────────────────────────────────────────── */
     @keyframes whatsappFlashEffect {
 
       0%,
@@ -238,12 +191,6 @@
     .contract-highlight-pulse {
       animation: whatsappFlashEffect 2s cubic-bezier(0.25, 1, 0.5, 1) forwards !important;
       z-index: 40 !important;
-    }
-
-    .premium-field-input:disabled {
-      background: rgba(255, 255, 255, 0.02) !important;
-      border-color: rgba(255, 255, 255, 0.04) !important;
-      color: rgba(255, 255, 255, 0.3) !important;
     }
 
     .premium-toggle-container {
@@ -290,6 +237,34 @@
       background-color: #6FCF97 !important;
       filter: drop-shadow(0 0 4px rgba(111, 207, 151, 0.6)) !important;
     }
+
+    .wesus-popup-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .wesus-popup-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .wesus-popup-card {
+      transform: scale(0.90);
+      transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+      padding: 4rem 2.2rem 2.2rem 2.2rem !important;
+      margin-top: 2rem !important;
+    }
+
+    .wesus-popup-overlay.active .wesus-popup-card {
+      transform: scale(1);
+    }
   </style>
 </head>
 
@@ -303,7 +278,8 @@
     <aside class="sidebar hidden lg:flex flex-col w-64 shrink-0 border-r border-white/10 dark:border-white/10 z-30">
       <div class="sidebar-logo flex items-center justify-center -mb-10">
         <img src="img/logo-its-wesus-branco.webp" width="250" height="250" alt="It's Wesus" class="hidden dark:block w-full max-w-[250px] h-auto object-contain drop-shadow-md lg:-mb-8 lg:-mt-12" />
-        <img src="img/logo-its-wesus-azul.webp" width="250" height="250" alt="It's Wesus" class="block dark:hidden w-full max-w-[250px] h-auto object-contain drop-shadow-md " />
+
+        <img src="img/logo-its-wesus-dourado.webp" width="250" height="250" alt="It's Wesus" class="block dark:hidden w-full max-w-[250px] h-auto object-contain drop-shadow-md lg:-mb-8 lg:-mt-12 opacity-70" />
       </div>
 
       <nav class="flex-1 px-3 py-6 space-y-1 overflow-y-auto" aria-label="Navegação principal">
@@ -392,7 +368,10 @@
 
                 <div class="hidden lg:flex hero-logo-wrapper select-none">
                   <div class="hero-logo-glow" aria-hidden="true"></div>
-                  <img src="img/logo-its-wesus-hero.webp" width="352" height="352" alt="It's Wesus Premium" class="h-full w-auto object-contain object-right opacity-60" aria-hidden="true" />
+
+                  <img src="img/logo-its-wesus-hero.webp" width="352" height="352" alt="It's Wesus Premium" class="hidden dark:block h-full w-auto object-contain object-right opacity-60" aria-hidden="true" />
+
+                  <img src="img/logo-its-wesus-dourado-hero.webp" width="352" height="352" alt="It's Wesus Premium" class="block dark:hidden h-full w-auto object-contain object-right opacity-60" aria-hidden="true" />
                 </div>
 
                 <div class="relative z-10 text-center lg:text-start">
@@ -821,20 +800,11 @@
                   </p>
                 </div>
 
-                <div class="relative z-10 flex flex-row gap-6 sm:gap-10 border-t border-b sm:border-b-0 sm:border-t-0 sm:border-l border-white/10 py-4 sm:py-0 px-2 sm:px-8 shrink-0 justify-center items-center select-none">
-                  <div class="flex flex-col items-center sm:items-start">
-                    <p class="text-[8px] tracking-widest text-white/40 uppercase font-semibold mb-1">Retorno Fixo</p>
-                    <p class="text-2xl lg:text-3xl font-bold font-inter metric-pop-value leading-none">10%</p>
-                  </div>
-                  <div class="flex flex-col items-center sm:items-start">
-                    <p class="text-[8px] tracking-widest text-white/40 uppercase font-semibold mb-1">Prazo</p>
-                    <p class="text-2xl lg:text-3xl font-bold font-inter metric-pop-value leading-none">3 <span class="text-xs text-[#E8D08D] font-medium tracking-normal -ml-1">Meses</span></p>
-                  </div>
-                </div>
+
 
                 <div class="w-full xl:w-auto flex justify-center shrink-0 z-10">
                   <button class="w-full xl:w-auto btn-gold-lingot" style="color: #ffffff !important;">
-                    Solicitar Acesso
+                    Investir Já
                   </button>
                 </div>
               </div>
@@ -846,7 +816,7 @@
             <header class="flex flex-col lg:flex-row lg:items-end justify-between gap-2 lg:gap-4 mb-2 relative">
               <div class="flex lg:hidden items-center justify-center" style="margin-top: -1.5rem;">
                 <img src="img/logo-its-wesus-branco.webp" fetchpriority="high" width="250" height="250" alt="It's Wesus" class="img-mobile hidden dark:block w-full max-w-[250px] h-auto object-contain drop-shadow-md lg:-mb-8 lg:-mt-12" />
-                <img src="img/logo-its-wesus-azul.webp" fetchpriority="high" width="160" height="64" alt="It's Wesus" class="img-mobile block dark:hidden w-auto h-16 object-contain drop-shadow-md" />
+                <img src="img/logo-its-wesus-dourado.webp" lighten fetchpriority="high" width="160" height="64" alt="It's Wesus" class="img-mobile block dark:hidden w-auto h-16 object-contain drop-shadow-md" />
               </div>
 
               <div class="flex flex-col items-center lg:items-start text-center lg:text-left -mt-16 lg:-mt-0 w-full">
@@ -893,7 +863,7 @@
                   </div>
 
                   <div class="w-full relative z-10 select-none">
-                    <button class="w-full btn-gold-lingot !py-3 !text-[10px]" style="color: #ffffff !important;">Alocar Capital</button>
+                    <button class="w-full btn-gold-lingot !py-3 !text-[10px]" style="color: #ffffff !important;">Investir Já</button>
                   </div>
                 </div>
 
@@ -930,7 +900,7 @@
                   </div>
 
                   <div class="w-full relative z-10 select-none">
-                    <button class="w-full btn-gold-lingot !py-3 !text-[10px]" style="color: #ffffff !important; background: linear-gradient(135deg, #e8d08d, #c5a059); border-color: rgba(70, 55, 34, 0.5);">Alocar Capital</button>
+                    <button class="w-full btn-gold-lingot !py-3 !text-[10px]" style="color: #ffffff !important; background: linear-gradient(135deg, #e8d08d, #c5a059); border-color: rgba(70, 55, 34, 0.5);">Investir Já</button>
                   </div>
                 </div>
 
@@ -968,7 +938,7 @@
                   </div>
 
                   <div class="w-full relative z-10 select-none">
-                    <button class="w-full btn-gold-lingot !py-3 !text-[10px]" style="color: #ffffff !important;">Alocar Capital</button>
+                    <button class="w-full btn-gold-lingot !py-3 !text-[10px]" style="color: #ffffff !important;">Investir Já</button>
                   </div>
                 </div>
 
@@ -1018,20 +988,11 @@
                   </p>
                 </div>
 
-                <div class="relative z-10 flex flex-row gap-6 sm:gap-10 border-t border-b sm:border-b-0 sm:border-t-0 sm:border-l border-white/10 py-4 sm:py-0 px-2 sm:px-8 shrink-0 justify-center items-center select-none">
-                  <div class="flex flex-col items-center sm:items-start">
-                    <p class="text-[8px] tracking-widest text-white/40 uppercase font-semibold mb-1">Retorno Fixo</p>
-                    <p class="text-2xl lg:text-3xl font-bold font-inter metric-pop-value leading-none">10%</p>
-                  </div>
-                  <div class="flex flex-col items-center sm:items-start">
-                    <p class="text-[8px] tracking-widest text-white/40 uppercase font-semibold mb-1">Prazo</p>
-                    <p class="text-2xl lg:text-3xl font-bold font-inter metric-pop-value leading-none">3 <span class="text-xs text-[#E8D08D] font-medium tracking-normal -ml-1">Meses</span></p>
-                  </div>
-                </div>
+
 
                 <div class="w-full xl:w-auto flex justify-center shrink-0 z-10">
-                  <button class="w-full xl:w-auto btn-gold-lingot">
-                    Solicitar Acesso
+                  <button class="w-full xl:w-auto btn-gold-lingot" style="color: #ffffff !important;">
+                    Investir Já
                   </button>
                 </div>
               </div>
@@ -1043,7 +1004,7 @@
             <header class="contracts-desktop-enxuto flex flex-col lg:flex-row lg:items-end justify-between gap-2 lg:gap-4 mb-2 relative" style="margin-bottom: 3rem;">
               <div class="flex lg:hidden items-center justify-center" style="margin-top: -1.5rem;">
                 <img src="img/logo-its-wesus-branco.webp" fetchpriority="high" width="250" height="250" alt="It's Wesus" class="img-mobile hidden dark:block w-full max-w-[250px] h-auto object-contain drop-shadow-md lg:-mb-8 lg:-mt-12" />
-                <img src="img/logo-its-wesus-azul.webp" fetchpriority="high" width="160" height="64" alt="It's Wesus" class="block dark:hidden w-auto h-16 object-contain drop-shadow-md img-mobile" />
+                <img src="img/logo-its-wesus-dourado.webp" fetchpriority="high" width="160" height="64" alt="It's Wesus" class="block dark:hidden w-auto h-16 object-contain drop-shadow-md img-mobile" />
               </div>
 
               <div class="flex flex-col items-center lg:items-start text-center lg:text-left -mt-16 lg:-mt-0 w-full">
@@ -1297,7 +1258,7 @@
             <header style="max-width: 1050px; margin: 0 auto 3.5rem auto;" class="flex flex-col lg:flex-row lg:items-end justify-between gap-2 lg:gap-4 mb-2 relative">
               <div class="flex lg:hidden items-center justify-center" style="margin-top: -1.5rem;">
                 <img src="img/logo-its-wesus-branco.webp" width="250" height="250" alt="It's Wesus" class="img-mobile hidden dark:block w-full max-w-[250px] h-auto object-contain drop-shadow-md lg:-mb-8 lg:-mt-12" />
-                <img src="img/logo-its-wesus-azul.webp" width="160" height="64" alt="It's Wesus" class="img-mobile block dark:hidden w-auto h-16 object-contain drop-shadow-md" />
+                <img src="img/logo-its-wesus-dourado.webp" width="160" height="64" alt="It's Wesus" class="img-mobile block dark:hidden w-auto h-16 object-contain drop-shadow-md" />
               </div>
 
               <div class="flex flex-col items-center lg:items-start text-center lg:text-left -mt-16 lg:-mt-0 w-full">
@@ -1550,6 +1511,23 @@
       <span class="bottom-nav-label">Conta</span>
     </a>
   </nav>
+
+  <div id="wesusComingSoonPopup" class="wesus-popup-overlay">
+    <div id="wesusComingSoonBackdrop" class="absolute inset-0 bg-[#071326]/80 backdrop-blur-md cursor-pointer"></div>
+
+    <div class="wesus-popup-card hero-card-crystal relative z-10 rounded-3xl w-[90%] max-w-sm flex flex-col items-center text-center">
+
+      <div class="absolute -top-8 left-1/2 -translate-x-1/2 icon-badge-shield w-16 h-16 rounded-[1.25rem] flex items-center justify-center text-[#E8D08D] bg-[#071326] shadow-xl border border-[#C5A059]/40">
+      </div>
+
+      <h3 class="font-playfair font-bold text-2xl text-white tracking-wide mb-3">Em Breve</h3>
+      <p class="text-[13px] text-white/70 font-inter !mb-8 leading-relaxed">Esta funcionalidade estará disponível numa futura atualização do portal.</p>
+
+      <button id="wesusClosePopupBtn" class="btn-gold-lingot w-full !text-[11px] font-bold tracking-[0.15em] uppercase" style="color: #ffffff !important;">
+        Compreendido
+      </button>
+    </div>
+  </div>
 
   <script src="js/dashboard.js" defer></script>
 </body>
