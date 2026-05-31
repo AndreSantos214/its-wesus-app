@@ -176,15 +176,21 @@ const BalanceVisibility = (() => {
     SELECTORS.forEach((sel) => {
       const el = document.querySelector(sel);
       if (!el) return;
+
+      // Adiciona transição suave para o efeito de desfoque
+      el.style.transition = "filter 0.3s cubic-bezier(0.4, 0, 0.2, 1)";
+
       if (isVisible) {
         if (originals.has(el)) {
           el.textContent = originals.get(el);
           el.style.letterSpacing = "";
+          el.style.filter = ""; // Remove o desfoque
         }
       } else {
         if (!originals.has(el)) originals.set(el, el.textContent.trim());
         el.textContent = MASK;
         el.style.letterSpacing = "0.15em";
+        el.style.filter = "blur(10px)"; // Aplica o desfoque premium
       }
     });
   }
@@ -194,9 +200,17 @@ const BalanceVisibility = (() => {
       const el = document.querySelector(sel);
       if (el) originals.set(el, el.textContent.trim());
     });
-    document
-      .querySelectorAll(".header-action-btn")
-      .forEach((btn) => btn.addEventListener("click", toggle));
+
+    // 🔥 CORREÇÃO: Altera para escutar a classe real do botão (.button-eye)
+    document.querySelectorAll(".button-eye").forEach((btn) => {
+      btn.addEventListener("click", (e) => {
+        e.preventDefault();
+        toggle();
+
+        // Feedback visual no botão de vidro: fica semi-transparente se oculto
+        btn.style.opacity = isVisible ? "1" : "0.4";
+      });
+    });
   }
   return { init };
 })();

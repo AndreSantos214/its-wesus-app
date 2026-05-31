@@ -7,14 +7,11 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <title>It's Wesus – Portal do Investidor</title>
-
   <meta name="description" content="Portal exclusivo de investimentos privados It's Wesus. Acompanhe os seus rendimentos e portfólio restrito." />
-
   <meta name="mobile-web-app-capable" content="yes">
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" media="print" onload="this.media='all'" />
 
   <link rel="preload" as="style" href="css/output-dashboard.css" />
@@ -22,6 +19,10 @@
   <link rel="stylesheet" href="css/light-mode-patch.css" />
 
   <style>
+    /* ═══════════════════════════════════════════════════════════════
+       BLOCO 1 — TEMA BASE (html/body)
+       Escopo: Ambos os modos de cor
+    ═══════════════════════════════════════════════════════════════ */
     html.dark,
     html.dark body {
       background-color: #0B1F3A !important;
@@ -36,100 +37,13 @@
       margin: 0;
     }
 
-    /* ─────────────────────────────────────────────────────────────
-   PATCH CRISTAL PREMIUM V8 - SILK PLATINUM & CHAMPAGNE EDGE
-   Bordas de Alta Definição + Máximo Contraste + 100% Estático GPU
-   ───────────────────────────────────────────────────────────── */
 
-    @media (max-width: 1023px) {
+    /* ═══════════════════════════════════════════════════════════════
+       BLOCO 2 — SUPRESSÃO GLOBAL (sem escopo de breakpoint)
+       Scrollbars, seleção de texto, touch callout
+    ═══════════════════════════════════════════════════════════════ */
 
-      /* 🔥 CORREÇÃO DA COISA ESTRANHA (image_f68f34.png): Purifica o canvas inferior do mobile */
-      body {
-        background-image: none !important;
-        background-color: #0B1F3A !important;
-      }
-
-      /* Estanca qualquer herança residual de overlays fixos da tela de login */
-      body::before {
-        display: none !important;
-        content: none !important;
-      }
-
-      .app-root {
-        background-image: none !important;
-        background-color: #0B1F3A !important;
-      }
-
-      /* 1. Manter auras traseiras desligadas para performance pura */
-      .hero-card-backlight,
-      .widget-card-backlight,
-      .widget-backlight-champagne {
-        display: none !important;
-      }
-
-      /* 2. Otimização de Contraste e Lapidação do Vidro */
-      section[aria-labelledby="patrimonyHeading"] .hero-card-crystal,
-      section[aria-label="Oportunidades Exclusivas"] .hero-card-crystal,
-      .hero-card-crystal {
-        will-change: transform !important;
-        transform: translateZ(0);
-        backface-visibility: hidden !important;
-        perspective: 1000px !important;
-        overflow: hidden !important;
-
-        /* Desfoque luxuoso da V4 preservado */
-        backdrop-filter: blur(20px) saturate(180%) !important;
-        -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
-
-        /* Espessura perfeita de fio de cristal */
-        border: 2.2px solid transparent !important;
-
-        /* GRADIENTE LINEAR ASSIMÉTRICO: Platina no topo, Champagne na base */
-        background:
-          /* Fundo Escuro Corporativo Premium da V4 */
-          linear-gradient(135deg, rgba(11, 31, 58, 0.85), rgba(7, 19, 38, 0.94) 50%, rgba(11, 31, 58, 0.82)) padding-box,
-          /* Transição linear suave que imita iluminação real de estúdio */
-          linear-gradient(145deg,
-            rgba(255, 255, 255, 0.38) 0%,
-            /* Brilho platina nítido no canto superior esquerdo */
-            rgba(255, 255, 255, 0.04) 35%,
-            /* Transparência elegante no corpo do card */
-            rgba(197, 160, 89, 0.12) 70%,
-            /* Sopro sutil de dourado Wesus na transição */
-            rgba(232, 208, 141, 0.35) 100%
-            /* Toque final champagne no canto inferior direito */
-          ) border-box !important;
-
-        background-clip: padding-box, border-box !important;
-        background-origin: padding-box, border-box !important;
-        background-size: auto, 100% 100% !important;
-
-        box-shadow: 0 22px 45px -12px rgba(0, 0, 0, 0.65) !important;
-      }
-
-      /* 3. Linha de reflexo interna diagonal (Suave e Invisível no scroll rápido) */
-      .hero-card-crystal:after {
-        content: "" !important;
-        position: absolute !important;
-        inset: 0 !important;
-        background: linear-gradient(115deg,
-            transparent 42%,
-            rgba(255, 255, 255, 0.01) 47%,
-            rgba(255, 255, 255, 0.04) 50%,
-            /* Linha de luz branca cristalina interna */
-            rgba(255, 255, 255, 0.01) 53%,
-            transparent 58%) !important;
-        pointer-events: none !important;
-        z-index: 2 !important;
-      }
-
-      .hero-card-crystal:before {
-        display: none !important;
-      }
-    }
-
-    /* 4. ELIMINAR TOTALMENTE AS BARRAS DE ROLAGEM (Mobile/Capacitor) */
-    /* Remove o rastro visual do scroll em qualquer div ou carrossel */
+    /* 2a. Scrollbars invisíveis em todos os contextos */
     ::-webkit-scrollbar {
       display: none !important;
       width: 0 !important;
@@ -141,33 +55,109 @@
     #mainContent,
     .assets-carousel {
       -ms-overflow-style: none !important;
-      /* IE/Edge */
       scrollbar-width: none !important;
-      /* Firefox */
     }
 
-    /* 5. BLOQUEIO ABSOLUTO DE SELEÇÃO DE TEXTO (Previne pegas congeladas) */
-    /* Força o override das classes "select-all" antigas apenas no ambiente mobile */
-    *,
-    .select-all {
+    /* 2b. Bloqueio de seleção de texto e touch callout nativo */
+    * {
       -webkit-user-select: none !important;
       -moz-user-select: none !important;
       -ms-user-select: none !important;
       user-select: none !important;
-
-      /* DESATIVAR POPUPS NATIVOS: Impede o iOS/Android de abrir o menu */
-      /* de "Copiar/Definir" ou a lupa de zoom ao pressionar o dedo */
       -webkit-touch-callout: none !important;
     }
 
-    /* Permite seleção apenas no saldo principal para fins de cópia do investidor */
+    /* 2c. Exceção: saldo principal permits seleção para cópia */
     #patrimonyHeading,
     .select-all {
       -webkit-user-select: text !important;
       user-select: text !important;
     }
 
+
+    /* ═══════════════════════════════════════════════════════════════
+       BLOCO 3 — MOBILE ONLY  (max-width: 1023px)
+       PATCH CRISTAL PREMIUM V8 — Silk Platinum & Champagne Edge
+    ═══════════════════════════════════════════════════════════════ */
+    @media (max-width: 1023px) {
+
+      /* 3a. Purifica o canvas do body */
+      body {
+        background-image: none !important;
+        background-color: #0B1F3A !important;
+      }
+
+      body::before {
+        display: none !important;
+        content: none !important;
+      }
+
+      .app-root {
+        background-image: none !important;
+        background-color: #0B1F3A !important;
+      }
+
+      /* 3b. Desliga auras traseiras para performance pura */
+      .hero-card-backlight,
+      .widget-card-backlight,
+      .widget-backlight-champagne {
+        display: none !important;
+      }
+
+      /* 3c. Vidro cristal — GPU acelerado com borda Platina/Champagne */
+      section[aria-labelledby="patrimonyHeading"] .hero-card-crystal,
+      section[aria-label="Oportunidades Exclusivas"] .hero-card-crystal,
+      .hero-card-crystal {
+        will-change: transform !important;
+        transform: translateZ(0);
+        backface-visibility: hidden !important;
+        perspective: 1000px !important;
+        overflow: hidden !important;
+        backdrop-filter: blur(20px) saturate(180%) !important;
+        -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+        border: 2.2px solid transparent !important;
+        background:
+          linear-gradient(135deg, rgba(11, 31, 58, 0.85), rgba(7, 19, 38, 0.94) 50%, rgba(11, 31, 58, 0.82)) padding-box,
+          linear-gradient(145deg,
+            rgba(255, 255, 255, 0.38) 0%,
+            rgba(255, 255, 255, 0.04) 35%,
+            rgba(197, 160, 89, 0.12) 70%,
+            rgba(232, 208, 141, 0.35) 100%) border-box !important;
+        background-clip: padding-box, border-box !important;
+        background-origin: padding-box, border-box !important;
+        background-size: auto, 100% 100% !important;
+        box-shadow: 0 22px 45px -12px rgba(0, 0, 0, 0.65) !important;
+      }
+
+      /* 3d. Linha de reflexo interna diagonal */
+      .hero-card-crystal::after {
+        content: "" !important;
+        position: absolute !important;
+        inset: 0 !important;
+        background: linear-gradient(115deg,
+            transparent 42%,
+            rgba(255, 255, 255, 0.01) 47%,
+            rgba(255, 255, 255, 0.04) 50%,
+            rgba(255, 255, 255, 0.01) 53%,
+            transparent 58%) !important;
+        pointer-events: none !important;
+        z-index: 2 !important;
+      }
+
+      .hero-card-crystal::before {
+        display: none !important;
+      }
+
+    }
+
+
+    /* ═══════════════════════════════════════════════════════════════
+       BLOCO 4 — DESKTOP ONLY  (min-width: 1024px)
+       Overrides de grid + layout de conta premium
+    ═══════════════════════════════════════════════════════════════ */
     @media (min-width: 1024px) {
+
+      /* 4a. Utilitários de grid */
       .lg\:grid-cols-12 {
         grid-template-columns: repeat(12, minmax(0, 1fr)) !important;
       }
@@ -196,14 +186,14 @@
         margin-top: 0 !important;
       }
 
+      /* 4b. Contratos desktop */
       .contracts-desktop-enxuto {
         max-width: 1000px !important;
         margin-left: auto !important;
         margin-right: auto !important;
       }
-    }
 
-    @media (min-width: 1024px) {
+      /* 4c. Grid de conta premium */
       .premium-account-grid {
         display: grid !important;
         grid-template-columns: 1.25fr 1fr !important;
@@ -212,7 +202,13 @@
         margin: 0 auto !important;
         width: 100% !important;
       }
+
     }
+
+
+    /* ═══════════════════════════════════════════════════════════════
+       BLOCO 5 — COMPONENTES DE CONTA / PERFIL
+    ═══════════════════════════════════════════════════════════════ */
 
     .premium-avatar-lock {
       width: 96px !important;
@@ -238,10 +234,10 @@
 
     .premium-field-input {
       width: 100% !important;
-      background: rgba(7, 19, 38, 0.4) !important;
-      border: 1px solid rgba(255, 255, 255, 0.08) !important;
-      border-radius: 0.85rem !important;
       padding: 0.95rem 1.2rem !important;
+      border-radius: 0.85rem !important;
+      border: 1px solid rgba(255, 255, 255, 0.08) !important;
+      background: rgba(7, 19, 38, 0.4) !important;
       color: #ffffff !important;
       font-size: 0.85rem !important;
       font-family: 'Inter', sans-serif !important;
@@ -261,42 +257,10 @@
       color: rgba(255, 255, 255, 0.3) !important;
     }
 
-    /* Botão Lingote Esmeralda Customizado para WhatsApp */
-    .btn-emerald-lingot {
-      background: linear-gradient(135deg, #0b663b 0%, #118f52 45%, #0a5c35 75%, #05301b 100%) !important;
-      border: 1px solid rgba(17, 143, 82, 0.4) !important;
-      box-shadow: 0 12px 24px -6px rgba(0, 0, 0, 0.6),
-        0 4px 12px -2px rgba(17, 143, 82, 0.3),
-        inset 0 1.5px 1.5px rgba(255, 255, 255, 0.25),
-        inset 0 -1.5px 2px rgba(0, 0, 0, 0.35) !important;
-    }
 
-    .btn-emerald-lingot:hover {
-      filter: brightness(1.1) drop-shadow(0 0 14px rgba(17, 143, 82, 0.3));
-      transform: translateY(-2px) scale(1.01) translateZ(0);
-    }
-
-    /* ─────────────────────────────────────────────────────────────
-  SISTEMA DE HIGHLIGHT EXCLUSIVO (ESTILO WHATSAPP DE PRECISÃO)
-  ───────────────────────────────────────────────────────────── */
-    @keyframes whatsappFlashEffect {
-
-      0%,
-      20% {
-        box-shadow: 0 0 0 3px rgba(111, 207, 151, 0.85), 0 0 25px rgba(111, 207, 151, 0.5) !important;
-        transform: scale(1.012) translateZ(0);
-      }
-
-      100% {
-        box-shadow: 0 22px 45px -12px rgba(0, 0, 0, 0.65) !important;
-        transform: scale(1) translateZ(0);
-      }
-    }
-
-    .contract-highlight-pulse {
-      animation: whatsappFlashEffect 2s cubic-bezier(0.25, 1, 0.5, 1) forwards !important;
-      z-index: 40 !important;
-    }
+    /* ═══════════════════════════════════════════════════════════════
+       BLOCO 6 — TOGGLE PREMIUM
+    ═══════════════════════════════════════════════════════════════ */
 
     .premium-toggle-container {
       position: relative !important;
@@ -312,23 +276,23 @@
 
     .premium-toggle-slider {
       position: absolute !important;
-      cursor: pointer !important;
       inset: 0 !important;
-      background-color: rgba(255, 255, 255, 0.06) !important;
-      border: 1px solid rgba(255, 255, 255, 0.1) !important;
       border-radius: 34px !important;
+      border: 1px solid rgba(255, 255, 255, 0.1) !important;
+      background-color: rgba(255, 255, 255, 0.06) !important;
+      cursor: pointer !important;
       transition: cubic-bezier(0.4, 0, 0.2, 1) 0.3s !important;
     }
 
-    .premium-toggle-slider:before {
+    .premium-toggle-slider::before {
       position: absolute !important;
       content: "" !important;
+      bottom: 3px !important;
+      left: 3px !important;
       height: 14px !important;
       width: 14px !important;
-      left: 3px !important;
-      bottom: 3px !important;
-      background-color: rgba(255, 255, 255, 0.4) !important;
       border-radius: 50% !important;
+      background-color: rgba(255, 255, 255, 0.4) !important;
       transition: cubic-bezier(0.4, 0, 0.2, 1) 0.3s !important;
     }
 
@@ -337,11 +301,40 @@
       border-color: rgba(111, 207, 151, 0.3) !important;
     }
 
-    .premium-toggle-input:checked+.premium-toggle-slider:before {
+    .premium-toggle-input:checked+.premium-toggle-slider::before {
       transform: translateX(20px) !important;
       background-color: #6FCF97 !important;
       filter: drop-shadow(0 0 4px rgba(111, 207, 151, 0.6)) !important;
     }
+
+
+    /* ═══════════════════════════════════════════════════════════════
+       BLOCO 7 — BOTÃO WHATSAPP (Lingote Esmeralda)
+    ═══════════════════════════════════════════════════════════════ */
+
+    .btn-emerald-lingot {
+      background: linear-gradient(135deg,
+          #0b663b 0%,
+          #118f52 45%,
+          #0a5c35 75%,
+          #05301b 100%) !important;
+      border: 1px solid rgba(17, 143, 82, 0.4) !important;
+      box-shadow:
+        0 12px 24px -6px rgba(0, 0, 0, 0.6),
+        0 4px 12px -2px rgba(17, 143, 82, 0.3),
+        inset 0 1.5px 1.5px rgba(255, 255, 255, 0.25),
+        inset 0 -1.5px 2px rgba(0, 0, 0, 0.35) !important;
+    }
+
+    .btn-emerald-lingot:hover {
+      filter: brightness(1.1) drop-shadow(0 0 14px rgba(17, 143, 82, 0.3));
+      transform: translateY(-2px) scale(1.01) translateZ(0);
+    }
+
+
+    /* ═══════════════════════════════════════════════════════════════
+       BLOCO 8 — POPUP "EM BREVE" (Wesus Coming Soon)
+    ═══════════════════════════════════════════════════════════════ */
 
     .wesus-popup-overlay {
       position: fixed;
@@ -361,14 +354,387 @@
     }
 
     .wesus-popup-card {
-      transform: scale(0.90);
-      transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
       padding: 4rem 2.2rem 2.2rem 2.2rem !important;
       margin-top: 2rem !important;
+      transform: scale(0.90);
+      transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
     }
 
     .wesus-popup-overlay.active .wesus-popup-card {
       transform: scale(1);
+    }
+
+
+    /* ═══════════════════════════════════════════════════════════════
+       BLOCO 9 — ANIMAÇÃO DE HIGHLIGHT DE CONTRATO
+    ═══════════════════════════════════════════════════════════════ */
+
+    @keyframes whatsappFlashEffect {
+
+      0%,
+      20% {
+        box-shadow: 0 0 0 3px rgba(111, 207, 151, 0.85), 0 0 25px rgba(111, 207, 151, 0.5) !important;
+        transform: scale(1.012) translateZ(0);
+      }
+
+      100% {
+        box-shadow: 0 22px 45px -12px rgba(0, 0, 0, 0.65) !important;
+        transform: scale(1) translateZ(0);
+      }
+    }
+
+    .contract-highlight-pulse {
+      animation: whatsappFlashEffect 2s cubic-bezier(0.25, 1, 0.5, 1) forwards !important;
+      z-index: 40 !important;
+    }
+
+
+    /* ═══════════════════════════════════════════════════════════════
+       BLOCO 10 — ESTILOS EXTRAÍDOS DOS ATRIBUTOS INLINE DO BODY
+       Sub-blocos organizados por componente/secção
+    ═══════════════════════════════════════════════════════════════ */
+
+    /* 10a. Carrossel de assets — espaçamento vertical */
+    .assets-carousel-spacing {
+      padding-top: 4px !important;
+      padding-bottom: 4px !important;
+      margin-bottom: 0px !important;
+    }
+
+    /* 10b. Cards de carrossel — sombra limpa (override da classe base) */
+    .carousel-asset-card-clean {
+      box-shadow: none !important;
+    }
+
+    /* 10c. Navegação de contratos — espaçamento de secção */
+    .contracts-nav-wrapper {
+      margin-top: 2rem;
+      margin-bottom: -0.5rem;
+    }
+
+    /* 10d. Cabeçalho de conta premium — max-width e margem */
+    .premium-account-header {
+      max-width: 1050px;
+      margin: 0 auto 3.5rem auto;
+    }
+
+    /* 10e. Cabeçalho de contratos — margem inferior */
+    .contracts-header-spacing {
+      margin-bottom: 3rem;
+    }
+
+    /* 10f. Cabeçalho de suporte — margem inferior */
+    .support-header-spacing {
+      margin-bottom: 3rem;
+    }
+
+    /* 10g. Separador horizontal interno de identidade */
+    .identity-section-divider {
+      margin-bottom: 2rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      padding-bottom: 0.75rem;
+    }
+
+    /* 10h. Card de avatar no perfil */
+    .identity-avatar-card {
+      margin-bottom: 2.5rem;
+    }
+
+    /* 10i. Avatar circular com borda dourada */
+    .identity-avatar-img-wrap {
+      width: 72px !important;
+      height: 72px !important;
+      border: 2.5px solid #e8d08d !important;
+      box-shadow: 0 0 12px rgba(232, 208, 141, 0.35);
+    }
+
+    .identity-avatar-img-wrap img {
+      width: 100% !important;
+      height: 100% !important;
+      border-radius: 50% !important;
+    }
+
+    /* 10j. Botão salvar alterações — alinhamento */
+    .identity-save-footer {
+      margin-top: 1rem;
+      padding-top: 1rem;
+    }
+
+    /* 10k. Card de segurança — separadores internos */
+    .security-section-divider {
+      margin-bottom: 1.5rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      padding-bottom: 0.5rem;
+    }
+
+    .security-2fa-row {
+      margin-top: 1rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      padding-top: 1rem;
+    }
+
+    .security-update-footer {
+      margin-top: 2rem;
+    }
+
+    /* 10l. Card de preferências — separadores internos */
+    .prefs-section-divider {
+      margin-bottom: 0.5rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      padding-bottom: 0.5rem;
+    }
+
+    .prefs-notification-row-border {
+      border-top: 1px solid rgba(255, 255, 255, 0.03);
+    }
+
+    .prefs-support-footer {
+      margin-top: 1rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      padding-top: 1rem;
+    }
+
+    /* 10m. Secção de contratos históricos — espaçamento superior */
+    .contracts-history-section {
+      margin-top: 4rem;
+    }
+
+    /* 10n. Secção de ofertas especiais — espaçamento superior */
+    .opportunities-special-section {
+      margin-top: 4.5rem;
+    }
+
+    /* 10o. Cabeçalho de oportunidades — espaçamento superior da subsecção */
+    .opportunities-subsection-header {
+      margin-top: 2.5rem;
+      margin-bottom: 1rem;
+    }
+
+    /* 10p. Cards de plano de investimento — alturas e visuais (Premium Breathing Fix) */
+
+    /* Regra Unificada: Aumentamos para 475px e criamos um recuo de topo generoso 
+       para que todos os ícones fiquem alinhados na mesma linha horizontal */
+    .plan-card-base,
+    .plan-card-featured,
+    .plan-card-max {
+      min-height: 475px !important;
+      padding-top: 3.5rem !important;
+      /* Espaço nobre para os elementos respirarem */
+    }
+
+    /* Card destacado (6 meses — "Mais Procurado") */
+    .plan-card-featured {
+      border: 2.2px solid rgba(197, 160, 89, 0.55) !important;
+      filter: drop-shadow(0 0 20px rgba(197, 160, 89, 0.18));
+    }
+
+    /* Trava o fundo escuro do card apenas quando a classe .dark estiver ativa */
+    html.dark .plan-card-featured {
+      background: linear-gradient(135deg, rgba(197, 160, 89, 0.06) 0%, rgba(7, 19, 38, 0.75) 100%) !important;
+      backdrop-filter: blur(25px) saturate(200%) !important;
+      -webkit-backdrop-filter: blur(25px) saturate(200%) !important;
+    }
+
+    /* 🔥 O SEGREDO DO ALINHAMENTO: O selo agora flutua no topo interno.
+       Ele deixa de ocupar espaço físico e não esmaga mais os textos para baixo! */
+    .plan-featured-badge-wrap {
+      position: absolute !important;
+      top: 14px !important;
+      left: 50% !important;
+      transform: translateX(-50%) !important;
+      margin: 0 !important;
+      z-index: 20 !important;
+    }
+
+    /* Card 12 meses — sombra branca tênue */
+    .plan-card-max {
+      border: 1.5px solid rgba(255, 255, 255, 0.25) !important;
+      filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.03));
+    }
+
+    /* 10q. Gradient text dourado reutilizável */
+    .text-gold-gradient {
+      background: linear-gradient(135deg, #e8d08d 0%, #c5a059 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      color: #e8d08d;
+      /* fallback */
+    }
+
+    /* 10r. Separador de secções de contratos em execução */
+    .contracts-active-section-gap {
+      margin-top: 4rem;
+      margin-bottom: 1rem;
+    }
+
+    /* 10s. Cabeçalho de subsecção de contratos e oportunidades */
+    .subsection-header-bar {
+      margin-bottom: 1rem;
+    }
+
+    /* 10t. Logo mobile — ajuste de topo nos tabs secundários */
+    .tab-logo-mobile-offset {
+      margin-top: 0;
+    }
+
+    /* 10u. Título principal dos tabs secundários — offset mobile */
+    .tab-title-mobile-offset {
+      margin-top: 0;
+    }
+
+    @media (min-width: 1024px) {
+      .tab-title-mobile-offset {
+        margin-top: 0;
+      }
+
+      .tab-logo-mobile-offset {
+        margin-top: 0;
+      }
+    }
+
+    /* 10v. Cabeçalho de conta — override específico de alinhamento desktop */
+    .premium-account-header .tab-title-mobile-offset {
+      margin-top: 0;
+    }
+
+    @media (min-width: 1024px) {
+      .premium-account-header .tab-title-mobile-offset {
+        margin-top: 0;
+      }
+    }
+
+    /* 10w. Divisores de secção de identidade do perfil */
+    .identity-header-divider {
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    /* ═══════════════════════════════════════════════════════════════
+       BLOCO 10x — CORREÇÃO DEFINITIVA DE ESCALA E ALINHAMENTO DE TABS
+    ═══════════════════════════════════════════════════════════════ */
+    @media (max-width: 1023px) {
+
+      /* 1. FIM DO DESNIVELAMENTO: Neutraliza o margin-top de 24px que a classe
+         space-y-6 do contêiner pai injetava erroneamente nas abas secundárias */
+      #tab-dashboard,
+      #tab-oportunidades,
+      #tab-documentos,
+      #tab-conta {
+        margin-top: 0 !important;
+      }
+
+      /* 2. LOGO GIGANTE (Quebrando as travas do Tailwind): 
+         Como a imagem é um quadrado perfeito, precisamos definir a LARGURA e a ALTURA 
+         com o MESMO valor em píxeis. Isso força o crescimento real da imagem. */
+      .logo-mobile-container {
+        position: absolute !important;
+        top: -80px !important;
+        /* Puxa para cima para esconder o espaço transparente do quadrado */
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+
+        /* 🎯 ALTERE ESTES DOIS VALORES IGUAIS PARA CONTROLAR O TAMANHO DA LOGO */
+        width: 250px !important;
+        height: 250px !important;
+
+        z-index: 10 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        image-rendering: -webkit-optimize-contrast !important;
+      }
+
+      /* Força o elemento IMG a assumir a mesma proporção e limpa a margem do arquivo externo */
+      .img-mobile,
+      .logo-mobile-container img {
+        margin: 0 !important;
+        /* 🔥 ESSENCIAL: Zera o margin-top de -5rem do arquivo externo */
+
+        /* 🎯 MANTENHA IGUAL AO VALOR QUE COLOCOU NO CONTÊINER ACIMA */
+        width: 250px !important;
+        height: 250px !important;
+        max-height: 250px !important;
+
+        object-fit: contain !important;
+      }
+
+      /* 3. ALINHAMENTO DO OLHO: Calibrado para o centro visual da escrita com a nova escala */
+      #tab-dashboard>header .button-eye {
+        position: absolute !important;
+        top: 53px !important;
+        right: 0 !important;
+        transform: translateY(-50%) !important;
+        margin: 0 !important;
+        z-index: 20 !important;
+
+        /* Vidro premium lapidado */
+        background: rgba(255, 255, 255, 0.03) !important;
+        backdrop-filter: blur(8px) !important;
+        -webkit-backdrop-filter: blur(8px) !important;
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
+      }
+
+      /* 4. RECUO UNIFICADO: Força o cabeçalho de todas as abas a começar no mesmo recuo */
+      #tab-dashboard>header,
+      #tab-oportunidades>header,
+      #tab-documentos>header,
+      #tab-conta>header {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        padding-top: 125px !important;
+        /* Respiro elegante abaixo da logo imponente */
+        min-height: auto !important;
+      }
+    }
+
+    /* 10x-f. Offsets dos tabs secundários: substitui margin negativo por
+         padding-top positivo no contêiner. Chromium clipa tudo abaixo de y=0;
+         valores negativos agressivos nesses tabs causam o mesmo sintoma. */
+    .tab-logo-mobile-offset {
+      margin-top: 0 !important;
+      padding-top: 0.25rem !important;
+    }
+
+    .tab-title-mobile-offset {
+      margin-top: 0 !important;
+      padding-top: 0.25rem !important;
+    }
+
+    /* Aplica uma película azul monocromática e reduz o brilho do fundo */
+    img[src*="oferta-relampago"] {
+      filter: sepia(1) hue-rotate(195deg) saturate(3) brightness(0.25) !important;
+      opacity: 0.85 !important;
+      mix-blend-mode: screen !important;
+    }
+
+    /* Efeito Vidro Cristal Lapidado exclusivo para o botão do olho no Desktop */
+    @media (min-width: 1024px) {
+      #tab-dashboard>header .button-eye {
+        position: absolute !important;
+        top: -25px !important;
+        right: 0 !important;
+
+        /* Glassmorphism Refinado */
+        background: rgba(255, 255, 255, 0.03) !important;
+        backdrop-filter: blur(10px) !important;
+        -webkit-backdrop-filter: blur(10px) !important;
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3) !important;
+        padding: 0.5rem !important;
+        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+      }
+
+      #tab-dashboard>header .button-eye:hover {
+        background: rgba(255, 255, 255, 0.08) !important;
+        border-color: rgba(197, 160, 89, 0.4) !important;
+        transform: scale(1.05) !important;
+      }
+
+      #tab-dashboard>header .button-eye:active {
+        transform: scale(0.95) !important;
+      }
     }
   </style>
 </head>
@@ -380,10 +746,10 @@
 
   <div class="app-root min-h-screen lg:h-[100dvh] w-full flex flex-col lg:flex-row lg:overflow-hidden">
 
+    <!-- ─── SIDEBAR DESKTOP ─────────────────────────────────────── -->
     <aside class="sidebar hidden lg:flex flex-col w-64 shrink-0 border-r border-white/10 dark:border-white/10 z-30">
       <div class="sidebar-logo flex items-center justify-center -mb-10">
-        <img src="img/logo-its-wesus-branco.webp" width="250" height="250" alt="It's Wesus" class="hidden dark:block w-full max-w-[250px] h-auto object-contain drop-shadow-md lg:-mb-8 lg:-mt-12" />
-
+        <img src="img/logo-its-wesus-branco.webp" width="500" height="250" alt="It's Wesus" class="hidden dark:block w-full max-w-[250px] h-auto object-contain drop-shadow-md lg:-mb-8 lg:-mt-12" />
         <img src="img/logo-its-wesus-dourado.webp" width="250" height="250" alt="It's Wesus" class="block dark:hidden w-full max-w-[250px] h-auto object-contain drop-shadow-md lg:-mb-8 lg:-mt-12 opacity-70" />
       </div>
 
@@ -442,28 +808,35 @@
       </div>
     </aside>
 
+    <!-- ─── ÁREA PRINCIPAL ─────────────────────────────────────── -->
     <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
       <main id="mainContent" class="flex-1 overflow-visible lg:overflow-y-auto lg:overscroll-contain px-4 lg:px-8 py-5 lg:py-8 pb-safe-bottom">
         <div class="max-w-6xl mx-auto w-full space-y-6 px-2 lg:px-0">
 
+          <!-- ══════════════════════════════════════════════════════
+               TAB: DASHBOARD
+          ══════════════════════════════════════════════════════ -->
           <div id="tab-dashboard" class="tab-content space-y-6">
 
             <header class="flex flex-col lg:flex-row lg:items-end justify-between gap-2 lg:gap-4 mb-2 relative">
-              <div class="flex lg:hidden items-center justify-center">
-                <img src="img/logo-its-wesus-branco.webp" fetchpriority="high" width="250" height="250" alt="It's Wesus" class="img-mobile hidden dark:block w-full max-w-[250px] h-auto object-contain drop-shadow-md lg:-mb-8 lg:-mt-12" />
-                <img src="img/logo-its-wesus-azul.webp" fetchpriority="high" width="160" height="64" alt="It's Wesus" class="img-mobile block dark:hidden w-auto h-16 object-contain drop-shadow-md" />
+
+              <div class="logo-mobile-container flex lg:hidden items-center justify-center">
+                <img src="img/logo-its-wesus-branco.webp" fetchpriority="high" width="250" height="250" alt="It's Wesus" class="img-mobile hidden dark:block drop-shadow-md" />
+                <img src="img/logo-its-wesus-dourado.webp" fetchpriority="high" width="250" height="250" alt="It's Wesus" class="img-mobile block dark:hidden drop-shadow-md" />
               </div>
 
-              <h1 class="font-playfair text-[26px] lg:text-[32px] text-white/90 text-center lg:text-left -mt-16 lg:-mt-0">Bom dia, Danilson.</h1>
+              <h1 class="font-playfair text-[26px] lg:text-[32px] text-white/90 text-center lg:text-left">Bom dia, Danilson.</h1>
 
-              <button class="button-eye header-action-btn absolute top-0 right-0 lg:relative lg:top-auto lg:right-auto p-2 lg:p-2.5 rounded-xl text-gold hover:bg-white/10 transition-colors" aria-label="Ocultar saldos">
+              <button class="button-eye absolute top-2 right-0 lg:top-0 p-2 rounded-xl text-gold hover:bg-white/10 transition-colors z-20" aria-label="Ocultar saldos">
                 <svg class="w-5 h-5 lg:w-6 lg:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                 </svg>
               </button>
+
             </header>
 
+            <!-- Patrimônio Hero -->
             <section aria-labelledby="patrimonyHeading" class="relative">
               <div class="hero-card-backlight" aria-hidden="true"></div>
 
@@ -473,9 +846,7 @@
 
                 <div class="hidden lg:flex hero-logo-wrapper select-none">
                   <div class="hero-logo-glow" aria-hidden="true"></div>
-
                   <img src="img/logo-its-wesus-hero.webp" width="352" height="352" alt="It's Wesus Premium" class="hidden dark:block h-full w-auto object-contain object-right opacity-60" aria-hidden="true" />
-
                   <img src="img/logo-its-wesus-dourado-hero.webp" width="352" height="352" alt="It's Wesus Premium" class="block dark:hidden h-full w-auto object-contain object-right opacity-60" aria-hidden="true" />
                 </div>
 
@@ -515,7 +886,8 @@
               </div>
             </section>
 
-            <div class="flex justify-between items-center relative z-10" style="margin-top: 2rem; margin-bottom: -0.5rem;">
+            <!-- Navegação de Contratos -->
+            <div class="contracts-nav-wrapper flex justify-between items-center relative z-10">
               <div>
                 <h3 class="font-playfair text-base font-bold text-white/80 tracking-wide">Info Contratos Ativos</h3>
                 <p id="dashboardContractSubtitle" class="text-xs text-white/50 font-inter mt-0.5">Edifício Aliados (1 de 5)</p>
@@ -535,6 +907,7 @@
               </div>
             </div>
 
+            <!-- Gráfico + Widgets de Contrato -->
             <section onclick="window.navigateToContract();" class="grid grid-cols-1 lg:grid-cols-4 gap-5 cursor-pointer relative z-10">
               <div class="lg:col-span-3 relative group">
                 <div class="widget-card-backlight" aria-hidden="true"></div>
@@ -558,7 +931,6 @@
                           <stop offset="0%" stop-color="rgba(197, 160, 89, 0.6)" />
                           <stop offset="100%" stop-color="rgba(197, 160, 89, 0.0)" />
                         </linearGradient>
-
                         <filter id="nativeLineGlow" x="-20%" y="-20%" width="140%" height="140%">
                           <feGaussianBlur stdDeviation="4" result="blur" />
                           <feComponentTransfer in="blur" result="glow1">
@@ -592,7 +964,9 @@
                 </div>
               </div>
 
+              <!-- Widgets: Taxa + Cronômetro -->
               <aside class="grid grid-cols-2 lg:grid-cols-1 gap-3 lg:gap-5">
+                <!-- Taxa Contratual -->
                 <div class="relative group">
                   <div class="widget-card-backlight" aria-hidden="true"></div>
                   <div class="hero-card-crystal p-4 lg:p-6 rounded-3xl flex flex-col justify-center items-center text-center relative z-10 overflow-hidden min-h-[140px] h-full">
@@ -611,6 +985,7 @@
                   </div>
                 </div>
 
+                <!-- Tempo Restante (Cronômetro) -->
                 <div class="relative group h-full">
                   <div class="widget-card-backlight" aria-hidden="true"></div>
                   <div class="hero-card-crystal p-4 lg:p-6 rounded-3xl flex flex-col justify-center items-center text-center relative z-10 overflow-hidden min-h-[140px] h-full">
@@ -631,15 +1006,12 @@
                         <circle cx="50" cy="50" r="46" fill="none" stroke="url(#cleanGoldLineGrad)" stroke-width="1.5" />
                         <circle cx="50" cy="50" r="42" fill="none" stroke="rgba(255,255,255,0.04)" stroke-width="0.5" />
                         <circle cx="50" cy="50" r="36" fill="none" stroke="rgba(255,255,255,0.04)" stroke-width="0.5" />
-
                         <circle cx="50" cy="50" r="39" fill="none" stroke="rgba(197,160,89,0.2)" stroke-width="0.75" stroke-dasharray="0.4,3.68" />
                         <circle cx="50" cy="50" r="39" fill="none" stroke="#c5a059" stroke-width="2.2" stroke-dasharray="1.5,18.92" />
-
                         <line x1="50" y1="7" x2="50" y2="13" stroke="#E8D08D" stroke-width="2.5" stroke-linecap="round" />
                         <line x1="93" y1="50" x2="87" y2="50" stroke="#C5A059" stroke-width="2" stroke-linecap="round" />
                         <line x1="50" y1="93" x2="50" y2="87" stroke="#C5A059" stroke-width="2" stroke-linecap="round" />
                         <line x1="7" y1="50" x2="13" y2="50" stroke="#C5A059" stroke-width="2" stroke-linecap="round" />
-
                         <circle cx="50" cy="50" r="42" fill="none" id="dynamicChronoArc" stroke="#e8d08d" stroke-width="3.5" stroke-linecap="round" stroke-dasharray="264" stroke-dashoffset="66" filter="url(#nativeChronoGlow)" />
                       </svg>
 
@@ -653,6 +1025,7 @@
               </aside>
             </section>
 
+            <!-- Investimentos Ativos -->
             <section aria-labelledby="assetsHeading" class="relative group">
               <div class="widget-card-backlight" aria-hidden="true"></div>
 
@@ -662,93 +1035,132 @@
                 </h2>
               </div>
 
-              <div class="assets-carousel lg:hidden flex gap-4 overflow-x-auto snap-x snap-mandatory scrollbar-hide pb-3 -mx-4 px-4 relative z-10">
-                <article class="snap-start shrink-0 w-80 carousel-asset-card rounded-2xl overflow-hidden p-5 flex flex-col justify-between min-h-[175px]">
+              <!-- Carrossel Mobile -->
+              <div class="assets-carousel assets-carousel-spacing lg:hidden flex gap-4 overflow-x-auto snap-x snap-mandatory scrollbar-hide -mx-4 px-4 relative z-10">
+
+                <!-- CARD 1: Edifício Aliados -->
+                <article class="snap-start shrink-0 w-80 carousel-asset-card carousel-asset-card-clean rounded-2xl overflow-hidden p-5 flex flex-col justify-between min-h-[175px]">
                   <div class="carousel-asset-image-mask" style="background-image: url('img/casa-background-mobile-xsmall.webp');"></div>
                   <div class="relative z-10 h-full flex flex-col justify-between w-full">
                     <div class="flex justify-between items-start w-full gap-2">
-                      <div>
-                        <h3 class="font-playfair font-bold text-lg leading-tight text-white">Edifício Aliados</h3>
-                        <p class="text-[10px] text-gold/90 mt-1">Porto, Portugal</p>
+                      <div class="flex flex-col">
+                        <h3 class="font-playfair font-bold text-lg leading-tight text-white select-all">Edifício Aliados</h3>
+                        <a href="https://maps.google.com/?q=Porto,Portugal" target="_blank" class="flex items-center gap-1 text-[10px] text-gold/90 hover:text-white transition-colors w-fit mt-1.5 font-medium">
+                          <svg class="w-3 h-3 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                          </svg>
+                          Porto, Portugal
+                        </a>
                       </div>
                       <span class="status-badge-construction shrink-0">Em Construção</span>
                     </div>
                     <div class="mt-5 border-t border-white/5 pt-3">
                       <p class="text-[9px] text-white/40 uppercase tracking-widest font-semibold mb-0.5">Investimento Total</p>
-                      <p class="font-bold text-white text-base">€ 1.200.000,00</p>
+                      <p class="font-bold text-white text-base select-all">€ 1.200.000,00</p>
                     </div>
                   </div>
                 </article>
 
-                <article class="snap-start shrink-0 w-80 carousel-asset-card rounded-2xl overflow-hidden p-5 flex flex-col justify-between min-h-[175px]">
+                <!-- CARD 2: Villa Infante -->
+                <article class="snap-start shrink-0 w-80 carousel-asset-card carousel-asset-card-clean rounded-2xl overflow-hidden p-5 flex flex-col justify-between min-h-[175px]">
                   <div class="carousel-asset-image-mask" style="background-image: url('img/asset-villa-infante.webp');"></div>
                   <div class="relative z-10 h-full flex flex-col justify-between w-full">
                     <div class="flex justify-between items-start w-full gap-2">
-                      <div>
-                        <h3 class="font-playfair font-bold text-lg leading-tight text-white">Villa Infante</h3>
-                        <p class="text-[10px] text-gold/90 mt-1">Lisboa, Portugal</p>
+                      <div class="flex flex-col">
+                        <h3 class="font-playfair font-bold text-lg leading-tight text-white select-all">Villa Infante</h3>
+                        <a href="https://maps.google.com/?q=Porto,Portugal" target="_blank" class="flex items-center gap-1 text-[10px] text-gold/90 hover:text-white transition-colors w-fit mt-1.5 font-medium">
+                          <svg class="w-3 h-3 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                          </svg>
+                          Lisboa, Portugal
+                        </a>
                       </div>
                       <span class="status-badge-construction shrink-0">Em Construção</span>
                     </div>
                     <div class="mt-5 border-t border-white/5 pt-3">
                       <p class="text-[9px] text-white/40 uppercase tracking-widest font-semibold mb-0.5">Investimento Total</p>
-                      <p class="font-bold text-white text-base">€ 850.000,00</p>
+                      <p class="font-bold text-white text-base select-all">€ 850.000,00</p>
                     </div>
                   </div>
                 </article>
 
-                <article class="snap-start shrink-0 w-80 carousel-asset-card rounded-2xl overflow-hidden p-5 flex flex-col justify-between min-h-[175px]">
+                <!-- CARD 3: Palácio Estoril -->
+                <article class="snap-start shrink-0 w-80 carousel-asset-card carousel-asset-card-clean rounded-2xl overflow-hidden p-5 flex flex-col justify-between min-h-[175px]">
                   <div class="carousel-asset-image-mask" style="background-image: url('img/asset-palacio-estoril.webp');"></div>
                   <div class="relative z-10 h-full flex flex-col justify-between w-full">
                     <div class="flex justify-between items-start w-full gap-2">
-                      <div>
-                        <h3 class="font-playfair font-bold text-lg leading-tight text-white">Palácio Estoril</h3>
-                        <p class="text-[10px] text-gold/90 mt-1">Cascais, Portugal</p>
+                      <div class="flex flex-col">
+                        <h3 class="font-playfair font-bold text-lg leading-tight text-white select-all">Palácio Estoril</h3>
+                        <a href="https://maps.google.com/?q=Porto,Portugal" target="_blank" class="flex items-center gap-1 text-[10px] text-gold/90 hover:text-white transition-colors w-fit mt-1.5 font-medium">
+                          <svg class="w-3 h-3 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                          </svg>
+                          Cascais, Portugal
+                        </a>
                       </div>
                       <span class="status-badge-construction shrink-0">Em Construção</span>
                     </div>
                     <div class="mt-5 border-t border-white/5 pt-3">
                       <p class="text-[9px] text-white/40 uppercase tracking-widest font-semibold mb-0.5">Investimento Total</p>
-                      <p class="font-bold text-white text-base">€ 2.100.000,00</p>
+                      <p class="font-bold text-white text-base select-all">€ 2.100.000,00</p>
                     </div>
                   </div>
                 </article>
 
-                <article class="snap-start shrink-0 w-80 carousel-asset-card rounded-2xl overflow-hidden p-5 flex flex-col justify-between min-h-[175px]">
+                <!-- CARD 4: Douro Marina -->
+                <article class="snap-start shrink-0 w-80 carousel-asset-card carousel-asset-card-clean rounded-2xl overflow-hidden p-5 flex flex-col justify-between min-h-[175px]">
                   <div class="carousel-asset-image-mask" style="background-image: url('img/asset-douro-marina.webp');"></div>
                   <div class="relative z-10 h-full flex flex-col justify-between w-full">
                     <div class="flex justify-between items-start w-full gap-2">
-                      <div>
-                        <h3 class="font-playfair font-bold text-lg leading-tight text-white">Douro Marina</h3>
-                        <p class="text-[10px] text-gold/90 mt-1">Gaia, Portugal</p>
+                      <div class="flex flex-col">
+                        <h3 class="font-playfair font-bold text-lg leading-tight text-white select-all">Douro Marina</h3>
+                        <a href="https://maps.google.com/?q=Porto,Portugal" target="_blank" class="flex items-center gap-1 text-[10px] text-gold/90 hover:text-white transition-colors w-fit mt-1.5 font-medium">
+                          <svg class="w-3 h-3 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                          </svg>
+                          Gaia, Portugal
+                        </a>
                       </div>
                       <span class="status-badge-construction shrink-0">Em Construção</span>
                     </div>
                     <div class="mt-5 border-t border-white/5 pt-3">
                       <p class="text-[9px] text-white/40 uppercase tracking-widest font-semibold mb-0.5">Investimento Total</p>
-                      <p class="font-bold text-white text-base">€ 950.000,00</p>
+                      <p class="font-bold text-white text-base select-all">€ 950.000,00</p>
                     </div>
                   </div>
                 </article>
 
-                <article class="snap-start shrink-0 w-80 carousel-asset-card rounded-2xl overflow-hidden p-5 flex flex-col justify-between min-h-[175px]">
+                <!-- CARD 5: Lumina Chiado -->
+                <article class="snap-start shrink-0 w-80 carousel-asset-card carousel-asset-card-clean rounded-2xl overflow-hidden p-5 flex flex-col justify-between min-h-[175px]">
                   <div class="carousel-asset-image-mask" style="background-image: url('img/asset-lumina-chiado.webp');"></div>
                   <div class="relative z-10 h-full flex flex-col justify-between w-full">
                     <div class="flex justify-between items-start w-full gap-2">
-                      <div>
-                        <h3 class="font-playfair font-bold text-lg leading-tight text-white">Lumina Chiado</h3>
-                        <p class="text-[10px] text-gold/90 mt-1">Lisboa, Portugal</p>
+                      <div class="flex flex-col">
+                        <h3 class="font-playfair font-bold text-lg leading-tight text-white select-all">Lumina Chiado</h3>
+                        <a href="https://maps.google.com/?q=Porto,Portugal" target="_blank" class="flex items-center gap-1 text-[10px] text-gold/90 hover:text-white transition-colors w-fit mt-1.5 font-medium">
+                          <svg class="w-3 h-3 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                          </svg>
+                          Lisboa, Portugal
+                        </a>
                       </div>
                       <span class="status-badge-construction shrink-0">Em Construção</span>
                     </div>
                     <div class="mt-5 border-t border-white/5 pt-3">
                       <p class="text-[9px] text-white/40 uppercase tracking-widest font-semibold mb-0.5">Investimento Total</p>
-                      <p class="font-bold text-white text-base">€ 1.450.000,00</p>
+                      <p class="font-bold text-white text-base select-all">€ 1.450.000,00</p>
                     </div>
                   </div>
                 </article>
+
               </div>
 
+              <!-- Tabela Desktop -->
               <div class="hidden lg:block hero-card-crystal rounded-2xl relative z-10 overflow-hidden">
                 <div class="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-20 pointer-events-none"></div>
 
@@ -774,14 +1186,9 @@
                       <td class="assets-td">
                         <span class="inline-flex items-center gap-1.5 text-xs text-white/80 bg-white/5 px-2.5 py-1.5 rounded-lg border border-white/5">Porto, Portugal</span>
                       </td>
-                      <td class="assets-td text-center">
-                        <span class="status-badge-construction">Em Construção</span>
-                      </td>
-                      <td class="assets-td text-right font-bold text-sm text-white/95 tracking-wide">
-                        € 1.200.000,00
-                      </td>
+                      <td class="assets-td text-center"><span class="status-badge-construction">Em Construção</span></td>
+                      <td class="assets-td text-right font-bold text-sm text-white/95 tracking-wide">€ 1.200.000,00</td>
                     </tr>
-
                     <tr class="assets-row">
                       <td class="assets-td">
                         <div class="flex items-center gap-3.5">
@@ -794,14 +1201,9 @@
                       <td class="assets-td">
                         <span class="inline-flex items-center gap-1.5 text-xs text-white/80 bg-white/5 px-2.5 py-1.5 rounded-lg border border-white/5">Lisboa, Portugal</span>
                       </td>
-                      <td class="assets-td text-center">
-                        <span class="status-badge-construction">Em Construção</span>
-                      </td>
-                      <td class="assets-td text-right font-bold text-sm text-white/95 tracking-wide">
-                        € 850.000,00
-                      </td>
+                      <td class="assets-td text-center"><span class="status-badge-construction">Em Construção</span></td>
+                      <td class="assets-td text-right font-bold text-sm text-white/95 tracking-wide">€ 850.000,00</td>
                     </tr>
-
                     <tr class="assets-row">
                       <td class="assets-td">
                         <div class="flex items-center gap-3.5">
@@ -814,14 +1216,9 @@
                       <td class="assets-td">
                         <span class="inline-flex items-center gap-1.5 text-xs text-white/80 bg-white/5 px-2.5 py-1.5 rounded-lg border border-white/5">Cascais, Portugal</span>
                       </td>
-                      <td class="assets-td text-center">
-                        <span class="status-badge-construction">Em Construção</span>
-                      </td>
-                      <td class="assets-td text-right font-bold text-sm text-white/95 tracking-wide">
-                        € 2.100.000,00
-                      </td>
+                      <td class="assets-td text-center"><span class="status-badge-construction">Em Construção</span></td>
+                      <td class="assets-td text-right font-bold text-sm text-white/95 tracking-wide">€ 2.100.000,00</td>
                     </tr>
-
                     <tr class="assets-row">
                       <td class="assets-td">
                         <div class="flex items-center gap-3.5">
@@ -834,14 +1231,9 @@
                       <td class="assets-td">
                         <span class="inline-flex items-center gap-1.5 text-xs text-white/80 bg-white/5 px-2.5 py-1.5 rounded-lg border border-white/5">Gaia, Portugal</span>
                       </td>
-                      <td class="assets-td text-center">
-                        <span class="status-badge-construction">Em Construção</span>
-                      </td>
-                      <td class="assets-td text-right font-bold text-sm text-white/95 tracking-wide">
-                        € 950.000,00
-                      </td>
+                      <td class="assets-td text-center"><span class="status-badge-construction">Em Construção</span></td>
+                      <td class="assets-td text-right font-bold text-sm text-white/95 tracking-wide">€ 950.000,00</td>
                     </tr>
-
                     <tr class="assets-row">
                       <td class="assets-td">
                         <div class="flex items-center gap-3.5">
@@ -854,23 +1246,20 @@
                       <td class="assets-td">
                         <span class="inline-flex items-center gap-1.5 text-xs text-white/80 bg-white/5 px-2.5 py-1.5 rounded-lg border border-white/5">Lisboa, Portugal</span>
                       </td>
-                      <td class="assets-td text-center">
-                        <span class="status-badge-construction">Em Construção</span>
-                      </td>
-                      <td class="assets-td text-right font-bold text-sm text-white/95 tracking-wide">
-                        € 1.450.000,00
-                      </td>
+                      <td class="assets-td text-center"><span class="status-badge-construction">Em Construção</span></td>
+                      <td class="assets-td text-right font-bold text-sm text-white/95 tracking-wide">€ 1.450.000,00</td>
                     </tr>
                   </tbody>
                 </table>
               </div>
             </section>
 
+            <!-- Oportunidade Relâmpago (Dashboard) -->
             <section aria-label="Oportunidades Exclusivas" class="mt-2 relative">
               <div class="widget-card-backlight" aria-hidden="true"></div>
 
               <div class="hero-card-crystal p-6 lg:p-8 flex flex-col xl:flex-row items-center justify-between gap-6 lg:gap-8 relative overflow-hidden group w-full rounded-3xl">
-                <img src="img/oferta-relampago.webp" alt="" class="absolute inset-0 w-full h-full object-cover pointer-events-none z-0" style="opacity: 0.55; mix-blend-mode: overlay;" />
+                <img src="img/oferta-relampago.webp" alt="" class="absolute inset-0 w-full h-full object-cover pointer-events-none z-0 mix-blend-overlay opacity-55" />
 
                 <div class="relative z-10 flex flex-col items-center lg:items-start text-center lg:text-left flex-1 min-w-0 w-full">
                   <div class="lg:hidden flex justify-center mb-3 w-full">
@@ -894,7 +1283,6 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
                       </svg>
                     </div>
-
                     <h3 class="font-playfair font-bold text-white text-xl lg:text-2xl tracking-wide select-none text-center lg:text-left">
                       Nova Oportunidade <span class="text-gold-liquid">Relâmpago</span>
                     </h3>
@@ -905,8 +1293,6 @@
                   </p>
                 </div>
 
-
-
                 <div class="w-full xl:w-auto flex justify-center shrink-0 z-10">
                   <button class="w-full xl:w-auto btn-gold-lingot" style="color: #ffffff !important;">
                     Investir Já
@@ -915,16 +1301,20 @@
               </div>
             </section>
           </div>
+          <!-- fim #tab-dashboard -->
 
+
+          <!-- ══════════════════════════════════════════════════════
+               TAB: OPORTUNIDADES
+          ══════════════════════════════════════════════════════ -->
           <div id="tab-oportunidades" class="tab-content hidden select-none">
 
             <header class="flex flex-col lg:flex-row lg:items-end justify-between gap-2 lg:gap-4 mb-2 relative">
-              <div class="flex lg:hidden items-center justify-center" style="margin-top: -1.5rem;">
-                <img src="img/logo-its-wesus-branco.webp" fetchpriority="high" width="250" height="250" alt="It's Wesus" class="img-mobile hidden dark:block w-full max-w-[250px] h-auto object-contain drop-shadow-md lg:-mb-8 lg:-mt-12" />
-                <img src="img/logo-its-wesus-dourado.webp" lighten fetchpriority="high" width="160" height="64" alt="It's Wesus" class="img-mobile block dark:hidden w-auto h-16 object-contain drop-shadow-md" />
+              <div class="logo-mobile-container flex lg:hidden items-center justify-center">
+                <img src="img/logo-its-wesus-branco.webp" fetchpriority="high" width="250" height="250" alt="It's Wesus" class="img-mobile hidden dark:block drop-shadow-md" />
+                <img src="img/logo-its-wesus-dourado.webp" fetchpriority="high" width="250" height="250" alt="It's Wesus" class="img-mobile block dark:hidden drop-shadow-md" />
               </div>
-
-              <div class="flex flex-col items-center lg:items-start text-center lg:text-left -mt-16 lg:-mt-0 w-full">
+              <div class="flex flex-col items-center lg:items-start text-center lg:text-left tab-title-mobile-offset w-full">
                 <h2 class="font-playfair text-2xl lg:text-3xl font-bold text-white/90 tracking-wide">
                   Oportunidades <span class="text-gold-liquid">Disponíveis</span>
                 </h2>
@@ -932,15 +1322,17 @@
               </div>
             </header>
 
+            <!-- Planos de Rendimento Fixo -->
             <section aria-label="Contratos de Investimento de Rendimento Fixo">
-              <div class="flex items-center gap-2" style="margin-top: 2.5rem; margin-bottom: 1rem;">
+              <div class="flex items-center gap-2 opportunities-subsection-header">
                 <div class="w-1.5 h-4 bg-gradient-to-b from-gold to-gold-light rounded-full"></div>
                 <h3 class="font-playfair text-base font-bold text-white/80 tracking-wide">Contratos de Rendimento Fixo</h3>
               </div>
 
               <div class="flex flex-col lg:flex-row gap-6 w-full">
 
-                <div class="hero-card-crystal p-6 lg:p-8 rounded-3xl flex flex-col items-center text-center justify-between flex-1 relative overflow-hidden" style="min-height: 420px;">
+                <!-- Plano 3 Meses -->
+                <div class="hero-card-crystal p-6 lg:p-8 rounded-3xl flex flex-col items-center text-center justify-between flex-1 relative overflow-hidden plan-card-base">
                   <div class="absolute inset-0 bg-gradient-to-br from-white/[0.01] to-transparent opacity-40 pointer-events-none"></div>
 
                   <div class="icon-badge-shield w-12 h-12 rounded-2xl flex items-center justify-center text-gold/80 mb-2 relative z-10 shrink-0">
@@ -961,7 +1353,7 @@
                   <div class="mb-4 relative z-10 w-full mt-auto">
                     <p class="text-[8px] uppercase tracking-wider text-white/30 font-medium mb-0.5">Retorno Fixo Garantido</p>
                     <div class="flex items-baseline justify-center select-all">
-                      <span class="text-4xl font-bold leading-none tracking-tight" style="background: linear-gradient(135deg, #e8d08d 0%, #c5a059 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; color: #e8d08d;">6,25</span>
+                      <span class="text-4xl font-bold leading-none tracking-tight text-gold-gradient">6,25</span>
                       <span class="font-bold text-lg ml-0.5" style="color: #e8d08d;">%</span>
                     </div>
                     <div class="w-full h-px bg-gradient-to-r from-gold/20 to-transparent mt-3"></div>
@@ -972,10 +1364,11 @@
                   </div>
                 </div>
 
-                <div class="hero-card-crystal p-6 lg:p-8 rounded-3xl flex flex-col items-center text-center justify-between flex-1 relative overflow-hidden drop-shadow-[0_0_20px_rgba(197,160,89,0.18)]" style="min-height: 420px; border: 2.2px solid rgba(197, 160, 89, 0.55); background: linear-gradient(135deg, rgba(197, 160, 89, 0.1), rgba(7, 19, 38, 0.99)) padding-box;">
+                <!-- Plano 6 Meses (Mais Procurado) -->
+                <div class="hero-card-crystal p-6 lg:p-8 rounded-3xl flex flex-col items-center text-center justify-between flex-1 relative overflow-hidden plan-card-featured drop-shadow-[0_0_20px_rgba(197,160,89,0.18)]">
                   <div class="absolute inset-0 bg-gradient-to-br from-gold/15 to-transparent opacity-50 pointer-events-none"></div>
 
-                  <div class="relative z-10 -mt-10 mb-4 select-none">
+                  <div class="relative z-10 plan-featured-badge-wrap select-none">
                     <span class="inline-block bg-gradient-to-r from-[#8A662D] via-[#E8D08D] to-[#C5A059] text-[#071326] text-[10px] font-bold uppercase tracking-widest px-4 py-1.5 rounded-full shadow-[0_4px_15px_rgba(197,160,89,0.4)] border border-white/20">
                       ★ Mais Procurado ★
                     </span>
@@ -996,20 +1389,21 @@
                   </p>
 
                   <div class="mb-4 relative z-10 w-full mt-auto">
-                    <p class="text-[8px] uppercase tracking-widest text-gold-light font-bold mb-0.5" style="color: #e8d08d;">Retorno Fixo Garantido</p>
+                    <p class="text-[8px] uppercase tracking-widest font-bold mb-0.5" style="color: #e8d08d;">Retorno Fixo Garantido</p>
                     <div class="flex items-baseline justify-center select-all">
-                      <span class="text-4xl font-bold leading-none tracking-tight" style="background: linear-gradient(135deg, #e8d08d 0%, #c5a059 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; color: #e8d08d;">12,5</span>
+                      <span class="text-4xl font-bold leading-none tracking-tight text-gold-gradient">12,5</span>
                       <span class="font-bold text-lg ml-0.5" style="color: #e8d08d;">%</span>
                     </div>
                     <div class="w-full h-px bg-gradient-to-r from-gold/40 to-transparent mt-3"></div>
                   </div>
 
                   <div class="w-full relative z-10 select-none">
-                    <button class="w-full btn-gold-lingot !py-3 !text-[10px]" style="color: #ffffff !important; background: linear-gradient(135deg, #e8d08d, #c5a059); border-color: rgba(70, 55, 34, 0.5);">Investir Já</button>
+                    <button class="w-full btn-gold-lingot plan-featured-btn !py-3 !text-[10px]" style="color: #ffffff !important;">Investir Já</button>
                   </div>
                 </div>
 
-                <div class="hero-card-crystal p-6 lg:p-8 rounded-3xl flex flex-col items-center text-center justify-between flex-1 relative overflow-hidden drop-shadow-[0_0_15px_rgba(255,255,255,0.03)]" style="min-height: 420px; border: 1.5px solid rgba(255, 255, 255, 0.25);">
+                <!-- Plano 12 Meses -->
+                <div class="hero-card-crystal p-6 lg:p-8 rounded-3xl flex flex-col items-center text-center justify-between flex-1 relative overflow-hidden plan-card-max drop-shadow-[0_0_15px_rgba(255,255,255,0.03)]">
                   <div class="absolute inset-0 bg-gradient-to-br from-white/[0.02] to-transparent opacity-40 pointer-events-none"></div>
 
                   <div class="relative z-10 mb-2">
@@ -1036,7 +1430,7 @@
                   <div class="mb-4 relative z-10 w-full mt-auto">
                     <p class="text-[8px] uppercase tracking-wider text-white/30 font-medium mb-0.5">Retorno Fixo Garantido</p>
                     <div class="flex items-baseline justify-center select-all">
-                      <span class="text-4xl font-bold leading-none tracking-tight" style="background: linear-gradient(135deg, #e8d08d 0%, #c5a059 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; color: #e8d08d;">25,0</span>
+                      <span class="text-4xl font-bold leading-none tracking-tight text-gold-gradient">25,0</span>
                       <span class="font-bold text-lg ml-0.5" style="color: #e8d08d;">%</span>
                     </div>
                     <div class="w-full h-px bg-gradient-to-r from-gold/20 to-transparent mt-3"></div>
@@ -1050,16 +1444,17 @@
               </div>
             </section>
 
-            <section aria-label="Oportunidades Exclusivas" style="margin-top: 4.5rem;" class="relative">
+            <!-- Ofertas Especiais -->
+            <section aria-label="Oportunidades Exclusivas" class="opportunities-special-section relative">
               <div class="widget-card-backlight" aria-hidden="true"></div>
 
-              <div class="flex items-center gap-2" style="margin-bottom: 1rem;">
+              <div class="flex items-center gap-2 subsection-header-bar">
                 <div class="w-1.5 h-4 bg-gradient-to-b from-gold to-gold-light rounded-full"></div>
                 <h3 class="font-playfair text-base font-bold text-white/80 tracking-wide">Ofertas Especiais</h3>
               </div>
 
               <div class="hero-card-crystal p-6 lg:p-8 flex flex-col xl:flex-row items-center justify-between gap-6 lg:gap-8 relative overflow-hidden group w-full rounded-3xl">
-                <img src="img/oferta-relampago.webp" alt="" class="absolute inset-0 w-full h-full object-cover pointer-events-none z-0" style="opacity: 0.5; mix-blend-mode: overlay;" />
+                <img src="img/oferta-relampago.webp" alt="" class="absolute inset-0 w-full h-full object-cover pointer-events-none z-0 mix-blend-overlay opacity-50" />
 
                 <div class="relative z-10 flex flex-col items-center lg:items-start text-center lg:text-left flex-1 min-w-0 w-full">
                   <div class="lg:hidden flex justify-center mb-3 w-full">
@@ -1093,8 +1488,6 @@
                   </p>
                 </div>
 
-
-
                 <div class="w-full xl:w-auto flex justify-center shrink-0 z-10">
                   <button class="w-full xl:w-auto btn-gold-lingot" style="color: #ffffff !important;">
                     Investir Já
@@ -1103,16 +1496,20 @@
               </div>
             </section>
           </div>
+          <!-- fim #tab-oportunidades -->
 
+
+          <!-- ══════════════════════════════════════════════════════
+               TAB: DOCUMENTOS / CONTRATOS
+          ══════════════════════════════════════════════════════ -->
           <div id="tab-documentos" class="tab-content hidden select-none">
 
-            <header class="contracts-desktop-enxuto flex flex-col lg:flex-row lg:items-end justify-between gap-2 lg:gap-4 mb-2 relative" style="margin-bottom: 3rem;">
-              <div class="flex lg:hidden items-center justify-center" style="margin-top: -1.5rem;">
-                <img src="img/logo-its-wesus-branco.webp" fetchpriority="high" width="250" height="250" alt="It's Wesus" class="img-mobile hidden dark:block w-full max-w-[250px] h-auto object-contain drop-shadow-md lg:-mb-8 lg:-mt-12" />
-                <img src="img/logo-its-wesus-dourado.webp" fetchpriority="high" width="160" height="64" alt="It's Wesus" class="block dark:hidden w-auto h-16 object-contain drop-shadow-md img-mobile" />
+            <header class="contracts-desktop-enxuto contracts-header-spacing flex flex-col lg:flex-row lg:items-end justify-between gap-2 lg:gap-4 mb-2 relative">
+              <div class="logo-mobile-container flex lg:hidden items-center justify-center">
+                <img src="img/logo-its-wesus-branco.webp" fetchpriority="high" width="250" height="250" alt="It's Wesus" class="img-mobile hidden dark:block drop-shadow-md" />
+                <img src="img/logo-its-wesus-dourado.webp" fetchpriority="high" width="250" height="250" alt="It's Wesus" class="img-mobile block dark:hidden drop-shadow-md" />
               </div>
-
-              <div class="flex flex-col items-center lg:items-start text-center lg:text-left -mt-16 lg:-mt-0 w-full">
+              <div class="flex flex-col items-center lg:items-start text-center lg:text-left tab-title-mobile-offset w-full">
                 <h2 class="font-playfair text-2xl lg:text-3xl font-bold text-white/90 tracking-wide">
                   Meus <span class="text-gold-liquid">Contratos</span>
                 </h2>
@@ -1120,12 +1517,14 @@
               </div>
             </header>
 
+            <!-- Contratos em Execução -->
             <section aria-label="Contratos em Execução Ativos" class="space-y-6 contracts-desktop-enxuto">
               <div class="flex items-center gap-2">
                 <div class="w-1.5 h-4 bg-gradient-to-b from-[#6FCF97] to-green-700 rounded-full shadow-[0_0_8px_rgba(111,207,151,0.4)]"></div>
                 <h3 class="font-playfair text-xs font-bold text-white/60 uppercase tracking-widest">Contratos em Execução (5)</h3>
               </div>
 
+              <!-- Contrato: Edifício Aliados -->
               <div id="contract-aliados" class="hero-card-crystal p-5 rounded-3xl grid grid-cols-1 lg:grid-cols-12 items-center gap-4 lg:gap-2 relative overflow-hidden w-full group hover:bg-white/[0.02] transition-all duration-300">
                 <div class="absolute inset-0 bg-gradient-to-br from-white/[0.01] to-transparent opacity-20 pointer-events-none"></div>
                 <div class="flex items-center gap-4 min-w-0 lg:col-span-4 w-full">
@@ -1154,9 +1553,12 @@
                   <p class="text-[9px] uppercase text-white/40 tracking-widest font-semibold">Status do Termo</p>
                   <p class="text-xs lg:text-sm font-bold text-[#6FCF97] tracking-wide">Ativo em Curso</p>
                 </div>
-                <div class="w-full lg:col-span-2 flex lg:justify-end mt-2 lg:mt-0"><button class="w-full btn-gold-lingot !py-2.5 !px-4 !text-[10px] !h-auto whitespace-nowrap" style="color: #ffffff !important; letter-spacing: 0.12em;">Baixar Doc</button></div>
+                <div class="w-full lg:col-span-2 flex lg:justify-end mt-2 lg:mt-0">
+                  <button class="w-full btn-gold-lingot !py-2.5 !px-4 !text-[10px] !h-auto whitespace-nowrap" style="color: #ffffff !important; letter-spacing: 0.12em;">Baixar Doc</button>
+                </div>
               </div>
 
+              <!-- Contrato: Villa Infante -->
               <div id="contract-villa" class="hero-card-crystal p-5 rounded-3xl grid grid-cols-1 lg:grid-cols-12 items-center gap-4 lg:gap-2 relative overflow-hidden w-full group hover:bg-white/[0.02] transition-all duration-300">
                 <div class="absolute inset-0 bg-gradient-to-br from-white/[0.01] to-transparent opacity-20 pointer-events-none"></div>
                 <div class="flex items-center gap-4 min-w-0 lg:col-span-4 w-full">
@@ -1185,9 +1587,12 @@
                   <p class="text-[9px] uppercase text-white/40 tracking-widest font-semibold">Status do Termo</p>
                   <p class="text-xs lg:text-sm font-bold text-[#6FCF97] tracking-wide">Ativo em Curso</p>
                 </div>
-                <div class="w-full lg:col-span-2 flex lg:justify-end mt-2 lg:mt-0"><button class="w-full btn-gold-lingot !py-2.5 !px-4 !text-[10px] !h-auto whitespace-nowrap" style="color: #ffffff !important; letter-spacing: 0.12em;">Baixar Doc</button></div>
+                <div class="w-full lg:col-span-2 flex lg:justify-end mt-2 lg:mt-0">
+                  <button class="w-full btn-gold-lingot !py-2.5 !px-4 !text-[10px] !h-auto whitespace-nowrap" style="color: #ffffff !important; letter-spacing: 0.12em;">Baixar Doc</button>
+                </div>
               </div>
 
+              <!-- Contrato: Palácio Estoril -->
               <div id="contract-estoril" class="hero-card-crystal p-5 rounded-3xl grid grid-cols-1 lg:grid-cols-12 items-center gap-4 lg:gap-2 relative overflow-hidden w-full group hover:bg-white/[0.02] transition-all duration-300">
                 <div class="absolute inset-0 bg-gradient-to-br from-white/[0.01] to-transparent opacity-20 pointer-events-none"></div>
                 <div class="flex items-center gap-4 min-w-0 lg:col-span-4 w-full">
@@ -1216,9 +1621,12 @@
                   <p class="text-[9px] uppercase text-white/40 tracking-widest font-semibold">Status do Termo</p>
                   <p class="text-xs lg:text-sm font-bold text-[#6FCF97] tracking-wide">Ativo em Curso</p>
                 </div>
-                <div class="w-full lg:col-span-2 flex lg:justify-end mt-2 lg:mt-0"><button class="w-full btn-gold-lingot !py-2.5 !px-4 !text-[10px] !h-auto whitespace-nowrap" style="color: #ffffff !important; letter-spacing: 0.12em;">Baixar Doc</button></div>
+                <div class="w-full lg:col-span-2 flex lg:justify-end mt-2 lg:mt-0">
+                  <button class="w-full btn-gold-lingot !py-2.5 !px-4 !text-[10px] !h-auto whitespace-nowrap" style="color: #ffffff !important; letter-spacing: 0.12em;">Baixar Doc</button>
+                </div>
               </div>
 
+              <!-- Contrato: Douro Marina -->
               <div id="contract-marina" class="hero-card-crystal p-5 rounded-3xl grid grid-cols-1 lg:grid-cols-12 items-center gap-4 lg:gap-2 relative overflow-hidden w-full group hover:bg-white/[0.02] transition-all duration-300">
                 <div class="absolute inset-0 bg-gradient-to-br from-white/[0.01] to-transparent opacity-20 pointer-events-none"></div>
                 <div class="flex items-center gap-4 min-w-0 lg:col-span-4 w-full">
@@ -1247,9 +1655,12 @@
                   <p class="text-[9px] uppercase text-white/40 tracking-widest font-semibold">Status do Termo</p>
                   <p class="text-xs lg:text-sm font-bold text-[#6FCF97] tracking-wide">Ativo em Curso</p>
                 </div>
-                <div class="w-full lg:col-span-2 flex lg:justify-end mt-2 lg:mt-0"><button class="w-full btn-gold-lingot !py-2.5 !px-4 !text-[10px] !h-auto whitespace-nowrap" style="color: #ffffff !important; letter-spacing: 0.12em;">Baixar Doc</button></div>
+                <div class="w-full lg:col-span-2 flex lg:justify-end mt-2 lg:mt-0">
+                  <button class="w-full btn-gold-lingot !py-2.5 !px-4 !text-[10px] !h-auto whitespace-nowrap" style="color: #ffffff !important; letter-spacing: 0.12em;">Baixar Doc</button>
+                </div>
               </div>
 
+              <!-- Contrato: Lumina Chiado -->
               <div id="contract-chiado" class="hero-card-crystal p-5 rounded-3xl grid grid-cols-1 lg:grid-cols-12 items-center gap-4 lg:gap-2 relative overflow-hidden w-full group hover:bg-white/[0.02] transition-all duration-300">
                 <div class="absolute inset-0 bg-gradient-to-br from-white/[0.01] to-transparent opacity-20 pointer-events-none"></div>
                 <div class="flex items-center gap-4 min-w-0 lg:col-span-4 w-full">
@@ -1278,16 +1689,20 @@
                   <p class="text-[9px] uppercase text-white/40 tracking-widest font-semibold">Status do Termo</p>
                   <p class="text-xs lg:text-sm font-bold text-[#6FCF97] tracking-wide">Ativo em Curso</p>
                 </div>
-                <div class="w-full lg:col-span-2 flex lg:justify-end mt-2 lg:mt-0"><button class="w-full btn-gold-lingot !py-2.5 !px-4 !text-[10px] !h-auto whitespace-nowrap" style="color: #ffffff !important; letter-spacing: 0.12em;">Baixar Doc</button></div>
+                <div class="w-full lg:col-span-2 flex lg:justify-end mt-2 lg:mt-0">
+                  <button class="w-full btn-gold-lingot !py-2.5 !px-4 !text-[10px] !h-auto whitespace-nowrap" style="color: #ffffff !important; letter-spacing: 0.12em;">Baixar Doc</button>
+                </div>
               </div>
             </section>
 
-            <section aria-label="Contratos Antigos Finalizados" style="margin-top: 4rem;" class="space-y-6 contracts-desktop-enxuto">
+            <!-- Contratos Históricos -->
+            <section aria-label="Contratos Antigos Finalizados" class="contracts-history-section space-y-6 contracts-desktop-enxuto">
               <div class="flex items-center gap-2">
                 <div class="w-1.5 h-4 bg-gradient-to-b from-white/30 to-white/10 rounded-full"></div>
                 <h3 class="font-playfair text-xs font-bold text-white/60 uppercase tracking-widest">Contratos Antigos (Histórico)</h3>
               </div>
 
+              <!-- Histórico: Operação Alquimia Lux -->
               <div class="hero-card-crystal p-5 rounded-3xl grid grid-cols-1 lg:grid-cols-12 items-center gap-4 lg:gap-2 relative overflow-hidden w-full group hover:bg-white/[0.02] transition-all duration-300">
                 <div class="absolute inset-0 bg-gradient-to-br from-white/[0.01] to-transparent opacity-10 pointer-events-none"></div>
                 <div class="flex items-center gap-4 min-w-0 lg:col-span-4 w-full">
@@ -1319,9 +1734,12 @@
                   <p class="text-[9px] uppercase text-white/40 tracking-widest font-semibold">Rendimento Líquido</p>
                   <p class="text-xs lg:text-sm font-bold text-[#6FCF97]">+ € 10.000,00</p>
                 </div>
-                <div class="w-full lg:col-span-2 flex lg:justify-end mt-2 lg:mt-0"><button class="w-full btn-gold-lingot !py-2.5 !px-4 !text-[10px] !h-auto whitespace-nowrap" style="color: #ffffff !important; letter-spacing: 0.1em;">Baixar Doc</button></div>
+                <div class="w-full lg:col-span-2 flex lg:justify-end mt-2 lg:mt-0">
+                  <button class="w-full btn-gold-lingot !py-2.5 !px-4 !text-[10px] !h-auto whitespace-nowrap" style="color: #ffffff !important; letter-spacing: 0.1em;">Baixar Doc</button>
+                </div>
               </div>
 
+              <!-- Histórico: Edifício Aliados - Cota A -->
               <div class="hero-card-crystal p-5 rounded-3xl grid grid-cols-1 lg:grid-cols-12 items-center gap-4 lg:gap-2 relative overflow-hidden w-full group hover:bg-white/[0.02] transition-all duration-300">
                 <div class="absolute inset-0 bg-gradient-to-br from-white/[0.01] to-transparent opacity-10 pointer-events-none"></div>
                 <div class="flex items-center gap-4 min-w-0 lg:col-span-4 w-full">
@@ -1353,20 +1771,26 @@
                   <p class="text-[9px] uppercase text-white/40 tracking-widest font-semibold">Rendimento Líquido</p>
                   <p class="text-xs lg:text-sm font-bold text-[#6FCF97]">+ € 2.500,00</p>
                 </div>
-                <div class="w-full lg:col-span-2 flex lg:justify-end mt-2 lg:mt-0"><button class="w-full btn-gold-lingot !py-2.5 !px-4 !text-[10px] !h-auto whitespace-nowrap" style="color: #ffffff !important; letter-spacing: 0.1em;">Baixar Doc</button></div>
+                <div class="w-full lg:col-span-2 flex lg:justify-end mt-2 lg:mt-0">
+                  <button class="w-full btn-gold-lingot !py-2.5 !px-4 !text-[10px] !h-auto whitespace-nowrap" style="color: #ffffff !important; letter-spacing: 0.1em;">Baixar Doc</button>
+                </div>
               </div>
             </section>
           </div>
+          <!-- fim #tab-documentos -->
 
+
+          <!-- ══════════════════════════════════════════════════════
+               TAB: CONTA
+          ══════════════════════════════════════════════════════ -->
           <div id="tab-conta" class="tab-content hidden select-none">
 
-            <header style="max-width: 1050px; margin: 0 auto 3.5rem auto;" class="flex flex-col lg:flex-row lg:items-end justify-between gap-2 lg:gap-4 mb-2 relative">
-              <div class="flex lg:hidden items-center justify-center" style="margin-top: -1.5rem;">
-                <img src="img/logo-its-wesus-branco.webp" width="250" height="250" alt="It's Wesus" class="img-mobile hidden dark:block w-full max-w-[250px] h-auto object-contain drop-shadow-md lg:-mb-8 lg:-mt-12" />
-                <img src="img/logo-its-wesus-dourado.webp" width="160" height="64" alt="It's Wesus" class="img-mobile block dark:hidden w-auto h-16 object-contain drop-shadow-md" />
+            <header class="premium-account-header flex flex-col lg:flex-row lg:items-end justify-between gap-2 lg:gap-4 mb-2 relative">
+              <div class="logo-mobile-container flex lg:hidden items-center justify-center">
+                <img src="img/logo-its-wesus-branco.webp" fetchpriority="high" width="250" height="250" alt="It's Wesus" class="img-mobile hidden dark:block drop-shadow-md" />
+                <img src="img/logo-its-wesus-dourado.webp" fetchpriority="high" width="250" height="250" alt="It's Wesus" class="img-mobile block dark:hidden drop-shadow-md" />
               </div>
-
-              <div class="flex flex-col items-center lg:items-start text-center lg:text-left -mt-16 lg:-mt-0 w-full">
+              <div class="flex flex-col items-center lg:items-start text-center lg:text-left tab-title-mobile-offset w-full">
                 <h2 class="font-playfair text-2xl lg:text-3xl font-bold text-white/90 tracking-wide">
                   Definições da <span class="text-gold-liquid">Conta</span>
                 </h2>
@@ -1376,23 +1800,20 @@
 
             <div class="premium-account-grid space-y-6 lg:space-y-0">
 
+              <!-- Coluna: Identidade -->
               <div class="hero-card-crystal p-6 rounded-3xl relative overflow-hidden flex flex-col justify-between">
                 <div class="absolute inset-0 bg-gradient-to-br from-white/[0.01] to-transparent opacity-20 pointer-events-none"></div>
 
                 <div>
-                  <div class="flex items-center gap-2 pb-3" style="margin-bottom: 2rem; border-b: 1px solid rgba(255, 255, 255, 0.05);">
+                  <div class="flex items-center gap-2 identity-section-divider identity-header-divider">
                     <div class="w-1.5 h-4 bg-gradient-to-b from-gold to-gold-light rounded-full"></div>
                     <h3 class="font-playfair text-xs font-bold text-white/60 uppercase tracking-widest">Identidade do Investidor</h3>
                   </div>
 
-                  <!-- BLOCO COMPACTO DA FOTO -->
-                  <div class="flex flex-col items-center text-center justify-center bg-white/[0.01] p-6 rounded-2xl border border-white/5 group" style="margin-bottom: 2.5rem;">
-
-                    <!-- 🔥 FIX: Forçamos o tamanho elegante de 72px e a borda em ouro bem visível diretamente aqui -->
-                    <div class="relative flex items-center justify-center rounded-full bg-[#071326] shadow-lg shrink-0 overflow-hidden" style="width: 72px !important; height: 72px !important; border: 2.5px solid #e8d08d !important; box-shadow: 0 0 12px rgba(232, 208, 141, 0.35);">
-                      <img src="img/danilson-photo.webp" alt="Danilson Carvalho" class="object-cover transition-transform duration-500 group-hover:scale-105" style="width: 100% !important; height: 100% !important; border-radius: 50% !important;" />
+                  <div class="flex flex-col items-center text-center justify-center bg-white/[0.01] p-6 rounded-2xl border border-white/5 group identity-avatar-card">
+                    <div class="identity-avatar-img-wrap relative flex items-center justify-center rounded-full bg-[#071326] shadow-lg shrink-0 overflow-hidden">
+                      <img src="img/danilson-photo.webp" alt="Danilson Carvalho" class="object-cover transition-transform duration-500 group-hover:scale-105" />
                     </div>
-
                     <div class="mt-4">
                       <h4 class="text-white font-bold text-base tracking-wide">Danilson Carvalho</h4>
                       <p class="text-[10px] text-gold-liquid font-bold uppercase tracking-[0.18em] mt-1 select-none">Investidor Premium</p>
@@ -1420,19 +1841,22 @@
                   </div>
                 </div>
 
-                <div class="flex justify-end pt-4" style="margin-top: 1rem;">
+                <div class="flex justify-end identity-save-footer">
                   <button class="w-full sm:w-auto btn-gold-lingot !py-2.5 !px-6 !text-[10px]" style="color: #ffffff !important; letter-spacing: 0.12em;">
                     Salvar Alterações
                   </button>
                 </div>
               </div>
 
+              <!-- Coluna Direita: Segurança + Preferências -->
               <div class="flex flex-col gap-6 w-full">
+
+                <!-- Card: Segurança -->
                 <div class="hero-card-crystal p-6 rounded-3xl relative overflow-hidden flex flex-col justify-between min-h-[290px]">
                   <div class="absolute inset-0 bg-gradient-to-br from-white/[0.01] to-transparent opacity-10 pointer-events-none"></div>
 
                   <div>
-                    <div class="flex items-center gap-2 pb-2" style="margin-bottom: 1.5rem; border-b: 1px solid rgba(255, 255, 255, 0.05);">
+                    <div class="flex items-center gap-2 security-section-divider">
                       <div class="w-1.5 h-4 bg-gradient-to-b from-gold to-gold-light rounded-full"></div>
                       <h3 class="font-playfair text-xs font-bold text-white/60 uppercase tracking-widest">Segurança do Acesso</h3>
                     </div>
@@ -1448,12 +1872,11 @@
                       </div>
                     </div>
 
-                    <div class="flex items-center justify-between pt-4 text-xs font-inter" style="margin-top: 1rem; border-t: 1px solid rgba(255, 255, 255, 0.05);">
+                    <div class="flex items-center justify-between text-xs font-inter security-2fa-row">
                       <div>
                         <p class="text-white/90 font-bold tracking-wide">Autenticação de Dois Fatores (2FA)</p>
                         <p class="text-[10px] text-white/40 mt-0.5">Camada extra para login e termos</p>
                       </div>
-
                       <label class="premium-toggle-container">
                         <input type="checkbox" class="premium-toggle-input" checked>
                         <span class="premium-toggle-slider"></span>
@@ -1461,23 +1884,24 @@
                     </div>
                   </div>
 
-                  <div class="pt-4" style="margin-top: 2rem;">
+                  <div class="security-update-footer">
                     <button class="w-full btn-gold-lingot !py-2.5 !text-[10px]" style="color: #ffffff !important; letter-spacing: 0.12em;">
                       Atualizar Senha
                     </button>
                   </div>
                 </div>
 
+                <!-- Card: Preferências e Suporte -->
                 <div class="hero-card-crystal p-6 rounded-3xl relative overflow-hidden flex flex-col justify-between min-h-[340px]">
                   <div class="absolute inset-0 bg-gradient-to-br from-white/[0.01] to-transparent opacity-10 pointer-events-none"></div>
 
                   <div>
-                    <div class="flex items-center gap-2 pb-2" style="margin-bottom: 0.5rem; border-b: 1px solid rgba(255, 255, 255, 0.05);">
+                    <div class="flex items-center gap-2 prefs-section-divider">
                       <div class="w-1.5 h-4 bg-gradient-to-b from-gold to-gold-light rounded-full"></div>
                       <h3 class="font-playfair text-xs font-bold text-white/60 uppercase tracking-widest">Preferências e Suporte</h3>
                     </div>
 
-                    <div class="premium-notification-row" style="border-t: 1px solid rgba(255, 255, 255, 0.03);">
+                    <div class="premium-notification-row prefs-notification-row-border">
                       <div class="pr-4">
                         <p class="text-white/90 font-bold tracking-wide">Autenticação Biométrica</p>
                         <p class="text-[10px] text-white/40 mt-0.5">Login rápido com digital ou rosto</p>
@@ -1500,7 +1924,7 @@
                         </label>
                       </div>
 
-                      <div class="premium-notification-row" style="border-t: 1px solid rgba(255, 255, 255, 0.03);">
+                      <div class="premium-notification-row prefs-notification-row-border">
                         <div class="pr-4">
                           <p class="text-white/90 font-bold tracking-wide">Alertas de Vencimento</p>
                           <p class="text-[10px] text-white/40 mt-0.5">Notificações de prazos e liquidações de mútuo</p>
@@ -1511,7 +1935,7 @@
                         </label>
                       </div>
 
-                      <div class="premium-notification-row" style="border-t: 1px solid rgba(255, 255, 255, 0.03);">
+                      <div class="premium-notification-row prefs-notification-row-border">
                         <div class="pr-4">
                           <p class="text-white/90 font-bold tracking-wide">Modo de Visualização</p>
                           <p class="text-[10px] text-white/40 mt-0.5">Alternar o tema do portal (Claro / Escuro)</p>
@@ -1525,8 +1949,7 @@
                     </div>
                   </div>
 
-                  <!-- Botão de Suporte Direto para o WhatsApp (Variante Lingote Esmeralda) -->
-                  <div class="pt-4" style="margin-top: 1rem; border-top: 1px solid rgba(255, 255, 255, 0.05);">
+                  <div class="prefs-support-footer">
                     <a href="https://wa.me/351929408352?text=Olá! Preciso de suporte técnico no Portal do Investidor." target="_blank" class="w-full flex items-center justify-center gap-2 btn-gold-lingot btn-emerald-lingot !py-2.5 !text-[10px] text-center" style="color: #ffffff !important; letter-spacing: 0.12em;">
                       <svg class="w-4 h-4 fill-current shrink-0" viewBox="0 0 24 24">
                         <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397 0 11.93 0c3.165.001 6.14 1.233 8.377 3.469 2.237 2.235 3.469 5.211 3.469 8.378 0 6.582-5.336 11.93-11.87 11.93h-.004c-2.012 0-3.987-.544-5.732-1.583L0 24zm6.158-3.466l.356.211c1.6.953 3.546 1.456 5.368 1.456h.003c5.497 0 9.969-4.473 9.973-9.972.002-2.664-1.033-5.167-2.915-7.05-1.88-1.882-4.383-2.917-7.046-2.917-5.5 0-9.972 4.474-9.975 9.973-.001 1.894.494 3.743 1.433 5.361l.232.401L1.87 21.673l3.52-.924zM16.43 13.13c-.26-.13-1.536-.758-1.772-.844-.237-.086-.41-.13-.582.13-.172.26-.665.844-.813 1.012-.148.17-.297.187-.557.057-.26-.13-1.1-.405-2.096-1.293-.775-.692-1.3-1.547-1.452-1.807-.152-.26-.016-.4.114-.53.117-.116.26-.303.39-.455.13-.152.173-.26.26-.433.086-.173.043-.325-.022-.455-.065-.13-.582-1.4-.798-1.92-.21-.51-.424-.44-.582-.44H8.04c-.172 0-.453.065-.69.325-.238.26-.908.887-.908 2.162 0 1.275.928 2.506 1.057 2.679.13.173 1.826 2.79 4.425 3.913.618.267 1.1.426 1.475.545.622.197 1.187.17 1.634.1.5-.074 1.536-.628 1.75-1.235.213-.607.213-1.127.15-1.235-.064-.11-.237-.174-.497-.304z" />
@@ -1538,9 +1961,14 @@
               </div>
             </div>
           </div>
+          <!-- fim #tab-conta -->
 
+
+          <!-- ══════════════════════════════════════════════════════
+               TAB: SUPORTE
+          ══════════════════════════════════════════════════════ -->
           <div id="tab-suporte" class="tab-content hidden select-none">
-            <header class="contracts-desktop-enxuto" style="margin-bottom: 3rem;">
+            <header class="contracts-desktop-enxuto support-header-spacing">
               <h2 class="font-playfair text-2xl lg:text-3xl font-bold text-white/90 tracking-wide">
                 Suporte <span class="text-gold-liquid">Técnico</span>
               </h2>
@@ -1557,7 +1985,6 @@
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
                     </svg>
                   </div>
-
                   <div class="min-w-0 space-y-1">
                     <div class="flex items-center gap-2">
                       <h4 class="text-white font-bold text-base tracking-wide">Canal Direto de Engenharia</h4>
@@ -1582,11 +2009,14 @@
               </div>
             </div>
           </div>
+          <!-- fim #tab-suporte -->
+
         </div>
       </main>
     </div>
   </div>
 
+  <!-- ─── NAVBAR MOBILE ──────────────────────────────────────────── -->
   <nav class="bottom-nav lg:hidden fixed bottom-0 left-0 right-0 z-40 flex border-t border-white/10" aria-label="Navegação inferior">
     <a href="#" class="bottom-nav-item active" aria-label="Início" aria-current="page" data-section="dashboard">
       <svg class="bottom-nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1594,21 +2024,18 @@
       </svg>
       <span class="bottom-nav-label">Início</span>
     </a>
-
     <a href="#" class="bottom-nav-item" aria-label="Oportunidades" data-section="oportunidades">
       <svg class="bottom-nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M13 10V3L4 14h7v7l9-11h-7z" />
       </svg>
       <span class="bottom-nav-label">Oportunidades</span>
     </a>
-
     <a href="#" class="bottom-nav-item" aria-label="Documentos" data-section="documentos">
       <svg class="bottom-nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
       </svg>
       <span class="bottom-nav-label">Contratos</span>
     </a>
-
     <a href="#" class="bottom-nav-item" aria-label="Conta" data-section="conta">
       <svg class="bottom-nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
@@ -1617,13 +2044,12 @@
     </a>
   </nav>
 
+  <!-- ─── POPUP "EM BREVE" ───────────────────────────────────────── -->
   <div id="wesusComingSoonPopup" class="wesus-popup-overlay">
     <div id="wesusComingSoonBackdrop" class="absolute inset-0 bg-[#071326]/80 backdrop-blur-md cursor-pointer"></div>
 
     <div class="wesus-popup-card hero-card-crystal relative z-10 rounded-3xl w-[90%] max-w-sm flex flex-col items-center text-center">
-
-      <div class="absolute -top-8 left-1/2 -translate-x-1/2 icon-badge-shield w-16 h-16 rounded-[1.25rem] flex items-center justify-center text-[#E8D08D] bg-[#071326] shadow-xl border border-[#C5A059]/40">
-      </div>
+      <div class="absolute -top-8 left-1/2 -translate-x-1/2 icon-badge-shield w-16 h-16 rounded-[1.25rem] flex items-center justify-center text-[#E8D08D] bg-[#071326] shadow-xl border border-[#C5A059]/40"></div>
 
       <h3 class="font-playfair font-bold text-2xl text-white tracking-wide mb-3">Em Breve</h3>
       <p class="text-[13px] text-white/70 font-inter !mb-8 leading-relaxed">Esta funcionalidade estará disponível numa futura atualização do portal.</p>
