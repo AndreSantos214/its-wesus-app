@@ -156,17 +156,12 @@
         passwordInput.value,
       );
 
-      // Success — store token & redirect
+      // Sucesso — Guarda o estado e chama a transição com logo
       sessionStorage.setItem("wesus_token", result.token);
       sessionStorage.setItem("wesus_user", JSON.stringify(result.user));
 
-      // Smooth exit animation before navigation
-      document.body.style.transition = "opacity 0.4s ease";
-      document.body.style.opacity = "0";
-      setTimeout(() => {
-        // Replace with your dashboard route
-        window.location.href = "dashboard.html";
-      }, 400);
+      // CHAMADA DA TRANSIÇÃO PREMIUM
+      executePremiumRedirect();
     } catch (err) {
       setLoading(false);
       showFieldError(
@@ -221,13 +216,11 @@
           fallbackTitle: "Usar Senha",
         });
 
-        // Sucesso: Prossegue para o dashboard
+        // Sucesso: Define o token e dispara a transição corrigida
         sessionStorage.setItem("wesus_token", "biometric-token-verified");
-        document.body.style.transition = "opacity 0.4s ease";
-        document.body.style.opacity = "0";
-        setTimeout(() => {
-          window.location.href = "dashboard.html";
-        }, 400);
+
+        // CHAMADA DA TRANSIÇÃO PREMIUM (Adeus ecrã colado!)
+        executePremiumRedirect();
       } catch (e) {
         console.log("Biometria cancelada ou erro:", e);
       }
@@ -242,38 +235,106 @@
 
 /* ── Lógica Nativa Mobile (Fundo + Teclado + Rotação) ──────────────────────────── */
 
-// 1. Isolamos a lógica de cálculo numa função para podermos reaproveitar
-function updateBackgroundHeights() {
-  const marginOfError = 100;
-  const safeHeight = window.innerHeight + marginOfError;
+/* ── Lógica Nativa Mobile (Fundo + Teclado + Rotação Inteligente) ──────────────────────────── */
 
-  // Fundo Mobile
+// Guardamos a largura inicial do ecrã para monitorizar a rotação real
+let lastWidth = window.innerWidth;
+
+function updateBackgroundHeights() {
+  const actualHeight = window.innerHeight;
+  const actualWidth = window.innerWidth;
+
+  // ── MARGEM DE ERRO REFORÇADA (De 60px para 120px) ──
+  // Isto cria uma "sangria" generosa nas bordas. A imagem estende-se 60px para cima
+  // e 60px para baixo além do limite visível do ecrã, blindando o layout a 100%.
+  const buffer = 120;
+  const safeHeight = actualHeight + buffer;
+  const offsetTop = -(buffer / 2); // Centraliza a imagem verticalmente (-60px)
+
+  // 1. Trancar o wrapper principal estritamente na altura física do ecrã
+  const mainWrapper = document.getElementById("main-wrapper");
+  if (mainWrapper) {
+    mainWrapper.style.height = `${actualHeight}px`;
+  }
+
+  // 2. Fundo Mobile (Garante a sobreposição segura nas bordas)
   const mobileBgWrapper = document.querySelector(
     '.lg\\:hidden > img[src*="casa-background-mobile"]',
   )?.parentElement;
   if (mobileBgWrapper) {
     mobileBgWrapper.style.height = `${safeHeight}px`;
+    mobileBgWrapper.style.top = `${offsetTop}px`;
     mobileBgWrapper.style.position = "absolute";
   }
 
-  // Fundo Desktop/Tablet
+  // 3. Fundo Desktop/Tablet
   const desktopBgImg = document.querySelector(
     '.lg\\:block > img[src*="casa-background-desktop"]',
   );
   if (desktopBgImg && desktopBgImg.parentElement) {
     desktopBgImg.parentElement.style.height = `${safeHeight}px`;
+    desktopBgImg.parentElement.style.top = `${offsetTop}px`;
     desktopBgImg.parentElement.style.position = "fixed";
   }
 
-  // Gradiente Desktop/Tablet
+  // 4. Gradiente Desktop/Tablet
   const desktopGradientWrapper = document.querySelector(
     ".lg\\:block.w-\\[60\\%\\]",
   );
   if (desktopGradientWrapper) {
     desktopGradientWrapper.style.height = `${safeHeight}px`;
+    desktopGradientWrapper.style.top = `${offsetTop}px`;
     desktopGradientWrapper.style.position = "fixed";
   }
+
+  // Atualizar o estado da largura após o cálculo
+  lastWidth = actualWidth;
 }
+
+document.addEventListener("DOMContentLoaded", () => {
+  /* ── Sincronização de Cores Nativas ── */
+  if (window.AndroidInterface && window.AndroidInterface.setSystemBarsColor) {
+    window.AndroidInterface.setSystemBarsColor("#0b1f3a", false);
+  }
+
+  // Execução inicial ao abrir a aplicação
+  updateBackgroundHeights();
+
+  /* ── O DETETOR DE ROTAÇÃO INFALÍVEL ── */
+  // No ecossistema mobile, o evento 'resize' dispara quando o teclado abre.
+  // NO ENTANTO, o teclado altera apenas a altura (innerHeight), NUNCA a largura (innerWidth).
+  // Se a largura mudou, significa com 100% de certeza que o Tablet rodou.
+  window.addEventListener("resize", () => {
+    if (window.innerWidth !== lastWidth) {
+      // Um pequeno timeout de 150ms dá espaço para a WebView processar a nova orientação física
+      setTimeout(updateBackgroundHeights, 150);
+    }
+  });
+
+  /* ── Bloqueio de overscroll ── */
+  document.addEventListener(
+    "touchmove",
+    function (e) {
+      if (document.body.classList.contains("keyboard-open")) {
+        e.preventDefault();
+      }
+    },
+    { passive: false },
+  );
+
+  /* ── Listeners de Teclado do Capacitor ── */
+  if (window.Capacitor && window.Capacitor.Plugins.Keyboard) {
+    const { Keyboard } = window.Capacitor.Plugins;
+
+    Keyboard.addListener("keyboardWillShow", () => {
+      document.body.classList.add("keyboard-open");
+    });
+
+    Keyboard.addListener("keyboardWillHide", () => {
+      document.body.classList.remove("keyboard-open");
+    });
+  }
+});
 
 document.addEventListener("DOMContentLoaded", () => {
   /* ── Sincronização de Cores Nativas (Via Java Bridge) ── */
@@ -320,3 +381,52 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 });
+
+function executePremiumRedirect() {
+  // 1. Cria o contentor da cortina (Flexbox absoluto sobreposto)
+  const curtain = document.createElement("div");
+  curtain.style.position = "fixed";
+  curtain.style.inset = "0";
+  curtain.style.backgroundColor = "#0B1F3A"; // O teu azul Wesus absoluto
+  curtain.style.zIndex = "99999";
+  curtain.style.display = "flex";
+  curtain.style.justifyContent = "center";
+  curtain.style.alignItems = "center";
+  curtain.style.opacity = "0";
+  curtain.style.transition = "opacity 0.28s cubic-bezier(0.25, 1, 0.5, 1)";
+
+  // 2. Injeta a logo de forma elegante e responsiva
+  const logo = document.createElement("img");
+  logo.src = "img/transition-logo.webp";
+
+  // 🔥 SOLUÇÃO SÉNIOR: Layout Fluido Baseado na Largura do Ecrã
+  logo.style.width = "100%";
+  // No mobile: garante um tamanho mínimo de 160px.
+  // No ecrã intermédio: ocupa 25% da largura total da janela (25vw).
+  // No desktop grande: estabiliza num tamanho imponente de 420px.
+  logo.style.maxWidth = "clamp(160px, 25vw, 420px)";
+
+  logo.style.height = "auto";
+  logo.style.opacity = "0";
+  logo.style.transform = "scale(0.94)";
+  logo.style.transition =
+    "opacity 0.2s ease-out, transform 0.28s cubic-bezier(0.25, 1, 0.5, 1)";
+
+  curtain.appendChild(logo);
+  document.body.appendChild(curtain);
+
+  // 3. Força o reflow do DOM para garantir aceleração por GPU
+  void curtain.offsetHeight;
+
+  // 4. Ativa a entrada suave da cortina e o "flash" controlado da logo
+  curtain.style.opacity = "1";
+  setTimeout(() => {
+    logo.style.opacity = "0.8"; // Brilho acetinado premium
+    logo.style.transform = "scale(1)";
+  }, 30);
+
+  // 5. Redirecionamento no Sweet Spot de tempo
+  setTimeout(() => {
+    window.location.href = "dashboard.html";
+  }, 380);
+}

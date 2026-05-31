@@ -15,7 +15,7 @@
   </noscript>
 
   <link rel="preload" as="image" href="img/logo-its-wesus-small.webp">
-  <link rel="stylesheet" href="css/tailwind-output.css"/>
+  <link rel="stylesheet" href="css/tailwind-output.css" />
 
   <style>
     /* Configurações do Background Mobile no Body */
@@ -88,12 +88,30 @@
     body.keyboard-open #loginForm {
       transform: translateY(-100px) !important;
     }
+
+    .glass-obsidian {
+      /* Opção 1: Base translúcida escura (fumê) fundida com o azul Wesus */
+      background: linear-gradient(135deg, rgba(11, 31, 58, 0.65), rgba(7, 19, 38, 0.45));
+
+      /* Opção 2: Blur radical (dobrado de 15px para 30px) para neutralizar os detalhes da foto */
+      backdrop-filter: blur(30px) saturate(160%);
+      -webkit-backdrop-filter: blur(30px) saturate(160%);
+
+      /* Fronteiras finas e suaves (substitui o branco duro por opacidade subtil) */
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-top-color: rgba(255, 255, 255, 0.18);
+      border-left-color: rgba(255, 255, 255, 0.18);
+
+      /* Sombra projetada robusta para destacar o cartão do fundo claro */
+      box-shadow: 0 24px 50px -12px rgba(0, 0, 0, 0.5),
+        inset 0 1px 1px rgba(255, 255, 255, 0.1);
+    }
   </style>
 </head>
 
 <body class="h-full">
 
-  <div id="main-wrapper" class="h-[100dvh] w-full flex flex-col lg:flex-row relative overflow-hidden bg-[#0B1F3A]">
+  <div id="main-wrapper" class="h-screen w-full flex flex-col lg:flex-row relative overflow-hidden bg-[#0B1F3A]">
 
     <div class="absolute inset-0 hidden lg:block" aria-hidden="true">
       <img src="img/casa-background-desktop.webp" alt="Fundo Portal It's Wesus" class="w-full h-full object-cover object-center" loading="eager" decoding="async" />
@@ -129,7 +147,7 @@
       <div class="relative z-10 w-full max-w-[92%] sm:max-w-sm lg:max-w-sm flex flex-col items-center justify-between h-full py-2 lg:py-0 lg:justify-center lg:gap-8">
 
         <header class="header relative flex flex-col items-center w-full shrink-0 mt-auto lg:mt-0">
-          <div class="relative z-20 pointer-events-none lg:mt-[-100px] lg:mb-[-150px]">
+          <div class="relative z-20 -mt-4 pointer-events-none lg:mt-[-100px] lg:mb-[-150px]">
             <img src="img/logo-its-wesus-small.webp" alt="Logo It's Wesus" width="360" height="360" fetchpriority="high" class="img-logo w-[clamp(160px,50vw,240px)] lg:max-w-[360px] h-auto object-contain drop-shadow-[0_10px_20px_rgba(0,0,0,0.4)]" style="filter: drop-shadow(0 0 15px rgba(197, 160, 89, 0.2));">
           </div>
 
@@ -140,7 +158,7 @@
                 Exclusivo
               </span>
             </h1>
-            <div class="mt-2 mx-auto w-16 h-[1.5px]" style="background: linear-gradient(90deg, transparent, #FFE5A3, transparent);"></div>
+            <div class="mt-2 mx-auto w-16 h-[1.5px]" style="background: linear-gradient(90deg, transparent, #FFE5A3, transparent); margin-bottom: 1.5rem;"></div>
           </div>
         </header>
 
@@ -198,7 +216,7 @@
           <p id="formError" class="hidden text-center text-xs text-red-400 shrink-0" role="alert"></p>
         </form>
 
-        <p id="mobile-signup-text" class="text-[clamp(10px,1.4dvh,12px)] shrink-0 mb-3 lg:mb-0" style="color:rgba(255,255,255,0.5);">
+        <p id="mobile-signup-text" class="text-[clamp(10px,1.4dvh,12px)] shrink-0 mb-3 mt-1 lg:mb-0" style="color:rgba(255,255,255,0.5);">
           Ainda não tem acesso?
           <a href="#" class="transition-colors duration-200 ml-1 underline underline-offset-2" style="margin-bottom: clamp(80px, 5vh, 160px); color:#C5A059;" onmouseover="this.style.color='#E8D08D'" onmouseout="this.style.color='#C5A059'">
             Solicitar Acesso
@@ -264,14 +282,10 @@
                 </g>
               </svg>
               <p class="text-[clamp(8px,1dvh,9px)] uppercase tracking-widest text-center" style="color:white;">ROI Médio</p>
-              <p class="font-semibold text-white text-[clamp(14px,2dvh,18px)] leading-none">8.5%
-                <span class="text-[10px] align-super" style="color:#C5A059;">*</span>
+              <p class="font-semibold text-white text-[clamp(14px,2dvh,18px)] leading-none">12.5%
               </p>
             </div>
           </div>
-          <p class="text-center text-[clamp(8px,1dvh,9px)] leading-relaxed shrink-0 mt-1" style="color:rgba(255,255,255,0.3);">
-            *Declaram-se carácter de rentabilidade histórica.<br />Rendimentos passados não garantem rentabilidade futura.
-          </p>
         </div>
 
       </div>
@@ -281,7 +295,7 @@
 
       <div class="relative z-10 flex gap-5 p-1 pointer-events-auto justify-center" aria-label="Painel de Indicadores" style="margin-bottom: clamp(80px, 5vh, 160px);">
 
-        <div class="glass rounded-xl w-40 p-5 flex flex-col items-center gap-3 transition-transform hover:scale-105 duration-300">
+        <div class="glass-obsidian rounded-xl w-40 p-5 flex flex-col items-center gap-3 transition-transform hover:scale-105 duration-300">
           <svg class="w-10 h-10" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <defs>
               <linearGradient id="goldCircleDesk1" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -305,7 +319,7 @@
           </div>
         </div>
 
-        <div class="glass rounded-xl w-40 p-5 flex flex-col items-center gap-3 transition-transform hover:scale-105 duration-300">
+        <div class="glass-obsidian rounded-xl w-40 p-5 flex flex-col items-center gap-3 transition-transform hover:scale-105 duration-300">
           <svg class="w-10 h-10" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <defs>
               <linearGradient id="goldCircleDesk2" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -327,7 +341,7 @@
           </svg>
           <div class="text-center">
             <p class="text-[9px] font-inter uppercase tracking-[0.2em] text-white/80 mb-1">ROI Médio</p>
-            <p class="font-bold text-white text-2xl leading-none ml-2" style="color:#d3b68b;">8.5%<span class="text-sm align-super text-[#C5A059] ml-1">*</span></p>
+            <p class="font-bold text-white text-2xl leading-none ml-2" style="color:#d3b68b;">12.5%<span class="text-sm align-super text-[#C5A059] ml-1">*</span></p>
             <p class="text-[7.5px] text-white/40 mt-1.5 leading-tight">* Rendimento Histórico</p>
           </div>
         </div>
