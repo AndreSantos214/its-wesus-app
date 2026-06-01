@@ -354,23 +354,6 @@
        BLOCO 8 — POPUP "EM BREVE" (Wesus Coming Soon)
     ═══════════════════════════════════════════════════════════════ */
 
-    .wesus-popup-overlay {
-      position: fixed;
-      inset: 0;
-      z-index: 9999;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.3s ease;
-    }
-
-    .wesus-popup-overlay.active {
-      opacity: 1;
-      pointer-events: auto;
-    }
-
     .wesus-popup-card {
       padding: 4rem 2.2rem 2.2rem 2.2rem !important;
       margin-top: 2rem !important;
@@ -380,6 +363,68 @@
 
     .wesus-popup-overlay.active .wesus-popup-card {
       transform: scale(1);
+    }
+
+    /* ═══════════════════════════════════════════════════════════════
+   MÓDULO DE INTERFACES FLUIDAS — ENTRADA PREMIUM AMANTEIGADA (60FPS)
+   ═══════════════════════════════════════════════════════════════ */
+
+    /* 🎯 CONFIGURAÇÃO COMPOSITORA DO OVERLAY (Fim do flash móbile) */
+    .wesus-popup-overlay {
+      position: fixed !important;
+      inset: 0 !important;
+      z-index: 9999 !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      opacity: 0 !important;
+      visibility: hidden !important;
+      pointer-events: none !important;
+      background-color: rgba(7, 19, 38, 0) !important;
+      backdrop-filter: blur(0px) saturate(100%) !important;
+      -webkit-backdrop-filter: blur(0px) saturate(100%) !important;
+
+      /* Orquestração síncrona de transição de filtros na GPU */
+      transition: opacity 0.35s cubic-bezier(0.25, 1, 0.5, 1),
+        visibility 0.35s step-end,
+        background-color 0.35s cubic-bezier(0.25, 1, 0.5, 1),
+        backdrop-filter 0.35s cubic-bezier(0.25, 1, 0.5, 1),
+        -webkit-backdrop-filter 0.35s cubic-bezier(0.25, 1, 0.5, 1) !important;
+      will-change: opacity, backdrop-filter !important;
+    }
+
+    /* Estado Ativo: Desfoque progressivo e fade-in cinematográfico coordenados */
+    .wesus-popup-overlay.active {
+      opacity: 1 !important;
+      visibility: visible !important;
+      pointer-events: auto !important;
+      background-color: rgba(7, 19, 38, 0.7) !important;
+      backdrop-filter: blur(16px) saturate(180%) !important;
+      -webkit-backdrop-filter: blur(16px) saturate(180%) !important;
+      transition: opacity 0.35s cubic-bezier(0.25, 1, 0.5, 1),
+        visibility 0s linear,
+        background-color 0.35s cubic-bezier(0.25, 1, 0.5, 1),
+        backdrop-filter 0.35s cubic-bezier(0.25, 1, 0.5, 1),
+        -webkit-backdrop-filter 0.35s cubic-bezier(0.25, 1, 0.5, 1) !important;
+    }
+
+    /* 🎯 COORDENAÇÃO DE ESCALA DOS CARDS (Fim da entrada abrupta no Desktop) */
+    #wesusAssetDetailsModal .hero-card-crystal,
+    .wesus-popup-card.hero-card-crystal {
+      opacity: 0 !important;
+      transform: scale(0.94) translateY(12px) !important;
+      will-change: transform, opacity !important;
+      transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+        opacity 0.25s cubic-bezier(0.25, 1, 0.5, 1) !important;
+    }
+
+    /* Efeito mola sutil executado perfeitamente em runtime */
+    .wesus-popup-overlay.active #wesusAssetDetailsModal .hero-card-crystal,
+    .wesus-popup-overlay.active .wesus-popup-card.hero-card-crystal,
+    #wesusAssetDetailsModal.active .hero-card-crystal,
+    #wesusInvestmentModal.active .wesus-popup-card.hero-card-crystal {
+      opacity: 1 !important;
+      transform: scale(1) translateY(0) !important;
     }
 
 
@@ -859,8 +904,54 @@
     }
 
     /* ═══════════════════════════════════════════════════════════════
-   BLOCO 13 — PERFORMANCE HISTÓRICA ULTRA RESPONSIVA (FINAL FIX)
+   BLOCO 13 — PERFORMANCE HISTÓRICA ULTRA RESPONSIVA (FIX BOTÃO INFERIOR)
    ═══════════════════════════════════════════════════════════════ */
+    /* 🎯 CORREÇÃO DO DROPDOWN (RESOLVE PROBLEMAS 1, 2, 3 e 4) */
+    #annualYearDropdownMenu {
+      /* Problema 2: Fundo 100% sólido e opaco no mobile, sem vazamentos */
+      background: #071326 !important;
+      background-color: rgb(7, 19, 38) !important;
+      backdrop-filter: blur(20px) !important;
+      -webkit-backdrop-filter: blur(20px) !important;
+      border: 1px solid rgba(255, 255, 255, 0.1) !important;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.8) !important;
+      padding: 0.35rem !important;
+      width: 150px !important;
+      left: 50% !important;
+      right: auto !important;
+      transform: translateX(-50%) !important;
+      z-index: 99999 !important;
+    }
+
+    /* 🎯 AMPLIAÇÃO DA ÁREA DE TOQUE MÓBILE (ERGONOMIA SENIOR) */
+    #annualYearDropdownMenu button {
+      width: 100% !important;
+      padding: 0.85rem 1.1rem !important;
+      font-size: 10px !important;
+      font-weight: 700 !important;
+      letter-spacing: 0.06em !important;
+      text-transform: uppercase !important;
+      border-radius: 8px !important;
+      border-bottom: none !important;
+      margin-bottom: 3px !important;
+
+      /* Alinhamento ao centro absoluto */
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      text-align: center !important;
+      transition: all 0.2s ease-in-out !important;
+    }
+
+    #annualYearDropdownMenu button:last-child {
+      margin-bottom: 0 !important;
+    }
+
+    /* Efeito Hover/Foco sutil nos botões do menu */
+    #annualYearDropdownMenu button:hover {
+      background-color: rgba(255, 255, 255, 0.05) !important;
+    }
+
     .btn-annual-alltime,
     .btn-annual-dropdown {
       height: 38px !important;
@@ -899,53 +990,58 @@
       border: 1px solid rgba(255, 255, 255, 0.05) !important;
     }
 
-    /* Regras Responsivas Avançadas */
+    /* 📱 REGRAS EXCLUSIVAS PARA MOBILE / TABLET */
     @media (max-width: 1023px) {
+
+      /* Força o card pai a empilhar verticalmente e respeitar a ordem dos filhos directos */
       section[aria-label="Desempenho Anual"] .hero-card-crystal {
         display: flex !important;
         flex-direction: column !important;
         gap: 1.25rem !important;
       }
 
-      .wesus-controls-group {
+      /* 🔥 DESEMBRULHO SÊNIOR: Libera os filhos do grupo para ordenamento direto na raiz do card */
+      section[aria-label="Desempenho Anual"] .wesus-controls-group {
+        display: contents !important;
+      }
+
+      /* 1. FILTROS NO TOPO (Ganha a linha divisória na base para manter o padrão) */
+      section[aria-label="Desempenho Anual"] .wesus-filters-stack {
+        order: 1 !important;
         display: flex !important;
         flex-direction: column !important;
-        gap: 0.85rem !important;
+        gap: 0.75rem !important;
         width: 100% !important;
         border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
         padding-bottom: 1rem !important;
       }
 
-      .wesus-filters-stack {
-        display: flex !important;
-        flex-direction: column !important;
-        gap: 0.75rem !important;
+      /* 2. CARDS DE DADOS NO MEIO DO GRID */
+      section[aria-label="Desempenho Anual"] #annualPerformanceCardsContainer {
+        order: 2 !important;
+        grid-template-columns: repeat(1, minmax(0, 1fr)) !important;
         width: 100% !important;
+      }
+
+      /* 3. 🎯 HISTÓRICO COMPLETO CAI PERFEITAMENTE PARA A BASE DO CARD */
+      section[aria-label="Desempenho Anual"] #wesusViewHistoryTrigger {
+        order: 3 !important;
+        width: 100% !important;
+        margin-top: 0.25rem !important;
       }
 
       #annualAllTimeBtn,
       #annualYearDropdownWrapper,
-      #annualYearDropdownBtn,
-      #wesusViewHistoryTrigger {
+      #annualYearDropdownBtn {
         width: 100% !important;
       }
 
       #annualYearDropdownBtn {
         justify-content: center !important;
-        /* Centraliza o ano e a seta perfeitamente */
         gap: 0.5rem !important;
       }
 
-      #wesusViewHistoryTrigger {
-        order: 3 !important;
-      }
-
-      /* 🎯 CENTRALIZAÇÃO TOTAL DAS INFORMAÇÕES NO MOBILE */
-      #annualPerformanceCardsContainer {
-        grid-template-columns: repeat(1, minmax(0, 1fr)) !important;
-        width: 100% !important;
-      }
-
+      /* Centralização total das informações internas no mobile */
       #annualPerformanceCardsContainer>div {
         align-items: center !important;
         text-align: center !important;
@@ -957,6 +1053,7 @@
       }
     }
 
+    /* 🖥️ PRESERVAÇÃO TOTAL DO LAYOUT DESKTOP ORIGINAL CORRETO */
     @media (min-width: 1024px) {
       .wesus-controls-group {
         display: flex !important;
@@ -1011,8 +1108,13 @@
     /* ═══════════════════════════════════════════════════════════════
    BLOCO 14 — PATCH DEFINITIVO MODAL ATIVOS (ESTILO PREMIUM VAULT)
    ═══════════════════════════════════════════════════════════════ */
-    /* Limita o tamanho máximo do modal e impede overflow feio */
+    /* 🎯 FIX TAMANHO E MARGEM: Altura rígida contra pulos de tamanho e respiro lateral perfeito */
     #wesusAssetDetailsModal .hero-card-crystal {
+      width: calc(100% - 2.5rem) !important;
+      /* Margem lateral móvel garantida */
+      max-width: 380px !important;
+      height: 520px !important;
+      /* Altura padrão fixa: fim das oscilações de aba */
       max-height: 85vh !important;
       display: flex !important;
       flex-direction: column !important;
@@ -1021,14 +1123,12 @@
 
     .wesus-modal-cover-wrap {
       position: relative !important;
-      height: 180px !important;
-      /* Aumentado ligeiramente para acomodar os dados com respiro */
+      height: 170px !important;
       width: 100% !important;
       overflow: hidden !important;
       flex-shrink: 0 !important;
     }
 
-    /* 🔥 O FILTRO AZUL: Película escura sapphire idêntica à máscara de imagem do card original */
     .wesus-modal-cover-overlay {
       position: absolute !important;
       inset: 0 !important;
@@ -1042,48 +1142,82 @@
       height: 100% !important;
       object-fit: cover !important;
       object-position: center !important;
+      opacity: 0;
+      /* Começa invisível para preparar o fade-in do JS */
+      transition: opacity 0.3s ease-in-out !important;
+      /* Transição amanteigada */
     }
 
-    /* 🎯 CORREÇÃO DAS ABAS: Dá o padding e respiro luxuoso que faltava no print */
+    /* 🎯 TRAVA DE SCROLL DEFINITIVA SEM SALTOS: Aplicada estritamente ao body */
+    body:has(.wesus-popup-overlay.active) {
+      overflow: hidden !important;
+    }
+
+    /* Garante o isolamento de cadeia de rolagem no container interno */
+    .wesus-modal-scroll-pane {
+      overscroll-behavior: contain !important;
+    }
+
+    /* 🎯 DESTAQUE DE ABAS (SEGMENTED CONTROL): Transforma a linha em um seletor evidente de vidro */
     .wesus-modal-tabs-row {
       display: flex !important;
-      gap: 1.5rem !important;
-      padding: 0.95rem 1.5rem 0.5rem 1.5rem !important;
-      /* Respiro vertical perfeito */
-      background: rgba(7, 19, 38, 0.6) !important;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+      background: rgba(4, 12, 22, 0.6) !important;
+      border: 1px solid rgba(255, 255, 255, 0.05) !important;
+      border-radius: 14px !important;
+      padding: 4px !important;
+      margin: 1.15rem 1.5rem 0.5rem 1.5rem !important;
+      /* Isola as abas do título e do conteúdo */
+      gap: 4px !important;
       flex-shrink: 0 !important;
     }
 
     .asset-tab-btn {
+      flex: 1 !important;
       font-size: 10px !important;
-      letter-spacing: 0.08em !important;
+      font-weight: 700 !important;
+      letter-spacing: 0.04em !important;
       text-transform: uppercase !important;
       background: transparent !important;
       border: none !important;
-      padding-bottom: 0.65rem !important;
+      padding: 0.65rem 0.5rem !important;
+      border-radius: 10px !important;
+      color: rgba(255, 255, 255, 0.4) !important;
+      /* Opacidade reduzida para itens inativos */
+      text-align: center !important;
       cursor: pointer !important;
+      transition: all 0.2s ease-in-out !important;
     }
 
-    /* Área de conteúdo interna scrollável */
+    /* Gatilhos de Destaque Sênior quando a aba ganha foco pelo JavaScript */
+    .asset-tab-btn.text-white,
+    .asset-tab-btn.active {
+      color: #E8D08D !important;
+      /* Dourado Wesus ativo */
+      background: rgba(255, 255, 255, 0.04) !important;
+      box-shadow: inset 0 0 0 1px rgba(197, 160, 89, 0.25) !important;
+    }
+
+    /* Área de conteúdo interna scrollável e fixa */
     .wesus-modal-scroll-pane {
-      padding: 1.25rem 1.5rem !important;
+      padding: 0.5rem 1.5rem 1.25rem 1.5rem !important;
       overflow-y: auto !important;
-      flex-content: 1 1 0% !important;
-      background: rgba(7, 19, 38, 0.2) !important;
+      flex: 1 1 0% !important;
+      /* Fix do interpretador flex móbile */
+      min-height: 0 !important;
+      /* Força o scroll interno no iOS/Chrome */
+      background: rgba(7, 19, 38, 0.1) !important;
     }
 
-    /* 🎯 TRAVA DA GALERIA: Limita o tamanho das imagens internas na grelha */
+    /* Trava da galeria interna de fotos */
     .wesus-interior-grid {
       display: grid !important;
       grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
       gap: 0.75rem !important;
-      margin-top: 1rem !important;
+      margin-top: 0.75rem !important;
     }
 
     .wesus-gallery-thumb {
-      height: 100px !important;
-      /* Imagens internas baixinhas e simétricas */
+      height: 90px !important;
       border-radius: 0.75rem !important;
       overflow: hidden !important;
       border: 1px solid rgba(255, 255, 255, 0.05) !important;
@@ -1100,14 +1234,208 @@
       display: flex !important;
       flex-direction: column !important;
       gap: 0.75rem !important;
-      /* Distância nobre entre cada card */
-      margin-top: 1rem !important;
-      /* Afasta o texto descritivo do primeiro item */
+      margin-top: 0.75rem !important;
     }
 
     /* Ganho de respiro interno dentro de cada card de documento */
     .wesus-doc-card {
       padding: 0.85rem 1rem !important;
+    }
+
+    .wesus-doc-card .shrink-0 {
+      margin-right: 8px !important;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════
+   MÓDULO DE INTERFACES FLUIDAS — ENTRADA PREMIUM CINEMATOGRÁFICA (60FPS)
+   ═══════════════════════════════════════════════════════════════ */
+
+    /* 🎯 OVERLAY ULTRA REFINADO: Transição estendida para o vidro champagne */
+    .wesus-popup-overlay {
+      position: fixed !important;
+      inset: 0 !important;
+      z-index: 9999 !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      opacity: 0 !important;
+      visibility: hidden !important;
+      pointer-events: none !important;
+      background-color: rgba(7, 19, 38, 0) !important;
+      backdrop-filter: blur(0px) saturate(100%) !important;
+      -webkit-backdrop-filter: blur(0px) saturate(100%) !important;
+
+      /* Curva de transição suave e nobre de 0.5 segundos direto na GPU */
+      transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+        visibility 0.5s step-end,
+        background-color 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+        backdrop-filter 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+        -webkit-backdrop-filter 0.5s cubic-bezier(0.16, 1, 0.3, 1) !important;
+      will-change: opacity, backdrop-filter !important;
+    }
+
+    /* Entrada progressiva coordenada do desfoque */
+    .wesus-popup-overlay.active {
+      opacity: 1 !important;
+      visibility: visible !important;
+      pointer-events: auto !important;
+      background-color: rgba(7, 19, 38, 0.65) !important;
+      backdrop-filter: blur(20px) saturate(180%) !important;
+      -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+      transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+        visibility 0s linear,
+        background-color 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+        backdrop-filter 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+        -webkit-backdrop-filter 0.5s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    }
+
+    /* 🎯 INTERPOLAÇÃO DO CARD: Pequeno delay de 0.05s para priorizar o desfoque de fundo */
+    #wesusAssetDetailsModal .hero-card-crystal,
+    .wesus-popup-card.hero-card-crystal {
+      opacity: 0 !important;
+      transform: scale(0.96) translateY(20px) !important;
+      /* Começa um pouco mais abaixo para ganhar amplitude */
+      will-change: transform, opacity !important;
+      transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.05s,
+        opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1) 0.05s !important;
+    }
+
+    /* Ativação simétrica em runtime */
+    .wesus-popup-overlay.active #wesusAssetDetailsModal .hero-card-crystal,
+    .wesus-popup-overlay.active .wesus-popup-card.hero-card-crystal,
+    #wesusAssetDetailsModal.active .hero-card-crystal,
+    #wesusInvestmentModal.active .wesus-popup-card.hero-card-crystal {
+      opacity: 1 !important;
+      transform: scale(1) translateY(0) !important;
+    }
+
+    #wesusCloseAssetDetailsBtn {
+      /* 🎯 FORÇA CANTO DIREITO: Zera heranças e aplica o espaçamento nobre de 12px */
+      position: absolute !important;
+      top: 12px !important;
+      right: 12px !important;
+      left: auto !important;
+
+      background: rgba(7, 19, 38, 0.65) !important;
+      border: 1px solid rgba(255, 255, 255, 0.15) !important;
+      backdrop-filter: blur(8px) !important;
+      -webkit-backdrop-filter: blur(8px) !important;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
+      color: rgba(255, 255, 255, 0.8) !important;
+      z-index: 99 !important;
+      transition: all 0.2s ease-in-out !important;
+    }
+
+    #wesusCloseAssetDetailsBtn:hover {
+      color: #E8D08D !important;
+      /* Brilha em ouro no hover */
+      border-color: rgba(197, 160, 89, 0.4) !important;
+      transform: scale(1.05) !important;
+    }
+
+    #wesusCloseAssetDetailsBtn:active {
+      transform: scale(0.95) !important;
+    }
+
+    /* 🎯 CORREÇÃO DO SÍMBOLO DO EURO (RESOLVE O EURO VOANDO) */
+    .currency-wrapper {
+      position: relative !important;
+      display: block !important;
+      width: 100% !important;
+    }
+
+    .currency-symbol {
+      position: absolute !important;
+      left: 14px !important;
+      top: 50% !important;
+      transform: translateY(-50%) !important;
+      color: rgba(255, 255, 255, 0.4) !important;
+      font-family: 'Inter', sans-serif !important;
+      font-size: 0.85rem !important;
+      font-weight: 600 !important;
+      z-index: 10 !important;
+      pointer-events: none !important;
+    }
+
+    /* 🎯 PURIFICAÇÃO DO INPUT DE DATA EM MOBILES FÍSICOS */
+    input[type="date"] {
+      -webkit-appearance: none !important;
+      appearance: none !important;
+    }
+
+    /* Neutraliza setas nativas, spinners e chevrons do Android/iOS que quebram o visual */
+    input[type="date"]::-webkit-inner-spin-button,
+    input[type="date"]::-webkit-calendar-picker-indicator {
+      -webkit-appearance: none !important;
+      appearance: none !important;
+      opacity: 0.5 !important;
+      /* Mantém apenas o ícone do calendário limpo, sem chevrons nativos de dropdown */
+    }
+
+    /* ═══════════════════════════════════════════════════════════════
+   PATCH CORRETIVO: ALINHAMENTO DO EURO E TELA DE SUCESSO ISOLADA
+   ═══════════════════════════════════════════════════════════════ */
+
+    /* 🎯 ALINHAMENTO DO EURO: Garante o recuo perfeito contra paddings globais */
+    #investAmount {
+      padding-left: 45px !important;
+    }
+
+    /* 🎯 ESTADO PADRÃO (OCULTO): Totalmente deletado do fluxo visual antes do clique */
+    #wesusSuccessState {
+      display: none !important;
+      opacity: 0 !important;
+      visibility: hidden !important;
+    }
+
+    /* 🎯 ESTADO ATIVO: Entra em cena apenas quando o JS dispara a submissão */
+    .wSimple-popup-overlay.success-active #wSimpleSuccessState,
+    .wesus-popup-overlay.success-active #wesusSuccessState {
+      display: flex !important;
+      /* Força a aparição apenas em runtime */
+      opacity: 1 !important;
+      visibility: visible !important;
+      background: #071326 !important;
+      /* Fundo 100% sólido para cobrir os inputs e o título antigos */
+      pointer-events: auto !important;
+    }
+
+    /* 🎯 CORREÇÃO DE DEFORMAÇÃO: Trava o círculo do visto para ser sempre redondo */
+    .success-pop {
+      width: 64px !important;
+      height: 64px !important;
+      max-width: 64px !important;
+      max-height: 64px !important;
+      border-radius: 50% !important;
+      flex-shrink: 0 !important;
+      /* Proíbe o navegador de achatar as laterais */
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+    }
+
+    /* Oculta o cabeçalho e formulário originais em background para segurança extra */
+    .wesus-popup-overlay.success-active .wesus-popup-card>*:not(#wsubSuccessState):not(#wesusSuccessState):not(#wesusCloseInvestmentBtn) {
+      opacity: 0 !important;
+      visibility: hidden !important;
+      pointer-events: none !important;
+    }
+
+    /* Animação suave de pulso concêntrico na GPU */
+    @keyframes wesusPingSlow {
+      0% {
+        transform: scale(1);
+        opacity: 0.8;
+      }
+
+      100% {
+        transform: scale(1.4);
+        opacity: 0;
+      }
+    }
+
+    .wesus-animate-ping {
+      animation: wesusPingSlow 2s cubic-bezier(0.16, 1, 0.3, 1) infinite !important;
     }
   </style>
 </head>
@@ -2509,15 +2837,22 @@
         </svg>
       </button>
 
-      <!-- Cabeçalho -->
+      <!-- Cabeçalho com Metadados Premium Integrados -->
       <div class="flex flex-col items-center text-center mb-6">
         <div class="icon-badge-shield w-12 h-12 rounded-xl flex items-center justify-center text-[#E8D08D] mb-3">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 10V3L4 14h7v7l9-11h-7z" />
           </svg>
         </div>
-        <h3 class="font-playfair font-bold text-lg text-white tracking-wide">Solicitar Intenção</h3>
+        <h3 class="font-playfair font-bold text-lg text-white tracking-wide">Solicitar Investimento</h3>
         <p id="modalPlanSubtitle" class="text-[10px] text-gold-liquid font-semibold uppercase tracking-wider mt-0.5">Plano Selecionado</p>
+
+        <!-- 🎯 NOVA LINHA DE METADADOS DINÂMICOS DO PLANO -->
+        <div id="modalPlanMetaRow" class="hidden items-center justify-center gap-3 mt-2 text-[9px] font-bold uppercase tracking-widest bg-white/[0.02] border border-white/5 px-3 py-1.5 rounded-xl w-fit mx-auto">
+          <span id="modalPlanPeriod" class="text-white/60">--</span>
+          <span class="w-1 h-1 bg-white/10 rounded-full"></span>
+          <span id="modalPlanTax" class="text-[#6FCF97] drop-shadow-[0_0_6px_rgba(111,207,151,0.3)]">--</span>
+        </div>
       </div>
 
       <!-- Formulário Simplificado -->
@@ -2553,6 +2888,20 @@
           </button>
         </div>
       </form>
+
+      <div id="wesusSuccessState" class="absolute inset-0 bg-[#071326]/98 backdrop-blur-xl flex flex-col items-center justify-center p-6 text-center opacity-0 pointer-events-none transition-all duration-500 z-40 rounded-3xl">
+        <div class="mb-5 relative flex items-center justify-center w-16 h-16">
+          <div class="absolute inset-0 rounded-full bg-[#6FCF97]/10 wesus-animate-ping"></div>
+          <div class="w-16 h-16 rounded-full bg-gradient-to-br from-[#6FCF97]/20 to-[#118f52]/10 border border-[#6FCF97]/30 flex items-center justify-center text-[#6FCF97] drop-shadow-[0_0_15px_rgba(111,207,151,0.4)] scale-0 success-pop">
+            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
+            </svg>
+          </div>
+        </div>
+        <h4 class="font-playfair font-bold text-xl text-white mb-2 opacity-0 translate-y-2 success-text">Intenção Registada!</h4>
+        <p class="text-xs text-white/50 max-w-[240px] leading-relaxed opacity-0 translate-y-2 success-text font-inter">O seu Private Banker da Wesus entrará em contacto nas próximas horas.</p>
+      </div>
+
     </div>
   </div>
 
@@ -2580,7 +2929,6 @@
               <h4 id="assetDetailsTitle" class="font-playfair font-bold text-lg leading-tight text-white">Edifício Aliados</h4>
               <p id="assetDetailsLocation" class="text-[9px] text-gold-liquid font-medium flex items-center gap-1 mt-1">Porto, Portugal</p>
             </div>
-            <span id="assetDetailsStatus" class="status-badge-construction shrink-0">Em Construção</span>
           </div>
 
           <div class="w-full border-t border-white/5 pt-2">
@@ -2594,7 +2942,7 @@
       <!-- Linha de Abas Premium Com Padding e Respiro Nativos -->
       <div class="wesus-modal-tabs-row">
         <button id="tabBtnInterior" class="asset-tab-btn active focus:outline-none">
-          Interior do Imóvel
+          Fotos do Imóvel
         </button>
         <button id="tabBtnDocs" class="asset-tab-btn focus:outline-none">
           Documentações

@@ -561,12 +561,11 @@ const InvestmentModalController = (() => {
 
     if (!modal || !form) return;
 
-    // Função para extrair o nome do plano de acordo com o contexto do botão
+    // Função estendida para extrair dados contratuais de período e lucro em tempo de execução
     const openModal = (e, btn) => {
       e.preventDefault();
       e.stopPropagation();
 
-      // Define uma data mínima padrão (hoje) no seletor de data
       const dateInput = document.getElementById("investDate");
       if (dateInput) {
         const hoje = new Date().toISOString().split("T")[0];
@@ -574,8 +573,10 @@ const InvestmentModalController = (() => {
         dateInput.value = hoje;
       }
 
-      // Procura contexto textual subindo os elementos pais
       let contextName = "Alocação de Portfólio Restrito";
+      let planPeriod = "";
+      let planTax = "";
+
       const cardParent = btn.closest(".hero-card-crystal");
 
       if (cardParent) {
@@ -583,13 +584,47 @@ const InvestmentModalController = (() => {
         if (titleEl) {
           contextName = titleEl.textContent.trim();
         }
+
+        // 🎯 INTERCEPTAÇÃO PREMIUM: Se for Oportunidade Relâmpago, força os dados solicitados
+        if (contextName.toLowerCase().includes("relâmpago")) {
+          planPeriod = "3 Meses";
+          planTax = "Retorno: 10%";
+        } else {
+          // Coleta e mapeia a taxa fixa real descrita no card para os outros planos
+          const taxEl = cardParent.querySelector(".text-gold-gradient");
+          if (taxEl) {
+            planTax = `Retorno: ${taxEl.textContent.trim()}%`;
+          }
+
+          // Formata a exibição do período com base no título extraído
+          if (
+            contextName.toLowerCase().includes("meses") ||
+            contextName.toLowerCase().includes("mês")
+          ) {
+            planPeriod = contextName;
+          }
+        }
       }
 
       if (planSubtitle) {
         planSubtitle.textContent = `Modalidade: ${contextName}`;
       }
 
-      // Reseta o estado do formulário e abre
+      // Sincroniza e exibe a linha de metadados se as informações forem encontradas
+      const metaRow = document.getElementById("modalPlanMetaRow");
+      const periodEl = document.getElementById("modalPlanPeriod");
+      const taxDisplayEl = document.getElementById("modalPlanTax");
+
+      if (metaRow && periodEl && taxDisplayEl && planTax) {
+        periodEl.textContent = planPeriod || "Prazo Comercial";
+        taxDisplayEl.textContent = planTax;
+        metaRow.classList.remove("hidden");
+        metaRow.classList.add("flex");
+      } else if (metaRow) {
+        metaRow.classList.remove("flex");
+        metaRow.classList.add("hidden");
+      }
+
       form.reset();
       if (errorMsg) errorMsg.classList.add("hidden");
       if (amountInput) amountInput.style.borderColor = "";
@@ -605,9 +640,9 @@ const InvestmentModalController = (() => {
     };
 
     // Acopla o evento em todos os botões "Investir Já" (Classe genérica .btn-gold-lingot)
-    // Exceto botões de ação estrutural (como o fechar do modal vindo do template)
+    // 🔥 Blindagem: Proíbe botões de submissão (type="submit") de resetarem o modal recursivamente
     const investButtons = document.querySelectorAll(
-      ".btn-gold-lingot:not(#wesusClosePopupBtn):not(#wesusCloseInvestmentBtn)",
+      ".btn-gold-lingot:not(#wesusClosePopupBtn):not(#wesusCloseInvestmentBtn):not([type='submit'])",
     );
 
     investButtons.forEach((btn) => {
@@ -647,39 +682,33 @@ const InvestmentModalController = (() => {
         return; // Aborta envio
       }
 
-      // Captura dados limpos para envio à infraestrutura de backend/banco de dados
+      // 🎯 VALIDAÇÃO SEGURA: Verifica se o campo existe antes de ler o valor
+      const investContactEl = document.getElementById("investContact");
+
       const leadData = {
         plano: planSubtitle
           ? planSubtitle.textContent.replace("Modalidade: ", "")
           : "Geral",
         valor: amountValue,
-        contacto: document.getElementById("investContact").value.trim(),
+        contacto: investContactEl ? investContactEl.value.trim() : "",
         dataInicio: document.getElementById("investDate").value,
       };
 
       console.log("Lead de Investimento Premium Capturado:", leadData);
 
-      // Feedback visual de sucesso instantâneo (Simulação de Envio bem-sucedido)
-      const submitBtn = form.querySelector("button[type='submit']");
-      const originalText = submitBtn.innerHTML;
+      // 🎯 AGORA VAI ACIONAR PERFEITAMENTE!
+      modal.classList.add("success-active");
 
-      submitBtn.disabled = true;
-      submitBtn.style.background =
-        "linear-gradient(135deg, #0b663b 0%, #118f52 100%)";
-      submitBtn.style.color = "#ffffff";
-      submitBtn.innerHTML = "✓ Interesse Registado";
-
+      // Deixa o feedback flutuar por 3.2 segundos para o cliente absorver a experiência de elite
       setTimeout(() => {
         closeModal();
-        // Restaura botão após animação de fecho
+
+        // Reseta o modal em background após as transições de fade out concluírem
         setTimeout(() => {
-          submitBtn.disabled = false;
-          submitBtn.style.background = "";
-          submitBtn.style.color = "";
-          submitBtn.innerHTML = originalText;
+          modal.classList.remove("success-active");
           form.reset();
-        }, 300);
-      }, 1200);
+        }, 500);
+      }, 800);
     });
   }
 
@@ -753,7 +782,11 @@ const AnnualPerformanceController = (() => {
       toggleDropdown(dropdownMenu.classList.contains("hidden"));
     });
 
-    window.addEventListener("click", () => toggleDropdown(false));
+    window.addEventListener("click", (e) => {
+      if (!e.target.closest("#annualYearDropdownWrapper")) {
+        toggleDropdown(false);
+      }
+    });
 
     const updatePerformanceData = (key, isAllTime = false) => {
       const data = mockHistoryData[key];
@@ -888,13 +921,21 @@ const AssetDetailsModalController = (() => {
 
     if (!modal || !tabInterior || !tabDocs) return;
 
-    // 🔥 Adicionado os parâmetros 'total' e 'status' no pipeline de abertura
     const openDetails = (name, location, imgSrc, total, status) => {
       if (titleEl) titleEl.textContent = name;
       if (locationEl) locationEl.textContent = location;
       if (totalEl) totalEl.textContent = total;
       if (statusEl) statusEl.textContent = status;
-      if (coverImg && imgSrc) coverImg.src = imgSrc;
+
+      if (coverImg && imgSrc) {
+        coverImg.style.opacity = "0"; // 🎯 FIM DO DELAY FEIO: Apaga a foto antiga na hora do clique
+        coverImg.src = imgSrc;
+
+        // Ouve o evento de carregamento físico do navegador
+        coverImg.onload = () => {
+          coverImg.style.opacity = "1"; // 🎯 FADE PREMIUM: Só aparece quando estiver 100% carregada
+        };
+      }
 
       switchPane("interior");
       modal.classList.add("active");
@@ -902,21 +943,25 @@ const AssetDetailsModalController = (() => {
 
     const closeDetails = () => {
       modal.classList.remove("active");
+      // Reseta a opacidade ao fechar para preparar a próxima abertura limpa
+      setTimeout(() => {
+        if (coverImg) coverImg.style.opacity = "0";
+      }, 350);
     };
 
     const switchPane = (target) => {
       if (target === "interior") {
-        tabInterior.classList.add("text-white", "border-[#E8D08D]");
-        tabInterior.classList.remove("text-white/40", "border-transparent");
-        tabDocs.classList.add("text-white/40", "border-transparent");
-        tabDocs.classList.remove("text-white", "border-[#E8D08D]");
+        // Ativa a aba Interior e remove qualquer estado ativo da aba de Documentos
+        tabInterior.classList.add("active");
+        tabDocs.classList.remove("active");
+
         paneInterior.classList.remove("hidden");
         paneDocs.classList.add("hidden");
       } else {
-        tabDocs.classList.add("text-white", "border-[#E8D08D]");
-        tabDocs.classList.remove("text-white/40", "border-transparent");
-        tabInterior.classList.add("text-white/40", "border-transparent");
-        tabInterior.classList.remove("text-white", "border-[#E8D08D]");
+        // Ativa a aba Documentos e remove por completo o estado ativo do Interior
+        tabDocs.classList.add("active");
+        tabInterior.classList.remove("active");
+
         paneDocs.classList.remove("hidden");
         paneInterior.classList.add("hidden");
       }
@@ -929,7 +974,10 @@ const AssetDetailsModalController = (() => {
 
     // Mapeamento das linhas da Tabela (Desktop)
     document.querySelectorAll(".assets-row").forEach((row) => {
-      row.addEventListener("click", () => {
+      row.addEventListener("click", (e) => {
+        // Se clicar explicitamente em botões ou links internos, não intercepta
+        if (e.target.closest("a") || e.target.closest("button")) return;
+
         const name =
           row.querySelector("td p")?.textContent.trim() || "Imóvel Premium";
         const location =
@@ -947,7 +995,14 @@ const AssetDetailsModalController = (() => {
 
     // Mapeamento dos Cards do Carrossel (Mobile)
     document.querySelectorAll(".carousel-asset-card").forEach((card) => {
-      card.addEventListener("click", () => {
+      card.addEventListener("click", (e) => {
+        // 🎯 SALVAGUARDA: Se o usuário clicar no link do mapa, abre o Google Maps em vez de abrir o popup
+        if (e.target.closest("a")) return;
+
+        // 🎯 A TRAVA GERAL: Cancela o borbulhamento e congela a viewport móvel no mesmo píxel
+        e.preventDefault();
+        e.stopPropagation();
+
         const name =
           card.querySelector("h3")?.textContent.trim() || "Imóvel Premium";
         const location =
