@@ -713,7 +713,7 @@ const InvestmentModalController = (() => {
           modal.classList.remove("success-active");
           form.reset();
         }, 500);
-      }, 800);
+      }, 3200);
     });
   }
 
