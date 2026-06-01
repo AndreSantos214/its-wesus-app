@@ -115,6 +115,27 @@ const NavigationController = (() => {
     });
   }
   return { init };
+
+  // Ativa o link híbrido do card de resultados para saltar direto para os contratos históricos
+  const historyTrigger = document.getElementById("wesusViewHistoryTrigger");
+  if (historyTrigger) {
+    historyTrigger.addEventListener("click", (e) => {
+      e.preventDefault();
+      // Busca o botão nativo do menu de contratos e simula o clique de transição do App
+      const docTab = document.querySelector('[data-section="documentos"]');
+      if (docTab) {
+        docTab.click();
+        // Dá um scroll suave de atraso para o usuário já cair focado nos contratos antigos
+        setTimeout(() => {
+          const historySec = document.querySelector(
+            ".contracts-history-section",
+          );
+          if (historySec)
+            historySec.scrollIntoView({ behavior: "smooth", block: "start" });
+        }, 200);
+      }
+    });
+  }
 })();
 
 /* ── SCROLL CONTROLLER (PURE GPU GYRO TILT ENGINE) ────────── */
@@ -525,40 +546,140 @@ window.navigateToContract = () => {
   }, 180);
 };
 
-/* ── COMING SOON POPUP CONTROLLER ────────────────────────── */
-const ComingSoonController = (() => {
+/* ── INVESTMENT MODAL & SIMULATION CONTROLLER (PREMIUM LEAD ENGINE) ── */
+const InvestmentModalController = (() => {
   function init() {
-    const popup = document.getElementById("wesusComingSoonPopup");
-    const backdrop = document.getElementById("wesusComingSoonBackdrop");
-    const closeBtn = document.getElementById("wesusClosePopupBtn");
+    const modal = document.getElementById("wesusInvestmentModal");
+    const backdrop = document.getElementById("wesusInvestmentBackdrop");
+    const closeBtn = document.getElementById("wesusCloseInvestmentBtn");
+    const form = document.getElementById("wesusInvestmentForm");
+    const planSubtitle = document.getElementById("modalPlanSubtitle");
 
-    if (!popup) return;
+    // Inputs e validações
+    const amountInput = document.getElementById("investAmount");
+    const errorMsg = document.getElementById("amountErrorMsg");
 
-    const showPopup = (e) => {
+    if (!modal || !form) return;
+
+    // Função para extrair o nome do plano de acordo com o contexto do botão
+    const openModal = (e, btn) => {
       e.preventDefault();
       e.stopPropagation();
-      popup.classList.add("active");
+
+      // Define uma data mínima padrão (hoje) no seletor de data
+      const dateInput = document.getElementById("investDate");
+      if (dateInput) {
+        const hoje = new Date().toISOString().split("T")[0];
+        dateInput.min = hoje;
+        dateInput.value = hoje;
+      }
+
+      // Procura contexto textual subindo os elementos pais
+      let contextName = "Alocação de Portfólio Restrito";
+      const cardParent = btn.closest(".hero-card-crystal");
+
+      if (cardParent) {
+        const titleEl = cardParent.querySelector("h4, h3");
+        if (titleEl) {
+          contextName = titleEl.textContent.trim();
+        }
+      }
+
+      if (planSubtitle) {
+        planSubtitle.textContent = `Modalidade: ${contextName}`;
+      }
+
+      // Reseta o estado do formulário e abre
+      form.reset();
+      if (errorMsg) errorMsg.classList.add("hidden");
+      if (amountInput) amountInput.style.borderColor = "";
+      modal.classList.add("active");
     };
 
-    const hidePopup = (e) => {
+    const closeModal = (e) => {
       if (e) {
         e.preventDefault();
         e.stopPropagation();
       }
-      popup.classList.remove("active");
+      modal.classList.remove("active");
     };
 
-    // Fechar ao clicar no botão ou no fundo
-    closeBtn.addEventListener("click", hidePopup);
-    backdrop.addEventListener("click", hidePopup);
-
-    // 🔥 CORREÇÃO: Ignora o botão do WhatsApp E o próprio botão de fechar o popup!
-    const actionButtons = document.querySelectorAll(
-      ".btn-gold-lingot:not(.btn-emerald-lingot):not(#wesusClosePopupBtn)",
+    // Acopla o evento em todos os botões "Investir Já" (Classe genérica .btn-gold-lingot)
+    // Exceto botões de ação estrutural (como o fechar do modal vindo do template)
+    const investButtons = document.querySelectorAll(
+      ".btn-gold-lingot:not(#wesusClosePopupBtn):not(#wesusCloseInvestmentBtn)",
     );
 
-    actionButtons.forEach((btn) => {
-      btn.addEventListener("click", showPopup);
+    investButtons.forEach((btn) => {
+      btn.addEventListener("click", (e) => openModal(e, btn));
+    });
+
+    closeBtn.addEventListener("click", closeModal);
+    backdrop.addEventListener("click", closeModal);
+
+    // Validação em Tempo Real (Real-time Feedback)
+    if (amountInput && errorMsg) {
+      amountInput.addEventListener("input", () => {
+        const val = parseFloat(amountInput.value);
+        if (!isNaN(val) && val < 5000) {
+          errorMsg.classList.remove("hidden");
+          amountInput.style.borderColor = "#ff6b6b";
+        } else {
+          errorMsg.classList.add("hidden");
+          amountInput.style.borderColor = "";
+        }
+      });
+    }
+
+    // Validação final de segurança na submissão
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+
+      const amountValue = parseFloat(amountInput.value);
+
+      // Trava de entrada rigorosa
+      if (isNaN(amountValue) || amountValue < 5000) {
+        if (errorMsg) errorMsg.classList.remove("hidden");
+        if (amountInput) {
+          amountInput.style.borderColor = "#ff6b6b";
+          amountInput.focus();
+        }
+        return; // Aborta envio
+      }
+
+      // Captura dados limpos para envio à infraestrutura de backend/banco de dados
+      const leadData = {
+        plano: planSubtitle
+          ? planSubtitle.textContent.replace("Modalidade: ", "")
+          : "Geral",
+        valor: amountValue,
+        contacto: document.getElementById("investContact").value.trim(),
+        dataInicio: document.getElementById("investDate").value,
+      };
+
+      console.log("Lead de Investimento Premium Capturado:", leadData);
+
+      // Feedback visual de sucesso instantâneo (Simulação de Envio bem-sucedido)
+      const submitBtn = form.querySelector("button[type='submit']");
+      const originalText = submitBtn.innerHTML;
+
+      submitBtn.disabled = true;
+      submitBtn.style.background =
+        "linear-gradient(135deg, #0b663b 0%, #118f52 100%)";
+      submitBtn.style.color = "#ffffff";
+      submitBtn.innerHTML = "✓ Interesse Registado";
+
+      setTimeout(() => {
+        closeModal();
+        // Restaura botão após animação de fecho
+        setTimeout(() => {
+          submitBtn.disabled = false;
+          submitBtn.style.background = "";
+          submitBtn.style.color = "";
+          submitBtn.innerHTML = originalText;
+          form.reset();
+        }, 300);
+      }, 1200);
     });
   }
 
@@ -566,8 +687,292 @@ const ComingSoonController = (() => {
 })();
 
 document.addEventListener("DOMContentLoaded", () => {
-  ComingSoonController.init();
+  InvestmentModalController.init(); // 🔥 Ativa o novo pipeline de captação
 });
+
+/* ── ANNUAL PERFORMANCE CONTROLLER (DROPDOWN PIPELINE V30 — COLORS PROTECTION) ── */
+const AnnualPerformanceController = (() => {
+  const mockHistoryData = {
+    2026: {
+      capital: "€ 140.000,00",
+      profit: "+ € 12.500,00",
+      isCurrent: true,
+      label: "2026 (Atual)",
+    },
+    2025: {
+      capital: "€ 95.500,00",
+      profit: "+ € 8.900,00",
+      isCurrent: false,
+      label: "2025",
+    },
+    2024: {
+      capital: "€ 45.000,00",
+      profit: "+ € 3.200,00",
+      isCurrent: false,
+      label: "2024",
+    },
+    all: {
+      capital: "€ 280.500,00",
+      profit: "+ € 24.600,00",
+      isCurrent: true,
+      label: "Selecionar Ano",
+    },
+  };
+
+  function init() {
+    const dropdownBtn = document.getElementById("annualYearDropdownBtn");
+    const dropdownMenu = document.getElementById("annualYearDropdownMenu");
+    const dropdownChevron = document.getElementById("dropdownChevron");
+    const allTimeBtn = document.getElementById("annualAllTimeBtn");
+
+    const capitalEl = document.getElementById("annualInvestedCapital");
+    const profitEl = document.getElementById("annualRealizedProfit");
+    const iconEl = document.getElementById("annualProfitIcon");
+    const cardsContainer = document.getElementById(
+      "annualPerformanceCardsContainer",
+    );
+    const labelEl = document.getElementById("selectedYearLabel");
+    const historyTrigger = document.getElementById("wesusViewHistoryTrigger");
+
+    if (!dropdownBtn || !dropdownMenu || !capitalEl || !profitEl || !allTimeBtn)
+      return;
+
+    const toggleDropdown = (show) => {
+      if (show) {
+        dropdownMenu.classList.remove("hidden");
+        if (dropdownChevron) dropdownChevron.classList.add("rotate-180");
+      } else {
+        dropdownMenu.classList.add("hidden");
+        if (dropdownChevron) dropdownChevron.classList.remove("rotate-180");
+      }
+    };
+
+    dropdownBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      toggleDropdown(dropdownMenu.classList.contains("hidden"));
+    });
+
+    window.addEventListener("click", () => toggleDropdown(false));
+
+    const updatePerformanceData = (key, isAllTime = false) => {
+      const data = mockHistoryData[key];
+      if (!data) return;
+
+      capitalEl.classList.add("animate-pulse");
+      profitEl.classList.add("animate-pulse");
+
+      setTimeout(() => {
+        labelEl.textContent = isAllTime ? "Selecionar Ano" : data.label;
+        capitalEl.textContent = data.capital;
+        profitEl.textContent = data.profit;
+
+        capitalEl.classList.remove("animate-pulse");
+        profitEl.classList.remove("animate-pulse");
+
+        if (data.isCurrent) {
+          if (cardsContainer) cardsContainer.style.opacity = "1";
+        } else {
+          // Mantém 85% de opacidade cristalina (sem ficar cinza)
+          if (cardsContainer) cardsContainer.style.opacity = "0.85";
+        }
+
+        // 🔥 Blindagem: Mantém o lucro sempre verde vibrante e os ícones acesos para todos os anos
+        profitEl.className =
+          "text-xl lg:text-2xl font-bold text-[#6FCF97] drop-shadow-[0_0_8px_rgba(111,207,151,0.3)] tracking-wide select-all transition-all duration-200";
+        if (iconEl) iconEl.setAttribute("stroke", "#6FCF97");
+
+        // Garante que o lucro mantenha sua cor verde e drop-shadow premium intactos
+        profitEl.className =
+          "text-xl lg:text-2xl font-bold text-[#6FCF97] drop-shadow-[0_0_8px_rgba(111,207,151,0.3)] tracking-wide select-all transition-all duration-200";
+        if (iconEl) iconEl.setAttribute("stroke", "#6FCF97");
+
+        // ── CHAVEAMENTO DE INTERAÇÃO SEGURO SEM CONFLITOS VIA DOM ──
+        if (isAllTime) {
+          allTimeBtn.classList.add("active");
+          allTimeBtn.classList.remove("inactive");
+          dropdownBtn.classList.add("inactive");
+          dropdownBtn.classList.remove("active");
+          if (dropdownChevron) dropdownChevron.style.opacity = "0.35";
+        } else {
+          allTimeBtn.classList.add("inactive");
+          allTimeBtn.classList.remove("active");
+          dropdownBtn.classList.add("active");
+          dropdownBtn.classList.remove("inactive");
+          if (dropdownChevron) dropdownChevron.style.opacity = "1";
+        }
+
+        // Sincronização de realce interno dos itens do menu suspenso
+        dropdownMenu.querySelectorAll("button").forEach((menuBtn) => {
+          const menuYear = menuBtn.getAttribute("data-year");
+          if (!isAllTime && menuYear === String(key)) {
+            menuBtn.style.setProperty("color", "#E8D08D", "important");
+            menuBtn.style.setProperty(
+              "background-color",
+              "rgba(255, 255, 255, 0.05)",
+              "important",
+            );
+          } else {
+            menuBtn.style.setProperty(
+              "color",
+              "rgba(255, 255, 255, 0.6)",
+              "important",
+            );
+            menuBtn.style.setProperty(
+              "background-color",
+              "transparent",
+              "important",
+            );
+          }
+        });
+
+        toggleDropdown(false);
+      }, 200);
+    };
+
+    // Mapeamento limpo dos ouvintes de eventos
+    dropdownMenu.querySelectorAll("button").forEach((menuBtn) => {
+      menuBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        updatePerformanceData(menuBtn.getAttribute("data-year"), false);
+      });
+    });
+
+    allTimeBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      updatePerformanceData("all", true);
+    });
+
+    if (historyTrigger) {
+      historyTrigger.addEventListener("click", (e) => {
+        e.preventDefault();
+        const docTab = document.querySelector('[data-section="documentos"]');
+        if (docTab) {
+          docTab.click();
+          setTimeout(() => {
+            const historySec = document.querySelector(
+              ".contracts-history-section",
+            );
+            if (historySec)
+              historySec.scrollIntoView({ behavior: "smooth", block: "start" });
+          }, 200);
+        }
+      });
+    }
+
+    // Inicialização segura no frame correto (2026 Ativo)
+    updatePerformanceData("2026", false);
+  }
+
+  return { init };
+})();
+
+/* ── ASSET DETAILS MODAL CONTROLLER (FACEBOOK PROFILE INTEGRATION V1) ── */
+const AssetDetailsModalController = (() => {
+  function init() {
+    const modal = document.getElementById("wesusAssetDetailsModal");
+    const backdrop = document.getElementById("wesusAssetDetailsBackdrop");
+    const closeBtn = document.getElementById("wesusCloseAssetDetailsBtn");
+
+    const tabInterior = document.getElementById("tabBtnInterior");
+    const tabDocs = document.getElementById("tabBtnDocs");
+    const paneInterior = document.getElementById("assetPaneInterior");
+    const paneDocs = document.getElementById("assetPaneDocs");
+
+    const coverImg = document.getElementById("assetDetailsCover");
+    const titleEl = document.getElementById("assetDetailsTitle");
+    const locationEl = document.getElementById("assetDetailsLocation");
+    const totalEl = document.getElementById("assetDetailsTotal");
+    const statusEl = document.getElementById("assetDetailsStatus");
+
+    if (!modal || !tabInterior || !tabDocs) return;
+
+    // 🔥 Adicionado os parâmetros 'total' e 'status' no pipeline de abertura
+    const openDetails = (name, location, imgSrc, total, status) => {
+      if (titleEl) titleEl.textContent = name;
+      if (locationEl) locationEl.textContent = location;
+      if (totalEl) totalEl.textContent = total;
+      if (statusEl) statusEl.textContent = status;
+      if (coverImg && imgSrc) coverImg.src = imgSrc;
+
+      switchPane("interior");
+      modal.classList.add("active");
+    };
+
+    const closeDetails = () => {
+      modal.classList.remove("active");
+    };
+
+    const switchPane = (target) => {
+      if (target === "interior") {
+        tabInterior.classList.add("text-white", "border-[#E8D08D]");
+        tabInterior.classList.remove("text-white/40", "border-transparent");
+        tabDocs.classList.add("text-white/40", "border-transparent");
+        tabDocs.classList.remove("text-white", "border-[#E8D08D]");
+        paneInterior.classList.remove("hidden");
+        paneDocs.classList.add("hidden");
+      } else {
+        tabDocs.classList.add("text-white", "border-[#E8D08D]");
+        tabDocs.classList.remove("text-white/40", "border-transparent");
+        tabInterior.classList.add("text-white/40", "border-transparent");
+        tabInterior.classList.remove("text-white", "border-[#E8D08D]");
+        paneDocs.classList.remove("hidden");
+        paneInterior.classList.add("hidden");
+      }
+    };
+
+    tabInterior.addEventListener("click", () => switchPane("interior"));
+    tabDocs.addEventListener("click", () => switchPane("docs"));
+    closeBtn.addEventListener("click", closeDetails);
+    backdrop.addEventListener("click", closeDetails);
+
+    // Mapeamento das linhas da Tabela (Desktop)
+    document.querySelectorAll(".assets-row").forEach((row) => {
+      row.addEventListener("click", () => {
+        const name =
+          row.querySelector("td p")?.textContent.trim() || "Imóvel Premium";
+        const location =
+          row.querySelector("td span")?.textContent.trim() || "Portugal";
+        const status =
+          row.querySelector(".status-badge-construction")?.textContent.trim() ||
+          "Em Curso";
+        const total =
+          row.querySelector("td:last-child")?.textContent.trim() || "€ 0,00";
+        const imgSrc = row.querySelector("td img")?.getAttribute("src") || "";
+
+        openDetails(name, location, imgSrc, total, status);
+      });
+    });
+
+    // Mapeamento dos Cards do Carrossel (Mobile)
+    document.querySelectorAll(".carousel-asset-card").forEach((card) => {
+      card.addEventListener("click", () => {
+        const name =
+          card.querySelector("h3")?.textContent.trim() || "Imóvel Premium";
+        const location =
+          card.querySelector("a")?.textContent.trim() || "Portugal";
+        const status =
+          card
+            .querySelector(".status-badge-construction")
+            ?.textContent.trim() || "Em Curso";
+        const total =
+          card.querySelector("p.font-bold")?.textContent.trim() || "€ 0,00";
+
+        const maskDiv = card.querySelector(".carousel-asset-image-mask");
+        let imgSrc = "";
+        if (maskDiv) {
+          const bgStyle = window.getComputedStyle(maskDiv).backgroundImage;
+          imgSrc = bgStyle.replace('url("', "").replace('")', "");
+        }
+
+        openDetails(name, location, imgSrc, total, status);
+      });
+    });
+  }
+
+  return { init };
+})();
 
 /* ── ENTRY POINT ──────────────────────────────────────────── */
 document.addEventListener("DOMContentLoaded", () => {
@@ -577,4 +982,6 @@ document.addEventListener("DOMContentLoaded", () => {
   BalanceVisibility.init();
   GreetingController.init();
   ChartDataController.init();
+  AnnualPerformanceController.init();
+  AssetDetailsModalController.init();
 });

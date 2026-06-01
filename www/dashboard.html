@@ -269,6 +269,12 @@
       color: rgba(255, 255, 255, 0.3) !important;
     }
 
+    /* Correção visual para inputs do tipo data no padrão dark premium */
+    input[type="date"]::-webkit-calendar-picker-indicator {
+      filter: invert(0.8) sepia(50%) hue-rotate(15deg) brightness(1.2);
+      cursor: pointer;
+    }
+
 
     /* ═══════════════════════════════════════════════════════════════
        BLOCO 6 — TOGGLE PREMIUM
@@ -751,6 +757,358 @@
         transform: scale(0.95) !important;
       }
     }
+
+    html.dark .dark\:block {
+      display: block !important;
+    }
+
+    html.dark .dark\:hidden {
+      display: none !important;
+    }
+
+    html.dark .dark\:bg-wesus {
+      background-color: #0B1F3A !important;
+    }
+
+    html.dark .dark\:text-white {
+      color: #ffffff !important;
+    }
+
+    html:not(.dark) .dark\:block {
+      display: none !important;
+    }
+
+    html:not(.dark) .dark\:hidden {
+      display: block !important;
+    }
+
+    html:not(.dark) .dark\:bg-wesus {
+      background-color: #EDE9E1 !important;
+    }
+
+    html:not(.dark) .dark\:text-white {
+      color: #1A1A1A !important;
+    }
+
+    /* Configuração de Margem Mobile com seletor combinado para quebrar o bloqueio */
+    @media (max-width: 1023px) {
+      .wesus-popup-card.hero-card-crystal {
+        width: calc(100% - 32px) !important;
+        max-width: 350px !important;
+        padding: 1.75rem 1.25rem !important;
+        /* Altera apenas a propriedade background do .wesus-popup-card.hero-card-crystal */
+        background:
+          linear-gradient(135deg, rgba(11, 31, 58, 0.80), rgba(7, 19, 38, 0.85)) padding-box,
+          /* 🔥 Deixa mais translúcido */
+          linear-gradient(145deg,
+            rgba(255, 255, 255, 0.25) 0%,
+            rgba(255, 255, 255, 0.02) 50%,
+            rgba(255, 255, 255, 0.10) 100%) border-box !important;
+      }
+    }
+
+    /* Posição, tamanho isolado e área de clique perfeita para o "X" */
+    #wesusCloseInvestmentBtn {
+      position: absolute !important;
+      top: 1rem !important;
+      right: 1rem !important;
+      width: 32px !important;
+      /* Trava o tamanho do botão */
+      height: 32px !important;
+      /* Trava o tamanho do botão */
+      padding: 0 !important;
+      background: transparent !important;
+      cursor: pointer !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      z-index: 50 !important;
+    }
+
+    /* Trava cirúrgica para o vetor interno */
+    #wesusCloseInvestmentBtn svg {
+      width: 20px !important;
+      height: 20px !important;
+      display: block !important;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════
+       BLOCO 12 — REFINAMENTO PREMIUM: PERFORMANCE HISTÓRICA V5
+    ═══════════════════════════════════════════════════════════════ */
+
+    /* Desktop: Título e Botão alinhados */
+    .history-header-wrapper {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    /* Gradiente Prata com Reflexo para o Botão Histórico */
+    .silver-gradient-btn {
+      background: linear-gradient(135deg, #e0e0e0 0%, #a8a8a8 50%, #d1d1d1 100%) !important;
+      color: #071326 !important;
+      border: 1px solid rgba(255, 255, 255, 0.4) !important;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2), inset 0 1px 1px #fff !important;
+    }
+
+    /* Ícone melhorado (Data/Calendário/Relatório) para Capital Movimentado */
+    .icon-capital {
+      /* Substitui o ícone de pasta/cópia */
+      content: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='rgba(255,255,255,0.4)'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M12 8c1.657 0 3 .895 3 2s-1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M12 16V5'/%3E%3C/svg%3E");
+    }
+
+    /* ═══════════════════════════════════════════════════════════════
+   BLOCO 13 — PERFORMANCE HISTÓRICA ULTRA RESPONSIVA (FINAL FIX)
+   ═══════════════════════════════════════════════════════════════ */
+    .btn-annual-alltime,
+    .btn-annual-dropdown {
+      height: 38px !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      box-sizing: border-box !important;
+      transition: all 0.2s ease-in-out !important;
+    }
+
+    /* Estado ATIVO: Todo o Período (Gradiente Ouro Sólido) */
+    .btn-annual-alltime.active {
+      background: linear-gradient(135deg, #E8D08D 0%, #C5A059 100%) !important;
+      color: #071326 !important;
+      border: 1px solid transparent !important;
+    }
+
+    /* Estado INATIVO: Todo o Período (Neutro Transparente) */
+    .btn-annual-alltime.inactive {
+      background: transparent !important;
+      color: rgba(255, 255, 255, 0.4) !important;
+      border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    }
+
+    /* Estado ATIVO: Dropdown de Ano (Vidro Champagne Premium) */
+    .btn-annual-dropdown.active {
+      background: rgba(255, 255, 255, 0.04) !important;
+      color: #E8D08D !important;
+      border: 1px solid rgba(197, 160, 89, 0.4) !important;
+    }
+
+    /* Estado INATIVO: Dropdown de Ano (Apagado Neutro) */
+    .btn-annual-dropdown.inactive {
+      background: transparent !important;
+      color: rgba(255, 255, 255, 0.35) !important;
+      border: 1px solid rgba(255, 255, 255, 0.05) !important;
+    }
+
+    /* Regras Responsivas Avançadas */
+    @media (max-width: 1023px) {
+      section[aria-label="Desempenho Anual"] .hero-card-crystal {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 1.25rem !important;
+      }
+
+      .wesus-controls-group {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 0.85rem !important;
+        width: 100% !important;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+        padding-bottom: 1rem !important;
+      }
+
+      .wesus-filters-stack {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 0.75rem !important;
+        width: 100% !important;
+      }
+
+      #annualAllTimeBtn,
+      #annualYearDropdownWrapper,
+      #annualYearDropdownBtn,
+      #wesusViewHistoryTrigger {
+        width: 100% !important;
+      }
+
+      #annualYearDropdownBtn {
+        justify-content: center !important;
+        /* Centraliza o ano e a seta perfeitamente */
+        gap: 0.5rem !important;
+      }
+
+      #wesusViewHistoryTrigger {
+        order: 3 !important;
+      }
+
+      /* 🎯 CENTRALIZAÇÃO TOTAL DAS INFORMAÇÕES NO MOBILE */
+      #annualPerformanceCardsContainer {
+        grid-template-columns: repeat(1, minmax(0, 1fr)) !important;
+        width: 100% !important;
+      }
+
+      #annualPerformanceCardsContainer>div {
+        align-items: center !important;
+        text-align: center !important;
+        justify-content: center !important;
+      }
+
+      #annualPerformanceCardsContainer .flex {
+        justify-content: center !important;
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .wesus-controls-group {
+        display: flex !important;
+        flex-direction: row !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        width: 100% !important;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+        padding-bottom: 1rem !important;
+      }
+
+      .wesus-filters-stack {
+        display: flex !important;
+        flex-direction: row !important;
+        gap: 0.75rem !important;
+        width: auto !important;
+      }
+
+      #annualPerformanceCardsContainer {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        width: 100% !important;
+      }
+    }
+
+    /* ═══════════════════════════════════════════════════════════════
+   BLOCO 14 — MODAL DETALHES DE ATIVOS REATIVOS
+   ═══════════════════════════════════════════════════════════════ */
+    .asset-tab-btn {
+      position: relative !important;
+      transition: all 0.2s ease-in-out !important;
+    }
+
+    .asset-tab-btn:hover {
+      color: #ffffff !important;
+    }
+
+    .asset-gallery-item {
+      transition: transform 0.3s ease !important;
+      cursor: pointer !important;
+    }
+
+    .asset-gallery-item:hover {
+      transform: scale(1.03) translateZ(0) !important;
+    }
+
+    /* Força cursores de clique nas tabelas e carrosséis */
+    .assets-row,
+    .carousel-asset-card {
+      cursor: pointer !important;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════
+   BLOCO 14 — PATCH DEFINITIVO MODAL ATIVOS (ESTILO PREMIUM VAULT)
+   ═══════════════════════════════════════════════════════════════ */
+    /* Limita o tamanho máximo do modal e impede overflow feio */
+    #wesusAssetDetailsModal .hero-card-crystal {
+      max-height: 85vh !important;
+      display: flex !important;
+      flex-direction: column !important;
+      overflow: hidden !important;
+    }
+
+    .wesus-modal-cover-wrap {
+      position: relative !important;
+      height: 180px !important;
+      /* Aumentado ligeiramente para acomodar os dados com respiro */
+      width: 100% !important;
+      overflow: hidden !important;
+      flex-shrink: 0 !important;
+    }
+
+    /* 🔥 O FILTRO AZUL: Película escura sapphire idêntica à máscara de imagem do card original */
+    .wesus-modal-cover-overlay {
+      position: absolute !important;
+      inset: 0 !important;
+      background-color: rgba(7, 19, 38, 0.55) !important;
+      background-image: linear-gradient(to bottom, rgba(7, 19, 38, 0.2) 35%, #071326 100%) !important;
+      z-index: 1 !important;
+    }
+
+    .wesus-modal-cover-wrap img {
+      width: 100% !important;
+      height: 100% !important;
+      object-fit: cover !important;
+      object-position: center !important;
+    }
+
+    /* 🎯 CORREÇÃO DAS ABAS: Dá o padding e respiro luxuoso que faltava no print */
+    .wesus-modal-tabs-row {
+      display: flex !important;
+      gap: 1.5rem !important;
+      padding: 0.95rem 1.5rem 0.5rem 1.5rem !important;
+      /* Respiro vertical perfeito */
+      background: rgba(7, 19, 38, 0.6) !important;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+      flex-shrink: 0 !important;
+    }
+
+    .asset-tab-btn {
+      font-size: 10px !important;
+      letter-spacing: 0.08em !important;
+      text-transform: uppercase !important;
+      background: transparent !important;
+      border: none !important;
+      padding-bottom: 0.65rem !important;
+      cursor: pointer !important;
+    }
+
+    /* Área de conteúdo interna scrollável */
+    .wesus-modal-scroll-pane {
+      padding: 1.25rem 1.5rem !important;
+      overflow-y: auto !important;
+      flex-content: 1 1 0% !important;
+      background: rgba(7, 19, 38, 0.2) !important;
+    }
+
+    /* 🎯 TRAVA DA GALERIA: Limita o tamanho das imagens internas na grelha */
+    .wesus-interior-grid {
+      display: grid !important;
+      grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+      gap: 0.75rem !important;
+      margin-top: 1rem !important;
+    }
+
+    .wesus-gallery-thumb {
+      height: 100px !important;
+      /* Imagens internas baixinhas e simétricas */
+      border-radius: 0.75rem !important;
+      overflow: hidden !important;
+      border: 1px solid rgba(255, 255, 255, 0.05) !important;
+    }
+
+    .wesus-gallery-thumb img {
+      width: 100% !important;
+      height: 100% !important;
+      object-fit: cover !important;
+    }
+
+    /* Espaçador controlado para a lista de documentos */
+    .wesus-docs-list {
+      display: flex !important;
+      flex-direction: column !important;
+      gap: 0.75rem !important;
+      /* Distância nobre entre cada card */
+      margin-top: 1rem !important;
+      /* Afasta o texto descritivo do primeiro item */
+    }
+
+    /* Ganho de respiro interno dentro de cada card de documento */
+    .wesus-doc-card {
+      padding: 0.85rem 1rem !important;
+    }
   </style>
 </head>
 
@@ -840,7 +1198,7 @@
                 <img src="img/logo-its-wesus-dourado.webp" fetchpriority="high" width="250" height="250" alt="It's Wesus" class="img-mobile block dark:hidden drop-shadow-md" />
               </div>
 
-              <h1 class="font-playfair text-[26px] lg:text-[32px] text-white/90 text-center lg:text-left">Bom dia, Danilson.</h1>
+              <h1 class="font-playfair text-[26px] lg:text-[32px] text-white/90 text-center lg:text-left">Bem-Vindo, Danilson.</h1>
 
               <button class="button-eye absolute top-2 right-0 lg:top-0 p-2 rounded-xl text-gold hover:bg-white/10 transition-colors z-20" aria-label="Ocultar saldos">
                 <svg class="w-5 h-5 lg:w-6 lg:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -861,7 +1219,7 @@
 
                 <div class="hidden lg:flex hero-logo-wrapper select-none">
                   <div class="hero-logo-glow" aria-hidden="true"></div>
-                  <img src="img/logo-its-wesus-hero.webp" width="352" height="352" alt="It's Wesus Premium" class="hidden dark:block h-full w-auto object-contain object-right opacity-60" aria-hidden="true" />
+                  <img src="img/logo-its-wesus-hero.webp" width="352" height="352" alt="It's Wesus Premium" class="hidden dark:block h-full w-auto object-contain object-right" aria-hidden="true" />
                   <img src="img/logo-its-wesus-dourado-hero.webp" width="352" height="352" alt="It's Wesus Premium" class="block dark:hidden h-full w-auto object-contain object-right opacity-60" aria-hidden="true" />
                 </div>
 
@@ -1269,6 +1627,86 @@
               </div>
             </section>
 
+            <section aria-label="Desempenho Anual" class="relative mt-16 mb-16" style="display: flex; flex-direction: column;">
+
+              <div class="px-1 mb-4">
+                <h3 class="font-playfair text-2xl font-bold text-white/90 tracking-wide">Desempenho Anual</h3>
+              </div>
+
+              <div class="relative w-full">
+                <div class="widget-card-backlight" aria-hidden="true" style="background: radial-gradient(circle at 50% 50%, rgba(197, 160, 89, 0.12) 0%, rgba(0, 163, 255, 0.05) 50%, transparent 75%) !important;"></div>
+
+                <div class="hero-card-crystal p-6 rounded-3xl relative overflow-hidden z-10 w-full flex flex-col gap-6 transition-all duration-300">
+
+                  <!-- Grupo de Controles Dinâmicos -->
+                  <div class="wesus-controls-group select-none pb-4 border-b border-white/5 relative z-30 w-full">
+
+                    <div class="wesus-filters-stack">
+                      <button id="annualAllTimeBtn" class="btn-annual-alltime inactive px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider rounded-xl border transition-all duration-200 hover:text-white hover:bg-white/5 whitespace-nowrap">
+                        Todo o Período
+                      </button>
+
+                      <div class="relative inline-block text-left" id="annualYearDropdownWrapper">
+                        <button id="annualYearDropdownBtn" class="btn-annual-dropdown active flex items-center justify-between lg:justify-start gap-2 px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider rounded-xl border transition-all duration-200 shadow-xl focus:outline-none whitespace-nowrap">
+                          <span id="selectedYearLabel">2026 (Atual)</span>
+                          <svg id="dropdownChevron" class="w-3 h-3 text-gold transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                          </svg>
+                        </button>
+
+                        <div id="annualYearDropdownMenu" class="absolute left-0 mt-1.5 w-full lg:w-36 bg-[#071326]/95 backdrop-blur-md border border-white/10 rounded-xl shadow-2xl hidden z-50 overflow-hidden transition-all duration-200">
+                          <button data-year="2026" class="w-full text-left px-4 py-2.5 text-[10px] font-bold uppercase tracking-wider hover:bg-white/5 transition-colors border-b border-white/5" style="color: #E8D08D;">2026 (Atual)</button>
+                          <button data-year="2025" class="w-full text-left px-4 py-2.5 text-[10px] font-bold uppercase tracking-wider hover:bg-white/5 transition-colors border-b border-white/5" style="color: rgba(255, 255, 255, 0.6);">2025</button>
+                          <button data-year="2024" class="w-full text-left px-4 py-2.5 text-[10px] font-bold uppercase tracking-wider hover:bg-white/5 transition-colors" style="color: rgba(255, 255, 255, 0.6);">2024</button>
+                        </div>
+                      </div>
+                    </div>
+
+                    <button id="wesusViewHistoryTrigger" class="inline-flex items-center justify-center gap-2.5 font-bold uppercase rounded-xl shadow-xl transition-all duration-300 hover:bg-white/10" style="border: 1px solid rgba(197, 160, 89, 0.4); background-color: rgba(255, 255, 255, 0.08); height: 38px; padding: 0 1.5rem; font-size: 11px; letter-spacing: 0.06em; color: #E8D08D; white-space: nowrap;">
+                      <span>Histórico Completo</span>
+                      <svg class="w-3.5 h-3.5 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                      </svg>
+                    </button>
+
+                  </div>
+
+                  <!-- Container de Cards de Dados (Empilha no Mobile e fica lado a lado no Desktop) -->
+                  <div id="annualPerformanceCardsContainer" class="grid gap-4 lg:gap-6 w-full relative z-10 transition-all duration-300">
+
+                    <!-- Card 1: Capital Investido -->
+                    <div class="flex flex-col justify-between p-4 bg-white/[0.01] border border-white/5 rounded-2xl min-h-[105px]">
+                      <div class="flex items-center gap-2 text-white/40 mb-2">
+                        <svg class="w-3.5 h-3.5 text-gold/70 shrink-0 drop-shadow-[0_0_4px_rgba(197,160,89,0.25)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.58 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.58 4 8 4s8-1.79 8-4M4 7c0-2.21 3.58-4 8-4s8 1.79 8 4m0 5c0 2.21-3.58 4-8 4s-8-1.79-8-4" />
+                        </svg>
+                        <p class="text-[9px] lg:text-[10px] font-semibold uppercase tracking-widest">Capital Investido</p>
+                      </div>
+                      <div class="space-y-1">
+                        <p id="annualInvestedCapital" class="text-xl lg:text-2xl font-bold text-white/90 tracking-wide select-all transition-all duration-200">€ 140.000,00</p>
+                        <p id="annualMovedCapitalVar" style="display: none !important;"></p>
+                      </div>
+                    </div>
+
+                    <!-- Card 2: Lucro Realizado -->
+                    <div class="flex flex-col justify-between p-4 bg-white/[0.01] border border-white/5 rounded-2xl min-h-[105px]">
+                      <div class="flex items-center gap-2 text-white/40 mb-2">
+                        <svg id="annualProfitIcon" class="w-3.5 h-3.5 text-[#6FCF97] shrink-0 drop-shadow-[0_0_5px_rgba(111,207,151,0.5)] transition-all duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                        </svg>
+                        <p class="text-[9px] lg:text-[10px] font-semibold uppercase tracking-widest">Lucro Realizado</p>
+                      </div>
+                      <div class="space-y-1">
+                        <p id="annualRealizedProfit" class="text-xl lg:text-2xl font-bold text-[#6FCF97] drop-shadow-[0_0_8px_rgba(111,207,151,0.3)] tracking-wide select-all transition-all duration-200">+ € 12.500,00</p>
+                        <p id="annualRealizedProfitVar" style="display: none !important;"></p>
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+            </section>
+
             <!-- Oportunidade Relâmpago (Dashboard) -->
             <section aria-label="Oportunidades Exclusivas" class="mt-2 relative">
               <div class="widget-card-backlight" aria-hidden="true"></div>
@@ -1304,7 +1742,7 @@
                   </div>
 
                   <p class="text-xs text-white/70 max-w-xl leading-relaxed font-normal">
-                    Coinvestimento privado com garantia contratual. Restam apenas <span class="text-[#E8D08D] font-bold border-b border-[#C5A059]/30 pb-0.5">2 cotas disponíveis</span> antes do encerramento oficial.
+                    Acesso antecipado a oportunidades exclusivas que surgem em momentos estratégicos do mercado. Disponibilidade limitada.
                   </p>
                 </div>
 
@@ -1333,7 +1771,7 @@
                 <h2 class="font-playfair text-2xl lg:text-3xl font-bold text-white/90 tracking-wide">
                   Oportunidades <span class="text-gold-liquid">Disponíveis</span>
                 </h2>
-                <p class="text-xs text-white/50 font-inter mt-1">Selecione uma das modalidades de alocação privada exclusivas para o seu perfil de investidor.</p>
+                <p class="text-xs text-white/50 font-inter mt-1">Seleciona uma das oportunidades exclusivas de investimento adequadas ao seu perfil de investidor.</p>
               </div>
             </header>
 
@@ -1499,7 +1937,7 @@
                   </div>
 
                   <p class="text-xs text-white/70 max-w-xl leading-relaxed font-normal">
-                    Coinvestimento privado com garantia contratual. Restam apenas <span class="text-[#E8D08D] font-bold border-b border-[#C5A059]/30 pb-0.5">2 cotas disponíveis</span> antes do encerramento oficial.
+                    Acesso antecipado a oportunidades exclusivas que surgem em momentos estratégicos do mercado. Disponibilidade limitada.
                   </p>
                 </div>
 
@@ -2059,21 +2497,179 @@
     </a>
   </nav>
 
-  <!-- ─── POPUP "EM BREVE" ───────────────────────────────────────── -->
-  <div id="wesusComingSoonPopup" class="wesus-popup-overlay">
-    <div id="wesusComingSoonBackdrop" class="absolute inset-0 bg-[#071326]/80 backdrop-blur-md cursor-pointer"></div>
+  <!-- ─── MODAL PREMIUM: SOLICITAR CONTACTO / SIMULAÇÃO ──────────────── -->
+  <div id="wesusInvestmentModal" class="wesus-popup-overlay">
+    <div id="wesusInvestmentBackdrop" class="absolute inset-0 bg-[#071326]/75 backdrop-blur-md cursor-pointer"></div>
 
-    <div class="wesus-popup-card hero-card-crystal relative z-10 rounded-3xl w-[90%] max-w-sm flex flex-col items-center text-center">
-      <div class="absolute -top-8 left-1/2 -translate-x-1/2 icon-badge-shield w-16 h-16 rounded-[1.25rem] flex items-center justify-center text-[#E8D08D] bg-[#071326] shadow-xl border border-[#C5A059]/40"></div>
-
-      <h3 class="font-playfair font-bold text-2xl text-white tracking-wide mb-3">Em Breve</h3>
-      <p class="text-[13px] text-white/70 font-inter !mb-8 leading-relaxed">Esta funcionalidade estará disponível numa futura atualização do portal.</p>
-
-      <button id="wesusClosePopupBtn" class="btn-gold-lingot w-full !text-[11px] font-bold tracking-[0.15em] uppercase" style="color: #ffffff !important;">
-        Compreendido
+    <div class="wesus-popup-card hero-card-crystal relative z-10 rounded-3xl w-[92%] max-w-sm flex flex-col p-6 border border-white/10 shadow-2xl">
+      <!-- Botão Fechar (X) Blindado na Direita -->
+      <button id="wesusCloseInvestmentBtn" class="absolute top-4 right-4 text-white/40 hover:text-white transition-colors w-8 h-8 flex items-center justify-center z-30" aria-label="Fechar">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
       </button>
+
+      <!-- Cabeçalho -->
+      <div class="flex flex-col items-center text-center mb-6">
+        <div class="icon-badge-shield w-12 h-12 rounded-xl flex items-center justify-center text-[#E8D08D] mb-3">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 10V3L4 14h7v7l9-11h-7z" />
+          </svg>
+        </div>
+        <h3 class="font-playfair font-bold text-lg text-white tracking-wide">Solicitar Intenção</h3>
+        <p id="modalPlanSubtitle" class="text-[10px] text-gold-liquid font-semibold uppercase tracking-wider mt-0.5">Plano Selecionado</p>
+      </div>
+
+      <!-- Formulário Simplificado -->
+      <form id="wesusInvestmentForm" class="space-y-5 font-inter text-xs" novalidate>
+
+        <!-- Campo 1: Valor Corrigido -->
+        <div class="premium-form-group space-y-1.5">
+          <div class="flex justify-between items-baseline">
+            <label class="text-white/50 uppercase tracking-wider text-[9px] font-semibold">Valor de Investimento</label>
+            <span class="text-white/30 text-[8px] tracking-wider uppercase font-medium">mínimo € 5.000</span>
+          </div>
+          <div class="currency-wrapper">
+            <span class="currency-symbol">€</span>
+            <input type="number" id="investAmount" placeholder="5000" min="5000" class="premium-field-input !pl-9 font-bold text-sm" required />
+          </div>
+          <p id="amountErrorMsg" class="text-[#6FCF97] font-semibold text-[10px] hidden transition-all flex items-center gap-1 mt-1" style="color: #ff6b6b !important; filter: drop-shadow(0 0 4px rgba(255,107,107,0.3));">
+            <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+            Mínimo obrigatório a partir de € 5.000,00.
+          </p>
+        </div>
+
+        <!-- Campo 2: Calendário Premium -->
+        <div class="premium-form-group space-y-1.5">
+          <label class="text-white/40 uppercase tracking-wider text-[9px] font-semibold">Quando gostaria de iniciar</label>
+          <input type="date" id="investDate" class="premium-field-input cursor-pointer" required />
+        </div>
+
+        <div class="pt-2">
+          <button type="submit" class="w-full btn-gold-lingot !py-3 !text-[10px] font-bold tracking-[0.15em] uppercase" style="color: #ffffff !important;">
+            Confirmar Interesse
+          </button>
+        </div>
+      </form>
     </div>
   </div>
+
+  <!-- ─── MODAL DE DETALHES DO ATIVO PREMIUM (ESTILO PERFIL VAULT) ─── -->
+  <div id="wesusAssetDetailsModal" class="wesus-popup-overlay">
+    <div id="wesusAssetDetailsBackdrop" class="absolute inset-0 bg-[#071326]/80 backdrop-blur-md cursor-pointer"></div>
+
+    <div class="hero-card-crystal relative z-10 rounded-3xl w-[94%] max-w-sm flex flex-col overflow-hidden border border-white/10 shadow-2xl">
+
+      <!-- Botão Fechar (X) por cima da imagem de capa -->
+      <button id="wesusCloseAssetDetailsBtn" class="absolute top-4 right-4 text-white/70 hover:text-white bg-[#071326]/50 backdrop-blur-md rounded-full w-8 h-8 flex items-center justify-center z-50 transition-colors" aria-label="Fechar">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+
+      <div class="wesus-modal-cover-wrap">
+        <img id="assetDetailsCover" src="img/casa-background-mobile-xsmall.webp" alt="" />
+        <div class="wesus-modal-cover-overlay"></div>
+
+        <div class="absolute inset-0 p-4 z-10 flex flex-col justify-between items-start">
+
+          <div class="flex justify-between items-start w-full gap-2">
+            <div class="flex flex-col">
+              <h4 id="assetDetailsTitle" class="font-playfair font-bold text-lg leading-tight text-white">Edifício Aliados</h4>
+              <p id="assetDetailsLocation" class="text-[9px] text-gold-liquid font-medium flex items-center gap-1 mt-1">Porto, Portugal</p>
+            </div>
+            <span id="assetDetailsStatus" class="status-badge-construction shrink-0">Em Construção</span>
+          </div>
+
+          <div class="w-full border-t border-white/5 pt-2">
+            <p class="text-[8px] text-white/40 uppercase tracking-widest font-semibold mb-0.5">Investimento Total</p>
+            <p id="assetDetailsTotal" class="font-bold text-white text-base">€ 1.200.000,00</p>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Linha de Abas Premium Com Padding e Respiro Nativos -->
+      <div class="wesus-modal-tabs-row">
+        <button id="tabBtnInterior" class="asset-tab-btn active focus:outline-none">
+          Interior do Imóvel
+        </button>
+        <button id="tabBtnDocs" class="asset-tab-btn focus:outline-none">
+          Documentações
+        </button>
+      </div>
+
+      <!-- Área de Conteúdo Scrollável com Altura Livre Balanceada -->
+      <div class="wesus-modal-scroll-pane flex-1">
+
+        <!-- ABA 1: Fotos do Interior (Grid de Imagens Controladas) -->
+        <div id="assetPaneInterior" class="asset-pane space-y-3">
+          <p class="text-[10px] text-white/50 leading-relaxed font-inter">Vistorias técnicas internas e andamento dos acabamentos de luxo.</p>
+
+          <div class="wesus-interior-grid">
+            <div class="wesus-gallery-thumb">
+              <img src="img/interior-1.webp" alt="Galeria 1" />
+            </div>
+            <div class="wesus-gallery-thumb">
+              <img src="img/interior-2.webp" alt="Galeria 2" />
+            </div>
+
+            <div class="wesus-gallery-thumb">
+              <img src="img/interior-3.webp" alt="Galeria 2" />
+            </div>
+
+            <div class="wesus-gallery-thumb">
+              <img src="img/interior-4.webp" alt="Galeria 2" />
+            </div>
+          </div>
+        </div>
+
+        <!-- ABA 2: Documentações (Lista de Downloads Seguros) -->
+        <div id="assetPaneDocs" class="asset-pane hidden">
+          <p class="text-[10px] text-white/50 leading-relaxed font-inter">Certidões regulatórias e relatórios técnicos assinados.</p>
+
+          <div class="wesus-docs-list">
+
+            <div class="wocus-doc-item wesus-doc-card flex items-center justify-between bg-white/[0.02] border border-white/5 rounded-xl hover:bg-white/[0.04] transition-colors">
+              <div class="flex items-center gap-2.5 min-w-0">
+                <div class="w-7 h-7 rounded-lg bg-gold/10 flex items-center justify-center text-gold shrink-0">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                </div>
+                <div class="truncate">
+                  <p class="text-xs font-bold text-white/90 truncate">Caderneta Predial Urbana</p>
+                  <p class="text-[8px] text-white/30 uppercase font-medium">PDF • 2.4 MB</p>
+                </div>
+              </div>
+              <button class="text-[9px] font-bold text-gold hover:text-white transition-colors uppercase tracking-wider shrink-0 px-1.5">Baixar</button>
+            </div>
+
+            <div class="wocus-doc-item w公共-doc-card wesus-doc-card flex items-center justify-between bg-white/[0.02] border border-white/5 rounded-xl hover:bg-white/[0.04] transition-colors">
+              <div class="flex items-center gap-2.5 min-w-0">
+                <div class="w-7 h-7 rounded-lg bg-gold/10 flex items-center justify-center text-gold shrink-0">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                </div>
+                <div class="truncate">
+                  <p class="text-xs font-bold text-white/90 truncate">Certidão de Ônus Reais</p>
+                  <p class="text-[8px] text-white/30 uppercase font-medium">PDF • 1.8 MB</p>
+                </div>
+              </div>
+              <button class="text-[9px] font-bold text-gold hover:text-white transition-colors uppercase tracking-wider shrink-0 px-1.5">Baixar</button>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+
 
   <script src="js/dashboard.js" defer></script>
 </body>
