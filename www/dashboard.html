@@ -1437,6 +1437,305 @@
     .wesus-animate-ping {
       animation: wesusPingSlow 2s cubic-bezier(0.16, 1, 0.3, 1) infinite !important;
     }
+
+    /* 🎯 LIGHTBOX MODAL: Cortina protetora base */
+    #wesusLightboxModal {
+      position: fixed !important;
+      top: 0 !important;
+      left: 0 !important;
+      right: 0 !important;
+      bottom: 0 !important;
+      width: 100vw !important;
+      height: 100vh !important;
+      z-index: 9999999 !important;
+      /* No topo de todo o ecossistema */
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      opacity: 0 !important;
+      visibility: hidden !important;
+      pointer-events: none !important;
+      transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.4s step-end !important;
+    }
+
+    #wSimpleLightboxModal.active,
+    #wesusLightboxModal.active {
+      opacity: 1 !important;
+      visibility: visible !important;
+      pointer-events: auto !important;
+      transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), visibility 0s linear !important;
+    }
+
+    /* 🎯 CONTAINER DA IMAGEM: Rebaixado para a camada interna base */
+    #wesusLightboxContainer {
+      position: relative !important;
+      z-index: 10 !important;
+      /* Fica abaixo dos botões de controle */
+      transform: scale(0.95) translateY(10px) !important;
+      transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+    }
+
+
+
+    /* Posição cirúrgica do botão de fechar (X) */
+    #wesusCloseLightboxBtn {
+      top: 24px !important;
+      right: 24px !important;
+      border: 1px solid rgba(255, 255, 255, 0.15) !important;
+      color: rgba(255, 255, 255, 0.8) !important;
+    }
+
+    /* 🎯 INVÓLUCRO JUSTO: Envelopa a imagem sem sobras ou gaps fantasmas */
+    #wSimpleLightboxContainer,
+    #wesusLightboxContainer {
+      position: relative !important;
+      display: inline-block !important;
+      /* Encolhe o container até abraçar o tamanho real da foto */
+      max-width: 90vw !important;
+      max-height: 75vh !important;
+      z-index: 10 !important;
+      transform: scale(0.95) translateY(10px) !important;
+      transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+    }
+
+    #wesusLightboxModal.active #wesusLightboxContainer {
+      transform: scale(1) translateY(0) !important;
+    }
+
+    /* Força a tag img a comportar-se como bloco para eliminar o espaçamento de linha base */
+    #wSimpleLightboxImage,
+    #wesusLightboxImage {
+      max-height: 75vh !important;
+      max-width: 90vw !important;
+      display: block !important;
+      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.8) !important;
+      opacity: 0;
+      transition: opacity 0.25s ease-in-out !important;
+    }
+
+    /* 🎯 ANCORAGEM FIXA NA FOTO: Posicionamento elegante sobre o canto superior direito da imagem */
+    #wSimpleCloseLightboxBtn,
+    #wesusCloseLightboxBtn {
+      position: absolute !important;
+      top: 16px !important;
+      /* Distância elegante da borda superior da imagem */
+      right: 16px !important;
+      /* Distância elegante da borda direita da imagem */
+      left: auto !important;
+      bottom: auto !important;
+      z-index: 999 !important;
+
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      background: rgba(7, 19, 38, 0.65) !important;
+      /* Vidro champagne escuro para alto contraste */
+      backdrop-filter: blur(12px) !important;
+      -webkit-backdrop-filter: blur(12px) !important;
+      border: 1px solid rgba(255, 255, 255, 0.2) !important;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4) !important;
+      color: rgba(255, 255, 255, 0.8) !important;
+      transition: all 0.2s ease-in-out !important;
+    }
+
+    #wesusCloseLightboxBtn:hover {
+      color: #ff6b6b !important;
+      border-color: rgba(255, 107, 107, 0.4) !important;
+      transform: scale(1.05) !important;
+    }
+
+    /* Posição cirúrgica das setas laterais com brilho em ouro Wesus */
+    #wesusPrevLightboxBtn {
+      left: 24px !important;
+      border: 1px solid rgba(197, 160, 89, 0.3) !important;
+    }
+
+    #wesusNextLightboxBtn {
+      right: 24px !important;
+      border: 1px solid rgba(197, 160, 89, 0.3) !important;
+    }
+
+    #wesusPrevLightboxBtn:hover,
+    #wesusNextLightboxBtn:hover {
+      border-color: #E8D08D !important;
+      color: #ffffff !important;
+      transform: scale(1.1) !important;
+    }
+
+    #wesusPrevLightboxBtn:active,
+    #wesusNextLightboxBtn:active {
+      transform: scale(0.9) !important;
+    }
+
+    /* 🎯 POSICIONAMENTO DAS SETAS ANCORADAS NAS BORDAS DA FOTO */
+    #wSimplePrevLightboxBtn,
+    #wSimpleNextLightboxBtn,
+    #wesusPrevLightboxBtn,
+    #wesusNextLightboxBtn {
+      position: absolute !important;
+      top: 50% !important;
+      /* Centralização vertical matemática */
+      transform: translateY(-50%) !important;
+      z-index: 999 !important;
+      /* Flutuam soberanas por cima do canvas */
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      background: rgba(7, 19, 38, 0.65) !important;
+      /* Vidro champagne denso contra vazamento */
+      backdrop-filter: blur(12px) !important;
+      -webkit-backdrop-filter: blur(12px) !important;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5) !important;
+      transition: all 0.25s cubic-bezier(0.25, 1, 0.5, 1) !important;
+    }
+
+    /* Afastamento elegante para dentro dos limites da imagem */
+    #wSimplePrevLightboxBtn,
+    #wSimplePrevLightboxBtn {
+      left: 20px !important;
+      right: auto !important;
+      border: 1px solid rgba(197, 160, 89, 0.3) !important;
+    }
+
+    #wesusPrevLightboxBtn {
+      left: 20px !important;
+      right: auto !important;
+      border: 1px solid rgba(197, 160, 89, 0.3) !important;
+    }
+
+    #wesusNextLightboxBtn {
+      right: 20px !important;
+      left: auto !important;
+      border: 1px solid rgba(197, 160, 89, 0.3) !important;
+    }
+
+    #wesusPrevLightboxBtn:hover,
+    #wesusNextLightboxBtn:hover {
+      border-color: #E8D08D !important;
+      color: #ffffff !important;
+      transform: translateY(-50%) scale(1.1) !important;
+      /* Preserva a centralização vertical no hover */
+    }
+
+    #wesusPrevLightboxBtn:active,
+    #wesusNextLightboxBtn:active {
+      transform: translateY(-50%) scale(0.9) !important;
+    }
+
+    /* Otimização responsiva para mobile (afasta um pouco menos para maximizar a área da foto) */
+    @media (max-width: 640px) {
+
+      #wSimplePrevLightboxBtn,
+      #wesusPrevLightboxBtn {
+        left: 12px !important;
+      }
+
+      #wesusNextLightboxBtn {
+        right: 12px !important;
+      }
+
+      #wesusCloseLightboxBtn {
+        top: 12px !important;
+        right: 12px !important;
+      }
+    }
+
+    /* Otimização responsiva para mobile físico (Setas coladas na margem segura) */
+    @media (max-width: 640px) {
+
+      #wSimplePrevLightboxBtn,
+      #wesusPrevLightboxBtn {
+        left: 16px !important;
+      }
+
+      #wesusNextLightboxBtn {
+        right: 16px !important;
+      }
+
+      #wesusCloseLightboxBtn {
+        top: 16px !important;
+        right: 16px !important;
+      }
+    }
+
+
+    #wesusLightboxModal.active {
+      opacity: 1 !important;
+      visibility: visible !important;
+      pointer-events: auto !important;
+      transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), visibility 0s linear !important;
+    }
+
+    /* Otimização responsiva para as setas flutuantes no Mobile */
+    @media (max-width: 640px) {
+
+      #wesusPrevLightboxBtn,
+      #wesusNextLightboxBtn {
+        width: 42px !important;
+        height: 42px !important;
+        background: rgba(7, 19, 38, 0.7) !important;
+        backdrop-filter: blur(8px) !important;
+        -webkit-backdrop-filter: blur(8px) !important;
+      }
+
+      #wSimplePrevLightboxBtn,
+      #wesusPrevLightboxBtn {
+        left: 12px !important;
+      }
+
+      #wesusNextLightboxBtn {
+        right: 12px !important;
+      }
+    }
+
+    /* ═══════════════════════════════════════════════════════════════
+   MÓDULO HIGH-END: METADADOS PREMIUM DO INVESTIMENTO
+   ═══════════════════════════════════════════════════════════════ */
+
+    /* Grid de destaque duplo para os dados contratuais do plano */
+    .wesus-plan-meta-grid {
+      display: none;
+      /* Controlado como 'flex' dinamicamente pelo JS */
+      width: 100% !important;
+      grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+      gap: 0.75rem !important;
+      margin-top: 1rem !important;
+      margin-bottom: 0.25rem !important;
+    }
+
+    /* Blocos internos de vidro champagne e esmeralda */
+    .wesus-meta-box {
+      padding: 0.65rem 0.5rem !important;
+      border-radius: 12px !important;
+      background: rgba(255, 255, 255, 0.02) !important;
+      border: 1px solid rgba(255, 255, 255, 0.05) !important;
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: center !important;
+      justify-content: center !important;
+      text-align: center !important;
+    }
+
+    /* Realce específico para a taxa de retorno */
+    .wesus-meta-box.box-tax {
+      border-color: rgba(111, 207, 151, 0.15) !important;
+      background: linear-gradient(135deg, rgba(111, 207, 151, 0.03) 0%, rgba(7, 19, 38, 0.2) 100%) !important;
+    }
+
+    .wesus-meta-box-label {
+      font-size: 8px !important;
+      font-weight: 600 !important;
+      text-transform: uppercase !important;
+      letter-spacing: 0.1em !important;
+      color: rgba(255, 255, 255, 0.4) !important;
+      margin-bottom: 2px !important;
+    }
+
+    .wesus-meta-box-value {
+      font-size: 13px !important;
+      font-weight: 700 !important;
+      letter-spacing: 0.02em !important;
+    }
   </style>
 </head>
 
@@ -2075,7 +2374,7 @@
                 </div>
 
                 <div class="w-full xl:w-auto flex justify-center shrink-0 z-10">
-                  <button class="w-full xl:w-auto btn-gold-lingot" style="color: #ffffff !important;">
+                  <button data-modal="investment" class="w-full btn-gold-lingot !py-3 !text-[10px]" style="color: #ffffff !important;">
                     Investir Já
                   </button>
                 </div>
@@ -2141,7 +2440,9 @@
                   </div>
 
                   <div class="w-full relative z-10 select-none">
-                    <button class="w-full btn-gold-lingot !py-3 !text-[10px]" style="color: #ffffff !important;">Investir Já</button>
+                    <button data-modal="investment" class="w-full btn-gold-lingot !py-3 !text-[10px]" style="color: #ffffff !important;">
+                      Investir Já
+                    </button>
                   </div>
                 </div>
 
@@ -2179,7 +2480,9 @@
                   </div>
 
                   <div class="w-full relative z-10 select-none">
-                    <button class="w-full btn-gold-lingot plan-featured-btn !py-3 !text-[10px]" style="color: #ffffff !important;">Investir Já</button>
+                    <button data-modal="investment" class="w-full btn-gold-lingot !py-3 !text-[10px]" style="color: #ffffff !important;">
+                      Investir Já
+                    </button>
                   </div>
                 </div>
 
@@ -2218,7 +2521,9 @@
                   </div>
 
                   <div class="w-full relative z-10 select-none">
-                    <button class="w-full btn-gold-lingot !py-3 !text-[10px]" style="color: #ffffff !important;">Investir Já</button>
+                    <button data-modal="investment" class="w-full btn-gold-lingot !py-3 !text-[10px]" style="color: #ffffff !important;">
+                      Investir Já
+                    </button>
                   </div>
                 </div>
 
@@ -2270,7 +2575,7 @@
                 </div>
 
                 <div class="w-full xl:w-auto flex justify-center shrink-0 z-10">
-                  <button class="w-full xl:w-auto btn-gold-lingot" style="color: #ffffff !important;">
+                  <button data-modal="investment" class="w-full btn-gold-lingot !py-3 !text-[10px]" style="color: #ffffff !important;">
                     Investir Já
                   </button>
                 </div>
@@ -2335,7 +2640,7 @@
                   <p class="text-xs lg:text-sm font-bold text-[#6FCF97] tracking-wide">Ativo em Curso</p>
                 </div>
                 <div class="w-full lg:col-span-2 flex lg:justify-end mt-2 lg:mt-0">
-                  <button class="w-full btn-gold-lingot !py-2.5 !px-4 !text-[10px] !h-auto whitespace-nowrap" style="color: #ffffff !important; letter-spacing: 0.12em;">Baixar Doc</button>
+                  <button onclick="event.stopPropagation(); event.preventDefault();" class="w-full btn-gold-lingot !py-2.5 !px-4 !text-[10px] !h-auto whitespace-nowrap" style="color: #ffffff !important; letter-spacing: 0.12em;">Baixar Doc</button>
                 </div>
               </div>
 
@@ -2369,7 +2674,7 @@
                   <p class="text-xs lg:text-sm font-bold text-[#6FCF97] tracking-wide">Ativo em Curso</p>
                 </div>
                 <div class="w-full lg:col-span-2 flex lg:justify-end mt-2 lg:mt-0">
-                  <button class="w-full btn-gold-lingot !py-2.5 !px-4 !text-[10px] !h-auto whitespace-nowrap" style="color: #ffffff !important; letter-spacing: 0.12em;">Baixar Doc</button>
+                  <button onclick="event.stopPropagation(); event.preventDefault();" class="w-full btn-gold-lingot !py-2.5 !px-4 !text-[10px] !h-auto whitespace-nowrap" style="color: #ffffff !important; letter-spacing: 0.12em;">Baixar Doc</button>
                 </div>
               </div>
 
@@ -2403,7 +2708,7 @@
                   <p class="text-xs lg:text-sm font-bold text-[#6FCF97] tracking-wide">Ativo em Curso</p>
                 </div>
                 <div class="w-full lg:col-span-2 flex lg:justify-end mt-2 lg:mt-0">
-                  <button class="w-full btn-gold-lingot !py-2.5 !px-4 !text-[10px] !h-auto whitespace-nowrap" style="color: #ffffff !important; letter-spacing: 0.12em;">Baixar Doc</button>
+                  <button onclick="event.stopPropagation(); event.preventDefault();" class="w-full btn-gold-lingot !py-2.5 !px-4 !text-[10px] !h-auto whitespace-nowrap" style="color: #ffffff !important; letter-spacing: 0.12em;">Baixar Doc</button>
                 </div>
               </div>
 
@@ -2437,7 +2742,7 @@
                   <p class="text-xs lg:text-sm font-bold text-[#6FCF97] tracking-wide">Ativo em Curso</p>
                 </div>
                 <div class="w-full lg:col-span-2 flex lg:justify-end mt-2 lg:mt-0">
-                  <button class="w-full btn-gold-lingot !py-2.5 !px-4 !text-[10px] !h-auto whitespace-nowrap" style="color: #ffffff !important; letter-spacing: 0.12em;">Baixar Doc</button>
+                  <button onclick="event.stopPropagation(); event.preventDefault();" class="w-full btn-gold-lingot !py-2.5 !px-4 !text-[10px] !h-auto whitespace-nowrap" style="color: #ffffff !important; letter-spacing: 0.12em;">Baixar Doc</button>
                 </div>
               </div>
 
@@ -2471,7 +2776,7 @@
                   <p class="text-xs lg:text-sm font-bold text-[#6FCF97] tracking-wide">Ativo em Curso</p>
                 </div>
                 <div class="w-full lg:col-span-2 flex lg:justify-end mt-2 lg:mt-0">
-                  <button class="w-full btn-gold-lingot !py-2.5 !px-4 !text-[10px] !h-auto whitespace-nowrap" style="color: #ffffff !important; letter-spacing: 0.12em;">Baixar Doc</button>
+                  <button onclick="event.stopPropagation(); event.preventDefault();" class="w-full btn-gold-lingot !py-2.5 !px-4 !text-[10px] !h-auto whitespace-nowrap" style="color: #ffffff !important; letter-spacing: 0.12em;">Baixar Doc</button>
                 </div>
               </div>
             </section>
@@ -2516,7 +2821,7 @@
                   <p class="text-xs lg:text-sm font-bold text-[#6FCF97]">+ € 10.000,00</p>
                 </div>
                 <div class="w-full lg:col-span-2 flex lg:justify-end mt-2 lg:mt-0">
-                  <button class="w-full btn-gold-lingot !py-2.5 !px-4 !text-[10px] !h-auto whitespace-nowrap" style="color: #ffffff !important; letter-spacing: 0.1em;">Baixar Doc</button>
+                  <button onclick="event.stopPropagation(); event.preventDefault();" class="w-full btn-gold-lingot !py-2.5 !px-4 !text-[10px] !h-auto whitespace-nowrap" style="color: #ffffff !important; letter-spacing: 0.1em;">Baixar Doc</button>
                 </div>
               </div>
 
@@ -2553,7 +2858,7 @@
                   <p class="text-xs lg:text-sm font-bold text-[#6FCF97]">+ € 2.500,00</p>
                 </div>
                 <div class="w-full lg:col-span-2 flex lg:justify-end mt-2 lg:mt-0">
-                  <button class="w-full btn-gold-lingot !py-2.5 !px-4 !text-[10px] !h-auto whitespace-nowrap" style="color: #ffffff !important; letter-spacing: 0.1em;">Baixar Doc</button>
+                  <button onclick="event.stopPropagation(); event.preventDefault();" class="w-full btn-gold-lingot !py-2.5 !px-4 !text-[10px] !h-auto whitespace-nowrap" style="color: #ffffff !important; letter-spacing: 0.1em;">Baixar Doc</button>
                 </div>
               </div>
             </section>
@@ -2721,7 +3026,7 @@
                           <p class="text-white/90 font-bold tracking-wide">Modo de Visualização</p>
                           <p class="text-[10px] text-white/40 mt-0.5">Alternar o tema do portal (Claro / Escuro)</p>
                         </div>
-                        <button onclick="document.getElementById('themeToggleDesktop').click();" class="p-2 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 text-gold transition-colors shadow-sm" aria-label="Alternar Tema">
+                        <button class="p-2 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 text-gold transition-colors shadow-sm" aria-label="Alternar Tema">
                           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
                           </svg>
@@ -2731,7 +3036,7 @@
                   </div>
 
                   <div class="prefs-support-footer">
-                    <a href="https://wa.me/351929408352?text=Olá! Preciso de suporte técnico no Portal do Investidor." target="_blank" class="w-full flex items-center justify-center gap-2 btn-gold-lingot btn-emerald-lingot !py-2.5 !text-[10px] text-center" style="color: #ffffff !important; letter-spacing: 0.12em;">
+                    <a href="javascript:void(0);" onclick="event.preventDefault(); event.stopPropagation();" class="w-full flex items-center justify-center gap-2 btn-gold-lingot btn-emerald-lingot cursor-default select-none" style="color: #ffffff !important;">
                       <svg class="w-4 h-4 fill-current shrink-0" viewBox="0 0 24 24">
                         <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397 0 11.93 0c3.165.001 6.14 1.233 8.377 3.469 2.237 2.235 3.469 5.211 3.469 8.378 0 6.582-5.336 11.93-11.87 11.93h-.004c-2.012 0-3.987-.544-5.732-1.583L0 24zm6.158-3.466l.356.211c1.6.953 3.546 1.456 5.368 1.456h.003c5.497 0 9.969-4.473 9.973-9.972.002-2.664-1.033-5.167-2.915-7.05-1.88-1.882-4.383-2.917-7.046-2.917-5.5 0-9.972 4.474-9.975 9.973-.001 1.894.494 3.743 1.433 5.361l.232.401L1.87 21.673l3.52-.924zM16.43 13.13c-.26-.13-1.536-.758-1.772-.844-.237-.086-.41-.13-.582.13-.172.26-.665.844-.813 1.012-.148.17-.297.187-.557.057-.26-.13-1.1-.405-2.096-1.293-.775-.692-1.3-1.547-1.452-1.807-.152-.26-.016-.4.114-.53.117-.116.26-.303.39-.455.13-.152.173-.26.26-.433.086-.173.043-.325-.022-.455-.065-.13-.582-1.4-.798-1.92-.21-.51-.424-.44-.582-.44H8.04c-.172 0-.453.065-.69.325-.238.26-.908.887-.908 2.162 0 1.275.928 2.506 1.057 2.679.13.173 1.826 2.79 4.425 3.913.618.267 1.1.426 1.475.545.622.197 1.187.17 1.634.1.5-.074 1.536-.628 1.75-1.235.213-.607.213-1.127.15-1.235-.064-.11-.237-.174-.497-.304z" />
                       </svg>
@@ -2848,10 +3153,18 @@
         <p id="modalPlanSubtitle" class="text-[10px] text-gold-liquid font-semibold uppercase tracking-wider mt-0.5">Plano Selecionado</p>
 
         <!-- 🎯 NOVA LINHA DE METADADOS DINÂMICOS DO PLANO -->
-        <div id="modalPlanMetaRow" class="hidden items-center justify-center gap-3 mt-2 text-[9px] font-bold uppercase tracking-widest bg-white/[0.02] border border-white/5 px-3 py-1.5 rounded-xl w-fit mx-auto">
-          <span id="modalPlanPeriod" class="text-white/60">--</span>
-          <span class="w-1 h-1 bg-white/10 rounded-full"></span>
-          <span id="modalPlanTax" class="text-[#6FCF97] drop-shadow-[0_0_6px_rgba(111,207,151,0.3)]">--</span>
+        <div id="modalPlanMetaRow" class="wesus-plan-meta-grid">
+
+          <div class="wesus-meta-box">
+            <span class="wesus-meta-box-label">Prazo de Contrato</span>
+            <span id="modalPlanPeriod" class="wesus-meta-box-value text-white/90">--</span>
+          </div>
+
+          <div class="wesus-meta-box box-tax">
+            <span class="wesus-meta-box-label">Retorno Fixo</span>
+            <span id="modalPlanTax" class="wesus-meta-box-value text-[#6FCF97] drop-shadow-[0_0_8px_rgba(111,207,151,0.4)]">--</span>
+          </div>
+
         </div>
       </div>
 
@@ -3017,8 +3330,32 @@
     </div>
   </div>
 
+  <div id="wesusLightboxModal" class="fixed inset-0 z-[10000] flex items-center justify-center bg-[#071326]/95 backdrop-blur-2xl">
+    <div id="wesusLightboxBackdrop" class="absolute inset-0 cursor-pointer"></div>
 
+    <div id="wesusLightboxContainer" class="relative z-[10001] select-none mx-4">
 
+      <button id="wesusCloseLightboxBtn" class="absolute w-10 h-10 rounded-full flex items-center justify-center bg-white/5 border border-white/10 text-white/70 hover:text-white hover:bg-white/10 transition-all focus:outline-none">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+
+      <button id="wesusPrevLightboxBtn" class="absolute w-12 h-12 rounded-full flex items-center justify-center bg-white/5 border border-white/10 text-gold hover:text-white hover:bg-white/10 transition-all focus:outline-none">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7" />
+        </svg>
+      </button>
+
+      <button id="wesusNextLightboxBtn" class="absolute w-12 h-12 rounded-full flex items-center justify-center bg-white/5 border border-white/10 text-gold hover:text-white hover:bg-white/10 transition-all focus:outline-none">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" />
+        </svg>
+      </button>
+
+      <img id="wesusLightboxImage" src="" alt="Portfólio Expandido" class="rounded-2xl border border-white/10" />
+    </div>
+  </div>
   <script src="js/dashboard.js" defer></script>
 </body>
 

@@ -615,14 +615,17 @@ const InvestmentModalController = (() => {
       const periodEl = document.getElementById("modalPlanPeriod");
       const taxDisplayEl = document.getElementById("modalPlanTax");
 
+      // 🎯 PIPELINE DE INJEÇÃO PREMIUM NO GRID DUAL
       if (metaRow && periodEl && taxDisplayEl && planTax) {
-        periodEl.textContent = planPeriod || "Prazo Comercial";
-        taxDisplayEl.textContent = planTax;
-        metaRow.classList.remove("hidden");
-        metaRow.classList.add("flex");
+        // Limpa strings residuais para expor apenas os valores puros e imponentes
+        periodEl.textContent = planPeriod
+          ? planPeriod.replace("Plano ", "")
+          : "Prazo Comercial";
+        taxDisplayEl.textContent = planTax.replace("Retorno: ", "");
+
+        metaRow.style.setProperty("display", "grid", "important");
       } else if (metaRow) {
-        metaRow.classList.remove("flex");
-        metaRow.classList.add("hidden");
+        metaRow.style.setProperty("display", "none", "important");
       }
 
       form.reset();
@@ -639,13 +642,15 @@ const InvestmentModalController = (() => {
       modal.classList.remove("active");
     };
 
-    // Acopla o evento em todos os botões "Investir Já" (Classe genérica .btn-gold-lingot)
-    // 🔥 Blindagem: Proíbe botões de submissão (type="submit") de resetarem o modal recursivamente
+    // 🎯 SELETOR DE ALTA PRECISÃO:
+    // Só ouve quem tem o atributo específico, ignorando a classe CSS genérica
     const investButtons = document.querySelectorAll(
-      ".btn-gold-lingot:not(#wesusClosePopupBtn):not(#wesusCloseInvestmentBtn):not([type='submit'])",
+      '[data-modal="investment"]',
     );
 
+    // Adiciona o evento apenas nestes botões específicos
     investButtons.forEach((btn) => {
+      btn.removeEventListener("click", (e) => openModal(e, btn));
       btn.addEventListener("click", (e) => openModal(e, btn));
     });
 
@@ -1025,6 +1030,162 @@ const AssetDetailsModalController = (() => {
       });
     });
   }
+
+  // ── Sub-Motor Integrado: Lightbox de Fotos do Interior ──
+  const initAssetLightbox = () => {
+    const lightbox = document.getElementById("wesusLightboxModal");
+    const lightboxImg = document.getElementById("wesusLightboxImage");
+    const backdrop = document.getElementById("wesusLightboxBackdrop");
+    const closeBtn =
+      document.getElementById("wSimpleCloseLightboxBtn") ||
+      document.getElementById("wesusCloseLightboxBtn");
+    const prevBtn =
+      document.getElementById("wSimplePrevLightboxBtn") ||
+      document.getElementById("wesusPrevLightboxBtn");
+    const nextBtn = document.getElementById("wesusNextLightboxBtn");
+
+    if (!lightbox || !lightboxImg) return;
+
+    let imagesArray = [];
+    let activeImgIndex = 0;
+
+    const updateLightboxViewport = () => {
+      lightboxImg.style.opacity = "0"; // Dispara fade-out controlado na GPU
+
+      // Carrega a nova imagem em background
+      const tempLoader = new Image();
+      tempLoader.src = imagesArray[activeImgIndex];
+      tempLoader.onload = () => {
+        lightboxImg.src = imagesArray[activeImgIndex];
+        lightboxImg.style.opacity = "1"; // Abre com fade-in suave
+      };
+    };
+
+    // Intercepta e escuta cliques nas thumbs da galeria interna
+    document
+      .querySelectorAll(".wesus-interior-grid .wesus-gallery-thumb img")
+      .forEach((img) => {
+        img.style.cursor = "pointer";
+        img.addEventListener("click", (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+
+          // Varre e mapeia as mídias disponíveis no grid da casa atual em runtime
+          imagesArray = Array.from(
+            document.querySelectorAll(
+              ".wesus-interior-grid .wesus-gallery-thumb img",
+            ),
+          ).map((i) => i.getAttribute("src"));
+          activeImgIndex = imagesArray.indexOf(img.getAttribute("src"));
+
+          if (activeImgIndex === -1) activeImgIndex = 0;
+
+          updateLightboxViewport();
+          lightbox.classList.add("active");
+        });
+      });
+
+    const hideLightbox = () => {
+      lightbox.classList.remove("active");
+      // Remove o listener global de teclado ao fechar para evitar overhead ou conflitos secundários
+      window.removeEventListener("keydown", handleLightboxKeyboard);
+      setTimeout(() => {
+        lightboxImg.style.opacity = "0";
+      }, 300);
+    };
+
+    // 🎯 NOVO EVENTO DE TECLADO: Atalhos rápidos premium para desktop
+    const handleLightboxKeyboard = (e) => {
+      if (!lightbox.classList.contains("active")) return;
+
+      if (e.key === "ArrowRight") {
+        e.preventDefault();
+        activeImgIndex = (activeImgIndex + 1) % imagesArray.length;
+        updateLightboxViewport();
+      } else if (e.key === "ArrowLeft") {
+        e.preventDefault();
+        activeImgIndex =
+          (activeImgIndex - 1 + imagesArray.length) % imagesArray.length;
+        updateLightboxViewport();
+      } else if (e.key === "Escape") {
+        e.preventDefault();
+        hideLightbox();
+      }
+    };
+
+    // Escuta cliques nas thumbs para abrir o modal e injetar o escopo de teclado
+    document
+      .querySelectorAll(".wesus-interior-grid .wesus-gallery-thumb img")
+      .forEach((img) => {
+        img.style.cursor = "pointer";
+        img.addEventListener("click", (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+
+          imagesArray = Array.from(
+            document.querySelectorAll(
+              ".wesus-interior-grid .wesus-gallery-thumb img",
+            ),
+          ).map((i) => i.getAttribute("src"));
+          activeImgIndex = imagesArray.indexOf(img.getAttribute("src"));
+
+          if (activeImgIndex === -1) activeImgIndex = 0;
+
+          updateLightboxViewport();
+          lightbox.classList.add("active");
+
+          // 🎯 ATIVAÇÃO DO ESCUTADOR DE TECLADO GLOBAL AO ABRIR
+          window.addEventListener("keydown", handleLightboxKeyboard);
+        });
+      });
+
+    if (closeBtn) closeBtn.addEventListener("click", hideLightbox);
+    if (backdrop) backdrop.addEventListener("click", hideLightbox);
+
+    if (prevBtn) {
+      prevBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        activeImgIndex =
+          (activeImgIndex - 1 + imagesArray.length) % imagesArray.length;
+        updateLightboxViewport();
+      });
+    }
+
+    if (nextBtn) {
+      nextBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        activeImgIndex = (activeImgIndex + 1) % imagesArray.length;
+        updateLightboxViewport();
+      });
+    }
+
+    if (closeBtn) closeBtn.addEventListener("click", hideLightbox);
+    if (backdrop) backdrop.addEventListener("click", hideLightbox);
+
+    if (prevBtn) {
+      prevBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        activeImgIndex =
+          (activeImgIndex - 1 + imagesArray.length) % imagesArray.length;
+        updateLightboxViewport();
+      });
+    }
+
+    if (nextBtn) {
+      nextBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        activeImgIndex = (activeImgIndex + 1) % imagesArray.length;
+        updateLightboxViewport();
+      });
+    }
+  };
+
+  // Inicializa o sub-motor acoplado
+  initAssetLightbox();
 
   return { init };
 })();
