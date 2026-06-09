@@ -1,21 +1,32 @@
 /* ═══════════════════════════════════════════════════════
    login.js — It's Wesus Portal do Investidor
-   Vanilla JS | ES6+ | Capacitor-ready
+   Vanilla JS | ES6+ | Capacitor-ready | Supabase Integrated
 ════════════════════════════════════════════════════════ */
 
 (function () {
   "use strict";
+
+  /* ── CONFIGURAÇÃO E INICIALIZAÇÃO DO SUPABASE ── */
+  const SUPABASE_URL = "https://eolpgnlfxgmramzckxvo.supabase.co";
+
+  // 🔑 COLA AQUI a tua "Publishable key" (anon) que vimos na tela anterior do teu Supabase
+  const SUPABASE_ANON_KEY = "sb_publishable_vg-yRQt4yHm0ps1FPeh8LA_O9fruoFv";
+
+  // Inicializa o cliente usando o objeto global injetado pelo CDN
+  const supabase = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_ANON_KEY,
+  );
+
   /* ── Controle de Orientação Inteligente (Capacitor) ── */
   if (window.Capacitor && window.Capacitor.Plugins.ScreenOrientation) {
     const { ScreenOrientation } = window.Capacitor.Plugins;
 
-    // Se a largura for menor que 820px (nosso breakpoint de tablet), tranca na vertical.
     if (window.innerWidth < 820) {
       ScreenOrientation.lock({ orientation: "portrait" }).catch((err) =>
         console.log("Rotação já trancada ou não suportada no browser."),
       );
     } else {
-      // Se for tablet ou desktop, destranca para permitir girar.
       ScreenOrientation.unlock().catch((err) => console.log(err));
     }
   }
@@ -65,7 +76,6 @@
       "aria-label",
       passwordVisible ? "Ocultar palavra-passe" : "Mostrar palavra-passe",
     );
-    // Keep focus on input after toggling
     passwordInput.focus();
   });
 
@@ -123,23 +133,25 @@
     return valid;
   }
 
-  /* ── Simulated authentication (replace with real API) */
+  /* ── INTEGRALIZAÇÃO REAL COM AUTENTICAÇÃO SUPABASE ── */
   async function authenticate(email, password) {
-    // Simulate network delay (replace with fetch/axios call)
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        // Demo: any @wesus.com email + any 8+ char password succeeds
-        if (email.endsWith("@wesus.com") && password.length >= 8) {
-          resolve({ token: "demo-jwt-token", user: { email } });
-        } else {
-          reject(
-            new Error(
-              "Credenciais inválidas. Verifique o seu e-mail e palavra-passe.",
-            ),
-          );
-        }
-      }, 1600);
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email: email,
+      password: password,
     });
+
+    if (error) {
+      // Customização amigável para mensagens de erro comuns de produção
+      if (error.message === "Invalid login credentials") {
+        throw new Error(
+          "Credenciais inválidas. Verifique o seu e-mail e palavra-passe.",
+        );
+      }
+      throw new Error(error.message);
+    }
+
+    // Retorna a sessão ativa contendo o token JWT unificado
+    return data;
   }
 
   /* ── Submit handler ───────────────────────────────── */
@@ -156,11 +168,11 @@
         passwordInput.value,
       );
 
-      // Sucesso — Guarda o estado e chama a transição com logo
-      sessionStorage.setItem("wesus_token", result.token);
+      // Persiste o Token JWT real que o teu Cloudflare Worker validará na Edge
+      sessionStorage.setItem("wesus_token", result.session.access_token);
       sessionStorage.setItem("wesus_user", JSON.stringify(result.user));
 
-      // CHAMADA DA TRANSIÇÃO PREMIUM
+      // Executa a transição animada premium para o painel principal
       executePremiumRedirect();
     } catch (err) {
       setLoading(false);
@@ -169,7 +181,7 @@
         err.message || "Erro inesperado. Tente novamente.",
       );
 
-      // Shake animation on the form card
+      // Feedback háptico visual (efeito shake) no formulário em caso de falha
       const card = form;
       card.animate(
         [
@@ -185,7 +197,7 @@
     }
   });
 
-  /* ── Page entrance: ensure fonts are loaded before animating ── */
+  /* ── Page entrance ── */
   if (document.fonts && document.fonts.ready) {
     document.fonts.ready.then(() => {
       document.body.classList.add("fonts-loaded");
@@ -199,11 +211,9 @@
 
     const { NativeBiometric } = window.Capacitor.Plugins;
 
-    // Verifica disponibilidade
     const available = await NativeBiometric.isAvailable();
     if (!available.isAvailable) return;
 
-    // Mostra o botão apenas se biometria disponível
     biometricBtn.classList.remove("hidden");
 
     const verifyUser = async () => {
@@ -216,11 +226,21 @@
           fallbackTitle: "Usar Senha",
         });
 
-        // Sucesso: Define o token e dispara a transição corrigida
-        sessionStorage.setItem("wesus_token", "biometric-token-verified");
+        // Para biometria nativa com persistência auto-gerida pelo Supabase,
+        // extraímos a sessão atual persistida localmente pelo SDK
+        const {
+          data: { session },
+        } = await supabase.auth.getSession();
 
-        // CHAMADA DA TRANSIÇÃO PREMIUM (Adeus ecrã colado!)
-        executePremiumRedirect();
+        if (session) {
+          sessionStorage.setItem("wesus_token", session.access_token);
+          executePremiumRedirect();
+        } else {
+          showFieldError(
+            formError,
+            "Sessão expirada. Por favor, introduza as credenciais uma primeira vez.",
+          );
+        }
       } catch (e) {
         console.log("Biometria cancelada ou erro:", e);
       }
@@ -229,35 +249,24 @@
     biometricBtn.addEventListener("click", verifyUser);
   }
 
-  // Inicializa ao carregar
   initBiometricEngine();
 })();
 
-/* ── Lógica Nativa Mobile (Fundo + Teclado + Rotação) ──────────────────────────── */
-
 /* ── Lógica Nativa Mobile (Fundo + Teclado + Rotação Inteligente) ──────────────────────────── */
-
-// Guardamos a largura inicial do ecrã para monitorizar a rotação real
 let lastWidth = window.innerWidth;
 
 function updateBackgroundHeights() {
   const actualHeight = window.innerHeight;
   const actualWidth = window.innerWidth;
-
-  // ── MARGEM DE ERRO REFORÇADA (De 60px para 120px) ──
-  // Isto cria uma "sangria" generosa nas bordas. A imagem estende-se 60px para cima
-  // e 60px para baixo além do limite visível do ecrã, blindando o layout a 100%.
   const buffer = 120;
   const safeHeight = actualHeight + buffer;
-  const offsetTop = -(buffer / 2); // Centraliza a imagem verticalmente (-60px)
+  const offsetTop = -(buffer / 2);
 
-  // 1. Trancar o wrapper principal estritamente na altura física do ecrã
   const mainWrapper = document.getElementById("main-wrapper");
   if (mainWrapper) {
     mainWrapper.style.height = `${actualHeight}px`;
   }
 
-  // 2. Fundo Mobile (Garante a sobreposição segura nas bordas)
   const mobileBgWrapper = document.querySelector(
     '.lg\\:hidden > img[src*="casa-background-mobile"]',
   )?.parentElement;
@@ -267,7 +276,6 @@ function updateBackgroundHeights() {
     mobileBgWrapper.style.position = "absolute";
   }
 
-  // 3. Fundo Desktop/Tablet
   const desktopBgImg = document.querySelector(
     '.lg\\:block > img[src*="casa-background-desktop"]',
   );
@@ -277,7 +285,6 @@ function updateBackgroundHeights() {
     desktopBgImg.parentElement.style.position = "fixed";
   }
 
-  // 4. Gradiente Desktop/Tablet
   const desktopGradientWrapper = document.querySelector(
     ".lg\\:block.w-\\[60\\%\\]",
   );
@@ -287,31 +294,22 @@ function updateBackgroundHeights() {
     desktopGradientWrapper.style.position = "fixed";
   }
 
-  // Atualizar o estado da largura após o cálculo
   lastWidth = actualWidth;
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  /* ── Sincronização de Cores Nativas ── */
   if (window.AndroidInterface && window.AndroidInterface.setSystemBarsColor) {
     window.AndroidInterface.setSystemBarsColor("#0b1f3a", false);
   }
 
-  // Execução inicial ao abrir a aplicação
   updateBackgroundHeights();
 
-  /* ── O DETETOR DE ROTAÇÃO INFALÍVEL ── */
-  // No ecossistema mobile, o evento 'resize' dispara quando o teclado abre.
-  // NO ENTANTO, o teclado altera apenas a altura (innerHeight), NUNCA a largura (innerWidth).
-  // Se a largura mudou, significa com 100% de certeza que o Tablet rodou.
   window.addEventListener("resize", () => {
     if (window.innerWidth !== lastWidth) {
-      // Um pequeno timeout de 150ms dá espaço para a WebView processar a nova orientação física
       setTimeout(updateBackgroundHeights, 150);
     }
   });
 
-  /* ── Bloqueio de overscroll ── */
   document.addEventListener(
     "touchmove",
     function (e) {
@@ -322,60 +320,11 @@ document.addEventListener("DOMContentLoaded", () => {
     { passive: false },
   );
 
-  /* ── Listeners de Teclado do Capacitor ── */
   if (window.Capacitor && window.Capacitor.Plugins.Keyboard) {
     const { Keyboard } = window.Capacitor.Plugins;
-
     Keyboard.addListener("keyboardWillShow", () => {
       document.body.classList.add("keyboard-open");
     });
-
-    Keyboard.addListener("keyboardWillHide", () => {
-      document.body.classList.remove("keyboard-open");
-    });
-  }
-});
-
-document.addEventListener("DOMContentLoaded", () => {
-  /* ── Sincronização de Cores Nativas (Via Java Bridge) ── */
-  if (window.AndroidInterface && window.AndroidInterface.setSystemBarsColor) {
-    // Cor: #0b1f3a (Teu azul Wesus)
-    // isDark: false (Passamos false porque o nosso tema é Escuro, e o código Java inverte a lógica para botões brancos)
-    window.AndroidInterface.setSystemBarsColor("#0b1f3a", false);
-  }
-  // 2. Executa o cálculo inicial quando a app abre
-  updateBackgroundHeights();
-
-  // 3. O DETETOR DE ROTAÇÃO DA TELA
-  // Usamos orientationchange em vez de 'resize' para que não dispare quando o teclado abre
-  window.addEventListener("orientationchange", () => {
-    // Um pequeno timeout (150ms) é crucial em WebViews (Capacitor/Ionic)
-    // porque o sistema operativo demora uma fração de segundo a atualizar
-    // os valores do window.innerHeight depois do dispositivo girar fisicamente.
-    setTimeout(updateBackgroundHeights, 150);
-    // Fallback de segurança para aparelhos mais lentos
-    setTimeout(updateBackgroundHeights, 500);
-  });
-
-  // 4. Bloqueio absoluto do movimento da tela (overscroll)
-  document.addEventListener(
-    "touchmove",
-    function (e) {
-      if (document.body.classList.contains("keyboard-open")) {
-        e.preventDefault();
-      }
-    },
-    { passive: false },
-  );
-
-  // 5. Escutar o teclado do Capacitor para ativar as animações visuais
-  if (window.Capacitor && window.Capacitor.Plugins.Keyboard) {
-    const { Keyboard } = window.Capacitor.Plugins;
-
-    Keyboard.addListener("keyboardWillShow", () => {
-      document.body.classList.add("keyboard-open");
-    });
-
     Keyboard.addListener("keyboardWillHide", () => {
       document.body.classList.remove("keyboard-open");
     });
@@ -383,11 +332,10 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function executePremiumRedirect() {
-  // 1. Cria o contentor da cortina (Flexbox absoluto sobreposto)
   const curtain = document.createElement("div");
   curtain.style.position = "fixed";
   curtain.style.inset = "0";
-  curtain.style.backgroundColor = "#0B1F3A"; // O teu azul Wesus absoluto
+  curtain.style.backgroundColor = "#0B1F3A";
   curtain.style.zIndex = "99999";
   curtain.style.display = "flex";
   curtain.style.justifyContent = "center";
@@ -395,17 +343,10 @@ function executePremiumRedirect() {
   curtain.style.opacity = "0";
   curtain.style.transition = "opacity 0.28s cubic-bezier(0.25, 1, 0.5, 1)";
 
-  // 2. Injeta a logo de forma elegante e responsiva
   const logo = document.createElement("img");
   logo.src = "img/transition-logo.webp";
-
-  // 🔥 SOLUÇÃO SÉNIOR: Layout Fluido Baseado na Largura do Ecrã
   logo.style.width = "100%";
-  // No mobile: garante um tamanho mínimo de 160px.
-  // No ecrã intermédio: ocupa 25% da largura total da janela (25vw).
-  // No desktop grande: estabiliza num tamanho imponente de 420px.
   logo.style.maxWidth = "clamp(160px, 25vw, 420px)";
-
   logo.style.height = "auto";
   logo.style.opacity = "0";
   logo.style.transform = "scale(0.94)";
@@ -415,17 +356,14 @@ function executePremiumRedirect() {
   curtain.appendChild(logo);
   document.body.appendChild(curtain);
 
-  // 3. Força o reflow do DOM para garantir aceleração por GPU
   void curtain.offsetHeight;
 
-  // 4. Ativa a entrada suave da cortina e o "flash" controlado da logo
   curtain.style.opacity = "1";
   setTimeout(() => {
-    logo.style.opacity = "0.8"; // Brilho acetinado premium
+    logo.style.opacity = "0.8";
     logo.style.transform = "scale(1)";
   }, 30);
 
-  // 5. Redirecionamento no Sweet Spot de tempo
   setTimeout(() => {
     window.location.href = "dashboard.html";
   }, 380);

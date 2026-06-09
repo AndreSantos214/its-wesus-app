@@ -93,20 +93,23 @@
     ═══════════════════════════════════════════════════════════════ */
     @media (max-width: 1023px) {
 
-      /* 3a. Purifica o canvas do body */
-      body {
+      /* 3a. Purifica o canvas do body dependendo do tema ativo */
+      html.dark body,
+      html.dark .app-root {
         background-image: none !important;
         background-color: #0B1F3A !important;
+      }
+
+      html:not(.dark) body,
+      html:not(.dark) .app-root {
+        background-image: none !important;
+        background-color: #EDE9E1 !important;
+        /* Linho Claro do teu Patch */
       }
 
       body::before {
         display: none !important;
         content: none !important;
-      }
-
-      .app-root {
-        background-image: none !important;
-        background-color: #0B1F3A !important;
       }
 
       /* 3b. Desliga auras traseiras para performance pura */
@@ -116,7 +119,7 @@
         display: none !important;
       }
 
-      /* 3c. Vidro cristal — GPU acelerado com borda Platina/Champagne */
+      /* 3c. Vidro cristal — GPU acelerado com comportamento responsivo por tema */
       section[aria-labelledby="patrimonyHeading"] .hero-card-crystal,
       section[aria-label="Oportunidades Exclusivas"] .hero-card-crystal,
       .hero-card-crystal {
@@ -128,17 +131,24 @@
         backdrop-filter: blur(20px) saturate(180%) !important;
         -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
         border: 2.2px solid transparent !important;
-        background:
-          linear-gradient(135deg, rgba(11, 31, 58, 0.85), rgba(7, 19, 38, 0.94) 50%, rgba(11, 31, 58, 0.82)) padding-box,
-          linear-gradient(145deg,
-            rgba(255, 255, 255, 0.38) 0%,
-            rgba(255, 255, 255, 0.04) 35%,
-            rgba(197, 160, 89, 0.12) 70%,
-            rgba(232, 208, 141, 0.35) 100%) border-box !important;
         background-clip: padding-box, border-box !important;
         background-origin: padding-box, border-box !important;
         background-size: auto, 100% 100% !important;
+      }
+
+      /* Fundo do card no Modo Escuro Mobile */
+      html.dark .hero-card-crystal {
+        background:
+          linear-gradient(135deg, rgba(11, 31, 58, 0.85), rgba(7, 19, 38, 0.94) 50%, rgba(11, 31, 58, 0.82)) padding-box,
+          linear-gradient(145deg, rgba(255, 255, 255, 0.38) 0%, rgba(255, 255, 255, 0.04) 35%, rgba(197, 160, 89, 0.12) 70%, rgba(232, 208, 141, 0.35) 100%) border-box !important;
         box-shadow: 0 22px 45px -12px rgba(0, 0, 0, 0.65) !important;
+      }
+
+      /* Fundo do card no Modo Claro Mobile (Puxando a estética clean do teu desktop) */
+      html:not(.dark) .hero-card-crystal {
+        background: linear-gradient(135deg, #ffffff 0%, #f7f3ec 100%) padding-box !important;
+        border: 1px solid rgba(197, 160, 89, 0.25) !important;
+        box-shadow: 0 10px 25px rgba(11, 31, 58, 0.05) !important;
       }
 
       /* 3d. Linha de reflexo interna diagonal */
@@ -168,6 +178,10 @@
        Overrides de grid + layout de conta premium
     ═══════════════════════════════════════════════════════════════ */
     @media (min-width: 1024px) {
+
+      #wesusGyroRow {
+        display: none !important;
+      }
 
       /* 4a. Utilitários de grid */
       .lg\:grid-cols-12 {
@@ -841,14 +855,20 @@
         width: calc(100% - 32px) !important;
         max-width: 350px !important;
         padding: 1.75rem 1.25rem !important;
-        /* Altera apenas a propriedade background do .wesus-popup-card.hero-card-crystal */
+      }
+
+      /* Popup Escuro */
+      html.dark .wesus-popup-card.hero-card-crystal {
         background:
           linear-gradient(135deg, rgba(11, 31, 58, 0.80), rgba(7, 19, 38, 0.85)) padding-box,
-          /* 🔥 Deixa mais translúcido */
-          linear-gradient(145deg,
-            rgba(255, 255, 255, 0.25) 0%,
-            rgba(255, 255, 255, 0.02) 50%,
-            rgba(255, 255, 255, 0.10) 100%) border-box !important;
+          linear-gradient(145deg, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0.02) 50%, rgba(255, 255, 255, 0.10) 100%) border-box !important;
+      }
+
+      /* Popup Claro */
+      html:not(.dark) .wesus-popup-card.hero-card-crystal {
+        background: #ffffff padding-box !important;
+        border: 1px solid rgba(197, 160, 89, 0.3) !important;
+        box-shadow: 0 20px 40px rgba(11, 31, 58, 0.15) !important;
       }
     }
 
@@ -1748,7 +1768,7 @@
 
     <!-- ─── SIDEBAR DESKTOP ─────────────────────────────────────── -->
     <aside class="sidebar hidden lg:flex flex-col w-64 shrink-0 border-r border-white/10 dark:border-white/10 z-30">
-      <div class="sidebar-logo flex items-center justify-center -mb-10">
+      <div class="sidebar-logo flex items-center justify-center -mb-10" style="cursor: pointer;">
         <img src="img/logo-its-wesus-branco.webp" width="500" height="250" alt="It's Wesus" class="hidden dark:block w-full max-w-[250px] h-auto object-contain drop-shadow-md lg:-mb-8 lg:-mt-12" />
         <img src="img/logo-its-wesus-dourado.webp" width="250" height="250" alt="It's Wesus" class="block dark:hidden w-full max-w-[250px] h-auto object-contain drop-shadow-md lg:-mb-8 lg:-mt-12 opacity-70" />
       </div>
@@ -1790,13 +1810,13 @@
         </a>
       </nav>
 
-      <div class="px-4 py-5 border-t border-white/10">
-        <div class="glass-card-sm flex items-center gap-3 p-3 rounded-xl">
+      <div class="px-4 py-5 border-t border-white/10" style="cursor: pointer;">
+        <div onclick="if(typeof NavigationController !== 'undefined') { NavigationController._setActive('conta'); NavigationController._switchTab('conta'); }" class="glass-card-sm flex items-center gap-3 p-3 rounded-xl cursor-pointer hover:bg-white/10 transition-all">
           <div class="avatar-ring w-9 h-9 rounded-full bg-[#071326] border border-gold/30 overflow-hidden shrink-0">
-            <img src="img/danilson-photo.webp" alt="Danilson Carvalho" class="w-full h-full object-cover" />
+            <img id="sidebarAvatar" src="" alt="Perfil" class="w-full h-full object-cover" />
           </div>
           <div class="flex-1 min-w-0">
-            <p class="text-xs font-semibold truncate">Danilson Carvalho</p>
+            <p id="sidebarUserName" class="text-xs font-semibold truncate">A carregar...</p>
             <p class="text-[10px] text-white/40 truncate">Investidor Premium</p>
           </div>
           <button id="themeToggleDesktop" class="theme-btn ml-auto p-1.5 rounded-lg hover:bg-white/10 transition-all" aria-label="Alternar tema">
@@ -1820,12 +1840,14 @@
 
             <header class="flex flex-col lg:flex-row lg:items-end justify-between gap-2 lg:gap-4 mb-2 relative">
 
-              <div class="logo-mobile-container flex lg:hidden items-center justify-center">
+              <div class="logo-mobile-container flex lg:hidden items-center justify-center" style="cursor: pointer;">
                 <img src="img/logo-its-wesus-branco.webp" fetchpriority="high" width="250" height="250" alt="It's Wesus" class="img-mobile hidden dark:block drop-shadow-md" />
                 <img src="img/logo-its-wesus-dourado.webp" fetchpriority="high" width="250" height="250" alt="It's Wesus" class="img-mobile block dark:hidden drop-shadow-md" />
               </div>
 
-              <h1 class="font-playfair text-[26px] lg:text-[32px] text-white/90 text-center lg:text-left">Bem-Vindo, Danilson.</h1>
+              <h1 class="font-playfair text-[26px] lg:text-[32px] text-white/90 text-center lg:text-left">
+                Bem-Vindo.
+              </h1>
 
               <button class="button-eye absolute top-2 right-0 lg:top-0 p-2 rounded-xl text-gold hover:bg-white/10 transition-colors z-20" aria-label="Ocultar saldos">
                 <svg class="w-5 h-5 lg:w-6 lg:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1851,10 +1873,10 @@
                 </div>
 
                 <div class="relative z-10 text-center lg:text-start">
-                  <p class="text-[10px] uppercase tracking-widest text-white/50 mb-2 font-semibold">Patrimônio Total Acumulado</p>
+                  <p class="text-[10px] uppercase tracking-widest text-white/50 mb-2 font-semibold">Patrimônio Total Acumulado (ATIVO)</p>
 
                   <h2 id="patrimonyHeading" class="text-[38px] lg:text-[48px] font-bold text-gold-liquid leading-none tracking-tight mb-4 select-all">
-                    € 280.000,00
+                    € --
                   </h2>
 
                   <div class="w-full max-w-xs h-px bg-gradient-to-r from-gold/50 via-gold/15 to-transparent mb-5"></div>
@@ -1867,7 +1889,7 @@
                         </svg>
                         <p class="text-[9px] uppercase tracking-wider text-white/40 font-medium">Capital Investido</p>
                       </div>
-                      <p class="font-bold text-sm lg:text-base text-white/95">€ 250.000,00</p>
+                      <p id="heroCapitalHeading" class="font-bold text-sm lg:text-base text-white/95">€ --</p>
                     </div>
 
                     <div class="flex flex-col">
@@ -1877,9 +1899,7 @@
                         </svg>
                         <p class="text-[9px] uppercase tracking-wider text-white/40 font-medium">ROI Contratual</p>
                       </div>
-                      <p class="font-bold text-sm lg:text-base text-[#6FCF97] drop-shadow-[0_0_8px_rgba(111,207,151,0.4)]">
-                        + € 30.000,00
-                      </p>
+                      <p id="heroRoiHeading" class="font-bold text-sm lg:text-base text-[#6FCF97] drop-shadow-[0_0_8px_rgba(111,207,151,0.4)]">+ € --</p>
                     </div>
                   </div>
                 </div>
@@ -1890,7 +1910,7 @@
             <div class="contracts-nav-wrapper flex justify-between items-center relative z-10">
               <div>
                 <h3 class="font-playfair text-base font-bold text-white/80 tracking-wide">Info Contratos Ativos</h3>
-                <p id="dashboardContractSubtitle" class="text-xs text-white/50 font-inter mt-0.5">Edifício Aliados (1 de 5)</p>
+                <p id="dashboardContractSubtitle" class="text-xs text-white/50 font-inter mt-0.5">A carregar portfólio...</p>
               </div>
 
               <div class="flex gap-2 shrink-0 select-none">
@@ -1951,7 +1971,7 @@
                     <div id="chartTooltip" class="premium-tooltip absolute left-[93%] top-[16%] -translate-x-[60%] translate-y-[30px] lg:-translate-x-1/2 lg:-translate-y-[60px]">
                       <div class="bg-wesus/95 backdrop-blur-md border border-white/20 px-3 py-1.5 rounded-xl shadow-[0_15px_30px_rgba(0,0,0,0.5)] flex flex-col items-center">
                         <p class="text-[8px] text-white/50 uppercase tracking-wider mb-0.5 whitespace-nowrap">Retorno Total</p>
-                        <p id="tooltipValue" class="text-xs font-bold text-[#6FCF97] leading-none whitespace-nowrap">+ € 5.000,00</p>
+                        <p id="tooltipValue" class="text-xs font-bold text-[#6FCF97] leading-none whitespace-nowrap">+ € --</p>
                       </div>
                     </div>
 
@@ -1978,7 +1998,7 @@
                     </div>
 
                     <div class="flex items-start justify-center z-10 mt-1 select-all">
-                      <span id="dynamicTaxValue" class="text-4xl lg:text-5xl font-bold text-gold-liquid leading-none tracking-tight ml-2">10</span>
+                      <span id="dynamicTaxValue" class="text-4xl lg:text-5xl font-bold text-gold-liquid leading-none tracking-tight ml-2">--</span>
                       <span class="text-[#E8D08D] font-bold text-lg lg:text-xl ml-0.5 mt-0.5 select-none">%</span>
                     </div>
                     <span class="text-[8px] text-white/30 uppercase tracking-widest mt-3 z-10 font-medium">Retorno Fixo</span>
@@ -2016,7 +2036,7 @@
                       </svg>
 
                       <div class="absolute inset-0 flex flex-col items-center justify-center z-20 select-all">
-                        <span id="dynamicDaysValue" class="text-3xl lg:text-4xl font-bold text-gold-liquid leading-none tracking-tight">12</span>
+                        <span id="dynamicDaysValue" class="text-3xl lg:text-4xl font-bold text-gold-liquid leading-none tracking-tight">--</span>
                         <span class="text-[8px] lg:text-[9px] text-white/50 uppercase tracking-widest font-bold mt-1.5">Dias</span>
                       </div>
                     </div>
@@ -2031,227 +2051,32 @@
 
               <div class="flex items-center justify-between mb-4 relative z-10">
                 <h2 id="assetsHeading" class="font-playfair text-xl font-bold text-white/90 tracking-wide">
-                  Investimentos Ativos <span class="text-white/70 text-sm font-normal font-inter ml-1">(5)</span>
+                  Investimentos Ativos <span id="heroAssetsCount" class="text-white/70 text-sm font-normal font-inter ml-1">(-)</span>
                 </h2>
               </div>
 
               <!-- Carrossel Mobile -->
-              <div class="assets-carousel assets-carousel-spacing lg:hidden flex gap-4 overflow-x-auto snap-x snap-mandatory scrollbar-hide -mx-4 px-4 relative z-10">
+              <div id="assetsMobileCarousel" class="assets-carousel assets-carousel-spacing lg:hidden flex gap-4 overflow-x-auto snap-x snap-mandatory scrollbar-hide mx-0 px-0 relative z-10">
 
-                <!-- CARD 1: Edifício Aliados -->
-                <article class="snap-start shrink-0 w-80 carousel-asset-card carousel-asset-card-clean rounded-2xl overflow-hidden p-5 flex flex-col justify-between min-h-[175px]">
-                  <div class="carousel-asset-image-mask" style="background-image: url('img/casa-1.webp');"></div>
-                  <div class="relative z-10 h-full flex flex-col justify-between w-full">
-                    <div class="flex justify-between items-start w-full gap-2">
-                      <div class="flex flex-col">
-                        <h3 class="font-playfair font-bold text-lg leading-tight text-white select-all">R. Prof, Luis Gomes, N°2, 6F</h3>
-                        <a href="https://maps.google.com/?q=Lisboa,Portugal" target="_blank" class="flex items-center gap-1 text-[10px] text-gold/90 hover:text-white transition-colors w-fit mt-1.5 font-medium">
-                          <svg class="w-3 h-3 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                          </svg>
-                          Lisboa, Portugal
-                        </a>
-                      </div>
-                      <span class="status-badge-construction shrink-0">Em Construção</span>
-                    </div>
-                    <div class="mt-5 border-t border-white/5 pt-3">
-                      <p class="text-[9px] text-white/40 uppercase tracking-widest font-semibold mb-0.5">Investimento Total</p>
-                      <p class="font-bold text-white text-base select-all">€ 1.200.000,00</p>
-                    </div>
-                  </div>
-                </article>
+                </>
 
-                <!-- CARD 2: Villa Infante -->
-                <article class="snap-start shrink-0 w-80 carousel-asset-card carousel-asset-card-clean rounded-2xl overflow-hidden p-5 flex flex-col justify-between min-h-[175px]">
-                  <div class="carousel-asset-image-mask" style="background-image: url('img/casa-2.webp');"></div>
-                  <div class="relative z-10 h-full flex flex-col justify-between w-full">
-                    <div class="flex justify-between items-start w-full gap-2">
-                      <div class="flex flex-col">
-                        <h3 class="font-playfair font-bold text-lg leading-tight text-white select-all">R. Prof, Luis Gomes, 7A</h3>
-                        <a href="https://maps.google.com/?q=Lisboa,Portugal" target="_blank" class="flex items-center gap-1 text-[10px] text-gold/90 hover:text-white transition-colors w-fit mt-1.5 font-medium">
-                          <svg class="w-3 h-3 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                          </svg>
-                          Lisboa, Portugal
-                        </a>
-                      </div>
-                      <span class="status-badge-construction shrink-0">Em Construção</span>
-                    </div>
-                    <div class="mt-5 border-t border-white/5 pt-3">
-                      <p class="text-[9px] text-white/40 uppercase tracking-widest font-semibold mb-0.5">Investimento Total</p>
-                      <p class="font-bold text-white text-base select-all">€ 850.000,00</p>
-                    </div>
-                  </div>
-                </article>
+                <!-- Tabela Desktop -->
+                <div class="hidden lg:block hero-card-crystal rounded-2xl relative z-10 overflow-hidden">
+                  <div class="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-20 pointer-events-none"></div>
 
-                <!-- CARD 3: Palácio Estoril -->
-                <article class="snap-start shrink-0 w-80 carousel-asset-card carousel-asset-card-clean rounded-2xl overflow-hidden p-5 flex flex-col justify-between min-h-[175px]">
-                  <div class="carousel-asset-image-mask" style="background-image: url('img/casa-3.webp');"></div>
-                  <div class="relative z-10 h-full flex flex-col justify-between w-full">
-                    <div class="flex justify-between items-start w-full gap-2">
-                      <div class="flex flex-col">
-                        <h3 class="font-playfair font-bold text-lg leading-tight text-white select-all">R. Almada Negreiros Tapada das Mercês</h3>
-                        <a href="https://maps.google.com/?q=Lisboa,Portugal" target="_blank" class="flex items-center gap-1 text-[10px] text-gold/90 hover:text-white transition-colors w-fit mt-1.5 font-medium">
-                          <svg class="w-3 h-3 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                          </svg>
-                          Lisboa, Portugal
-                        </a>
-                      </div>
-                      <span class="status-badge-construction shrink-0">Em Construção</span>
-                    </div>
-                    <div class="mt-5 border-t border-white/5 pt-3">
-                      <p class="text-[9px] text-white/40 uppercase tracking-widest font-semibold mb-0.5">Investimento Total</p>
-                      <p class="font-bold text-white text-base select-all">€ 2.100.000,00</p>
-                    </div>
-                  </div>
-                </article>
-
-                <!-- CARD 4: Douro Marina -->
-                <article class="snap-start shrink-0 w-80 carousel-asset-card carousel-asset-card-clean rounded-2xl overflow-hidden p-5 flex flex-col justify-between min-h-[175px]">
-                  <div class="carousel-asset-image-mask" style="background-image: url('img/casa-4.webp');"></div>
-                  <div class="relative z-10 h-full flex flex-col justify-between w-full">
-                    <div class="flex justify-between items-start w-full gap-2">
-                      <div class="flex flex-col">
-                        <h3 class="font-playfair font-bold text-lg leading-tight text-white select-all">Calçada Moinhos do Vento, 3°E 8 Queluz</h3>
-                        <a href="https://maps.google.com/?q=Lisboa,Portugal" target="_blank" class="flex items-center gap-1 text-[10px] text-gold/90 hover:text-white transition-colors w-fit mt-1.5 font-medium">
-                          <svg class="w-3 h-3 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                          </svg>
-                          Lisboa, Portugal
-                        </a>
-                      </div>
-                      <span class="status-badge-construction shrink-0">Em Construção</span>
-                    </div>
-                    <div class="mt-5 border-t border-white/5 pt-3">
-                      <p class="text-[9px] text-white/40 uppercase tracking-widest font-semibold mb-0.5">Investimento Total</p>
-                      <p class="font-bold text-white text-base select-all">€ 950.000,00</p>
-                    </div>
-                  </div>
-                </article>
-
-                <!-- CARD 5: Lumina Chiado -->
-                <article class="snap-start shrink-0 w-80 carousel-asset-card carousel-asset-card-clean rounded-2xl overflow-hidden p-5 flex flex-col justify-between min-h-[175px]">
-                  <div class="carousel-asset-image-mask" style="background-image: url('img/asset-lumina-chiado.webp');"></div>
-                  <div class="relative z-10 h-full flex flex-col justify-between w-full">
-                    <div class="flex justify-between items-start w-full gap-2">
-                      <div class="flex flex-col">
-                        <h3 class="font-playfair font-bold text-lg leading-tight text-white select-all">Lumina Chiado</h3>
-                        <a href="https://maps.google.com/?q=Porto,Portugal" target="_blank" class="flex items-center gap-1 text-[10px] text-gold/90 hover:text-white transition-colors w-fit mt-1.5 font-medium">
-                          <svg class="w-3 h-3 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                          </svg>
-                          Lisboa, Portugal
-                        </a>
-                      </div>
-                      <span class="status-badge-construction shrink-0">Em Construção</span>
-                    </div>
-                    <div class="mt-5 border-t border-white/5 pt-3">
-                      <p class="text-[9px] text-white/40 uppercase tracking-widest font-semibold mb-0.5">Investimento Total</p>
-                      <p class="font-bold text-white text-base select-all">€ 1.450.000,00</p>
-                    </div>
-                  </div>
-                </article>
-
-              </div>
-
-              <!-- Tabela Desktop -->
-              <div class="hidden lg:block hero-card-crystal rounded-2xl relative z-10 overflow-hidden">
-                <div class="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-20 pointer-events-none"></div>
-
-                <table class="w-full border-collapse" aria-label="Tabela de investimentos ativos">
-                  <thead>
-                    <tr class="bg-white/[0.01]">
-                      <th class="assets-th w-5/12">Nome do Ativo</th>
-                      <th class="assets-th w-3/12">Localização</th>
-                      <th class="assets-th w-2/12 text-center">Status</th>
-                      <th class="assets-th w-2/12 text-right">Investimento Total</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr class="assets-row">
-                      <td class="assets-td">
-                        <div class="flex items-center gap-3.5">
-                          <div class="asset-thumbnail-wrapper w-12 h-12 shrink-0">
-                            <img src="img/casa-1.webp" width="48" height="48" alt="Edifício Aliados" class="w-full h-full object-cover" />
-                          </div>
-                          <p class="font-bold text-sm text-white/95 tracking-wide">Rua professor Rui Luís Gomes n2 6F</p>
-                        </div>
-                      </td>
-                      <td class="assets-td">
-                        <span class="inline-flex items-center gap-1.5 text-xs text-white/80 bg-white/5 px-2.5 py-1.5 rounded-lg border border-white/5">Lisboa, Portugal</span>
-                      </td>
-                      <td class="assets-td text-center"><span class="status-badge-construction">Em Construção</span></td>
-                      <td class="assets-td text-right font-bold text-sm text-white/95 tracking-wide">€ 1.200.000,00</td>
-                    </tr>
-                    <tr class="assets-row">
-                      <td class="assets-td">
-                        <div class="flex items-center gap-3.5">
-                          <div class="asset-thumbnail-wrapper w-12 h-12 shrink-0">
-                            <img src="img/casa-2.webp" width="48" height="48" alt="Villa Infante" class="w-full h-full object-cover" onerror="this.src='img/casa-background-mobile-xsmall.webp'" />
-                          </div>
-                          <p class="font-bold text-sm text-white/95 tracking-wide">Rua Professor Rui Luís Gomes 7A</p>
-                        </div>
-                      </td>
-                      <td class="assets-td">
-                        <span class="inline-flex items-center gap-1.5 text-xs text-white/80 bg-white/5 px-2.5 py-1.5 rounded-lg border border-white/5">Lisboa, Portugal</span>
-                      </td>
-                      <td class="assets-td text-center"><span class="status-badge-construction">Em Construção</span></td>
-                      <td class="assets-td text-right font-bold text-sm text-white/95 tracking-wide">€ 850.000,00</td>
-                    </tr>
-                    <tr class="assets-row">
-                      <td class="assets-td">
-                        <div class="flex items-center gap-3.5">
-                          <div class="asset-thumbnail-wrapper w-12 h-12 shrink-0">
-                            <img src="img/casa-3.webp" width="48" height="48" alt="Palácio Estoril" class="w-full h-full object-cover" onerror="this.src='img/casa-background-mobile-xsmall.webp'" />
-                          </div>
-                          <p class="font-bold text-sm text-white/95 tracking-wide">Rua Almada Negreiros Tapada das Mercês</p>
-                        </div>
-                      </td>
-                      <td class="assets-td">
-                        <span class="inline-flex items-center gap-1.5 text-xs text-white/80 bg-white/5 px-2.5 py-1.5 rounded-lg border border-white/5">Lisboa, Portugal</span>
-                      </td>
-                      <td class="assets-td text-center"><span class="status-badge-construction">Em Construção</span></td>
-                      <td class="assets-td text-right font-bold text-sm text-white/95 tracking-wide">€ 2.100.000,00</td>
-                    </tr>
-                    <tr class="assets-row">
-                      <td class="assets-td">
-                        <div class="flex items-center gap-3.5">
-                          <div class="asset-thumbnail-wrapper w-12 h-12 shrink-0">
-                            <img src="img/casa-4.webp" width="48" height="48" alt="Douro Marina" class="w-full h-full object-cover" onerror="this.src='img/casa-background-mobile-xsmall.webp'" />
-                          </div>
-                          <p class="font-bold text-sm text-white/95 tracking-wide">Calçada Moinhos do Vento, 3°E 8 Queluz</p>
-                        </div>
-                      </td>
-                      <td class="assets-td">
-                        <span class="inline-flex items-center gap-1.5 text-xs text-white/80 bg-white/5 px-2.5 py-1.5 rounded-lg border border-white/5">Lisboa, Portugal</span>
-                      </td>
-                      <td class="assets-td text-center"><span class="status-badge-construction">Em Construção</span></td>
-                      <td class="assets-td text-right font-bold text-sm text-white/95 tracking-wide">€ 950.000,00</td>
-                    </tr>
-                    <tr class="assets-row">
-                      <td class="assets-td">
-                        <div class="flex items-center gap-3.5">
-                          <div class="asset-thumbnail-wrapper w-12 h-12 shrink-0">
-                            <img src="img/asset-lumina-chiado.webp" width="48" height="48" alt="Lumina Chiado" class="w-full h-full object-cover" onerror="this.src='img/casa-background-mobile-xsmall.webp'" />
-                          </div>
-                          <p class="font-bold text-sm text-white/95 tracking-wide">Lumina Chiado</p>
-                        </div>
-                      </td>
-                      <td class="assets-td">
-                        <span class="inline-flex items-center gap-1.5 text-xs text-white/80 bg-white/5 px-2.5 py-1.5 rounded-lg border border-white/5">Lisboa, Portugal</span>
-                      </td>
-                      <td class="assets-td text-center"><span class="status-badge-construction">Em Construção</span></td>
-                      <td class="assets-td text-right font-bold text-sm text-white/95 tracking-wide">€ 1.450.000,00</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
+                  <table class="w-full border-collapse" aria-label="Tabela de investimentos ativos">
+                    <thead>
+                      <tr class="bg-white/[0.01]">
+                        <th class="assets-th w-5/12">Nome do Ativo</th>
+                        <th class="assets-th w-3/12">Localização</th>
+                        <th class="assets-th w-2/12" style="text-align: center;">Status</th>
+                        <th class="assets-th w-2/12">Investimento Total</th>
+                      </tr>
+                    </thead>
+                    <tbody id="assetsTableBody">
+                    </tbody>
+                  </table>
+                </div>
             </section>
 
             <section aria-label="Desempenho Anual" class="relative mt-16 mb-16" style="display: flex; flex-direction: column;">
@@ -2289,7 +2114,7 @@
                       </div>
                     </div>
 
-                    <button id="wesusViewHistoryTrigger" class="inline-flex items-center justify-center gap-2.5 font-bold uppercase rounded-xl shadow-xl transition-all duration-300 hover:bg-white/10" style="border: 1px solid rgba(197, 160, 89, 0.4); background-color: rgba(255, 255, 255, 0.08); height: 38px; padding: 0 1.5rem; font-size: 11px; letter-spacing: 0.06em; color: #E8D08D; white-space: nowrap;">
+                    <button id="wesusViewHistoryTrigger" onclick="window.navigateToHistory();" class="inline-flex items-center justify-center gap-2.5 font-bold uppercase rounded-xl shadow-xl transition-all duration-300 hover:bg-white/10" style="border: 1px solid rgba(197, 160, 89, 0.4); background-color: rgba(255, 255, 255, 0.08); height: 38px; padding: 0 1.5rem; font-size: 11px; letter-spacing: 0.06em; color: #E8D08D; white-space: nowrap;">
                       <span>Histórico Completo</span>
                       <svg class="w-3.5 h-3.5 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
@@ -2310,7 +2135,7 @@
                         <p class="text-[9px] lg:text-[10px] font-semibold uppercase tracking-widest">Capital Investido</p>
                       </div>
                       <div class="space-y-1">
-                        <p id="annualInvestedCapital" class="text-xl lg:text-2xl font-bold text-white/90 tracking-wide select-all transition-all duration-200">€ 140.000,00</p>
+                        <p id="annualInvestedCapital" class="text-xl lg:text-2xl font-bold text-white/90 tracking-wide select-all transition-all duration-200">€ --</p>
                         <p id="annualMovedCapitalVar" style="display: none !important;"></p>
                       </div>
                     </div>
@@ -2324,7 +2149,7 @@
                         <p class="text-[9px] lg:text-[10px] font-semibold uppercase tracking-widest">Lucro Realizado</p>
                       </div>
                       <div class="space-y-1">
-                        <p id="annualRealizedProfit" class="text-xl lg:text-2xl font-bold text-[#6FCF97] drop-shadow-[0_0_8px_rgba(111,207,151,0.3)] tracking-wide select-all transition-all duration-200">+ € 12.500,00</p>
+                        <p id="annualRealizedProfit" class="text-xl lg:text-2xl font-bold text-[#6FCF97] drop-shadow-[0_0_8px_rgba(111,207,151,0.3)] tracking-wide select-all transition-all duration-200">+ € --</p>
                         <p id="annualRealizedProfitVar" style="display: none !important;"></p>
                       </div>
                     </div>
@@ -2415,7 +2240,7 @@
                 <div class="hero-card-crystal p-6 lg:p-8 rounded-3xl flex flex-col items-center text-center justify-between flex-1 relative overflow-hidden plan-card-base">
                   <div class="absolute inset-0 bg-gradient-to-br from-white/[0.01] to-transparent opacity-40 pointer-events-none"></div>
 
-                  <div class="icon-badge-shield w-12 h-12 rounded-2xl flex items-center justify-center text-gold/80 mb-2 relative z-10 shrink-0">
+                  <div class="icon-badge-shield w-12 h-12 rounded-2xl flex items-center justify-center text-gold/80 mb-2 relative z-10 shrink-0 flex">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
@@ -2490,7 +2315,7 @@
                 <div class="hero-card-crystal p-6 lg:p-8 rounded-3xl flex flex-col items-center text-center justify-between flex-1 relative overflow-hidden plan-card-max drop-shadow-[0_0_15px_rgba(255,255,255,0.03)]">
                   <div class="absolute inset-0 bg-gradient-to-br from-white/[0.02] to-transparent opacity-40 pointer-events-none"></div>
 
-                  <div class="relative z-10 mb-2">
+                  <div class="relative z-10 plan-featured-badge-wrap select-none">
                     <span class="premium-live-badge !border-white/20 !text-white/90">
                       <span class="premium-live-dot !bg-gold !shadow-[0_0_6px_#c5a059]"></span> Máxima Performance
                     </span>
@@ -2607,178 +2432,9 @@
             <section aria-label="Contratos em Execução Ativos" class="space-y-6 contracts-desktop-enxuto">
               <div class="flex items-center gap-2">
                 <div class="w-1.5 h-4 bg-gradient-to-b from-[#6FCF97] to-green-700 rounded-full shadow-[0_0_8px_rgba(111,207,151,0.4)]"></div>
-                <h3 class="font-playfair text-xs font-bold text-white/60 uppercase tracking-widest">Contratos em Execução (5)</h3>
+                <h3 id="contractsActiveTitle" class="font-playfair text-xs font-bold text-white/60 uppercase tracking-widest">Contratos em Execução (--)</h3>
               </div>
-
-              <!-- Contrato: Edifício Aliados -->
-              <div id="contract-aliados" class="hero-card-crystal p-5 rounded-3xl grid grid-cols-1 lg:grid-cols-12 items-center gap-4 lg:gap-2 relative overflow-hidden w-full group hover:bg-white/[0.02] transition-all duration-300">
-                <div class="absolute inset-0 bg-gradient-to-br from-white/[0.01] to-transparent opacity-20 pointer-events-none"></div>
-                <div class="flex items-center gap-4 min-w-0 lg:col-span-4 w-full">
-                  <div class="w-11 h-11 rounded-xl bg-[#071326] flex items-center justify-center border border-white/5 shrink-0 shadow-inner">
-                    <svg class="w-5 h-5 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                    </svg>
-                  </div>
-                  <div class="min-w-0 flex-1">
-                    <h4 class="text-white font-bold text-sm lg:text-base truncate tracking-wide">Mútuo - Edifício Aliados</h4>
-                    <div class="flex items-center gap-2 mt-1">
-                      <span class="text-[9px] font-bold uppercase px-2 py-0.5 rounded-full bg-gold/10 text-gold-light tracking-wider">3 Meses</span>
-                      <span class="text-[9px] font-bold uppercase px-2 py-0.5 rounded-full bg-white/5 text-white/40 tracking-wider">Taxa: 10%</span>
-                    </div>
-                  </div>
-                </div>
-                <div class="flex justify-between lg:flex-col gap-1 lg:col-span-2 w-full lg:pl-2">
-                  <p class="text-[9px] uppercase text-white/40 tracking-widest font-semibold">Vencimento</p>
-                  <p class="text-xs lg:text-sm text-white/90 font-medium">03/08/2026</p>
-                </div>
-                <div class="flex justify-between lg:flex-col gap-1 lg:col-span-2 w-full">
-                  <p class="text-[9px] uppercase text-white/40 tracking-widest font-semibold">Capital Investido</p>
-                  <p class="text-xs lg:text-sm text-white/90 font-medium">€ 50.000,00</p>
-                </div>
-                <div class="flex justify-between lg:flex-col gap-1 lg:col-span-2 w-full">
-                  <p class="text-[9px] uppercase text-white/40 tracking-widest font-semibold">Status do Termo</p>
-                  <p class="text-xs lg:text-sm font-bold text-[#6FCF97] tracking-wide">Ativo em Curso</p>
-                </div>
-                <div class="w-full lg:col-span-2 flex lg:justify-end mt-2 lg:mt-0">
-                  <button onclick="event.stopPropagation(); event.preventDefault();" class="w-full btn-gold-lingot !py-2.5 !px-4 !text-[10px] !h-auto whitespace-nowrap" style="color: #ffffff !important; letter-spacing: 0.12em;">Baixar Doc</button>
-                </div>
-              </div>
-
-              <!-- Contrato: Villa Infante -->
-              <div id="contract-villa" class="hero-card-crystal p-5 rounded-3xl grid grid-cols-1 lg:grid-cols-12 items-center gap-4 lg:gap-2 relative overflow-hidden w-full group hover:bg-white/[0.02] transition-all duration-300">
-                <div class="absolute inset-0 bg-gradient-to-br from-white/[0.01] to-transparent opacity-20 pointer-events-none"></div>
-                <div class="flex items-center gap-4 min-w-0 lg:col-span-4 w-full">
-                  <div class="w-11 h-11 rounded-xl bg-[#071326] flex items-center justify-center border border-white/5 shrink-0 shadow-inner">
-                    <svg class="w-5 h-5 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                    </svg>
-                  </div>
-                  <div class="min-w-0 flex-1">
-                    <h4 class="text-white font-bold text-sm lg:text-base truncate tracking-wide">Mútuo - Villa Infante</h4>
-                    <div class="flex items-center gap-2 mt-1">
-                      <span class="text-[9px] font-bold uppercase px-2 py-0.5 rounded-full bg-gold/10 text-gold-light tracking-wider">6 Meses</span>
-                      <span class="text-[9px] font-bold uppercase px-2 py-0.5 rounded-full bg-white/5 text-white/40 tracking-wider">Taxa: 12,5%</span>
-                    </div>
-                  </div>
-                </div>
-                <div class="flex justify-between lg:flex-col gap-1 lg:col-span-2 w-full lg:pl-2">
-                  <p class="text-[9px] uppercase text-white/40 tracking-widest font-semibold">Vencimento</p>
-                  <p class="text-xs lg:text-sm text-white/90 font-medium">15/11/2026</p>
-                </div>
-                <div class="flex justify-between lg:flex-col gap-1 lg:col-span-2 w-full">
-                  <p class="text-[9px] uppercase text-white/40 tracking-widest font-semibold">Capital Investido</p>
-                  <p class="text-xs lg:text-sm text-white/90 font-medium">€ 50.000,00</p>
-                </div>
-                <div class="flex justify-between lg:flex-col gap-1 lg:col-span-2 w-full">
-                  <p class="text-[9px] uppercase text-white/40 tracking-widest font-semibold">Status do Termo</p>
-                  <p class="text-xs lg:text-sm font-bold text-[#6FCF97] tracking-wide">Ativo em Curso</p>
-                </div>
-                <div class="w-full lg:col-span-2 flex lg:justify-end mt-2 lg:mt-0">
-                  <button onclick="event.stopPropagation(); event.preventDefault();" class="w-full btn-gold-lingot !py-2.5 !px-4 !text-[10px] !h-auto whitespace-nowrap" style="color: #ffffff !important; letter-spacing: 0.12em;">Baixar Doc</button>
-                </div>
-              </div>
-
-              <!-- Contrato: Palácio Estoril -->
-              <div id="contract-estoril" class="hero-card-crystal p-5 rounded-3xl grid grid-cols-1 lg:grid-cols-12 items-center gap-4 lg:gap-2 relative overflow-hidden w-full group hover:bg-white/[0.02] transition-all duration-300">
-                <div class="absolute inset-0 bg-gradient-to-br from-white/[0.01] to-transparent opacity-20 pointer-events-none"></div>
-                <div class="flex items-center gap-4 min-w-0 lg:col-span-4 w-full">
-                  <div class="w-11 h-11 rounded-xl bg-[#071326] flex items-center justify-center border border-white/5 shrink-0 shadow-inner">
-                    <svg class="w-5 h-5 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                    </svg>
-                  </div>
-                  <div class="min-w-0 flex-1">
-                    <h4 class="text-white font-bold text-sm lg:text-base truncate tracking-wide">Mútuo - Palácio Estoril</h4>
-                    <div class="flex items-center gap-2 mt-1">
-                      <span class="text-[9px] font-bold uppercase px-2 py-0.5 rounded-full bg-gold/10 text-gold-light tracking-wider">12 Meses</span>
-                      <span class="text-[9px] font-bold uppercase px-2 py-0.5 rounded-full bg-white/5 text-white/40 tracking-wider">Taxa: 15%</span>
-                    </div>
-                  </div>
-                </div>
-                <div class="flex justify-between lg:flex-col gap-1 lg:col-span-2 w-full lg:pl-2">
-                  <p class="text-[9px] uppercase text-white/40 tracking-widest font-semibold">Vencimento</p>
-                  <p class="text-xs lg:text-sm text-white/90 font-medium">20/05/2027</p>
-                </div>
-                <div class="flex justify-between lg:flex-col gap-1 lg:col-span-2 w-full">
-                  <p class="text-[9px] uppercase text-white/40 tracking-widest font-semibold">Capital Investido</p>
-                  <p class="text-xs lg:text-sm text-white/90 font-medium">€ 50.000,00</p>
-                </div>
-                <div class="flex justify-between lg:flex-col gap-1 lg:col-span-2 w-full">
-                  <p class="text-[9px] uppercase text-white/40 tracking-widest font-semibold">Status do Termo</p>
-                  <p class="text-xs lg:text-sm font-bold text-[#6FCF97] tracking-wide">Ativo em Curso</p>
-                </div>
-                <div class="w-full lg:col-span-2 flex lg:justify-end mt-2 lg:mt-0">
-                  <button onclick="event.stopPropagation(); event.preventDefault();" class="w-full btn-gold-lingot !py-2.5 !px-4 !text-[10px] !h-auto whitespace-nowrap" style="color: #ffffff !important; letter-spacing: 0.12em;">Baixar Doc</button>
-                </div>
-              </div>
-
-              <!-- Contrato: Douro Marina -->
-              <div id="contract-marina" class="hero-card-crystal p-5 rounded-3xl grid grid-cols-1 lg:grid-cols-12 items-center gap-4 lg:gap-2 relative overflow-hidden w-full group hover:bg-white/[0.02] transition-all duration-300">
-                <div class="absolute inset-0 bg-gradient-to-br from-white/[0.01] to-transparent opacity-20 pointer-events-none"></div>
-                <div class="flex items-center gap-4 min-w-0 lg:col-span-4 w-full">
-                  <div class="w-11 h-11 rounded-xl bg-[#071326] flex items-center justify-center border border-white/5 shrink-0 shadow-inner">
-                    <svg class="w-5 h-5 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                    </svg>
-                  </div>
-                  <div class="min-w-0 flex-1">
-                    <h4 class="text-white font-bold text-sm lg:text-base truncate tracking-wide">Mútuo - Douro Marina</h4>
-                    <div class="flex items-center gap-2 mt-1">
-                      <span class="text-[9px] font-bold uppercase px-2 py-0.5 rounded-full bg-gold/10 text-gold-light tracking-wider">2 Meses</span>
-                      <span class="text-[9px] font-bold uppercase px-2 py-0.5 rounded-full bg-white/5 text-white/40 tracking-wider">Taxa: 8,5%</span>
-                    </div>
-                  </div>
-                </div>
-                <div class="flex justify-between lg:flex-col gap-1 lg:col-span-2 w-full lg:pl-2">
-                  <p class="text-[9px] uppercase text-white/40 tracking-widest font-semibold">Vencimento</p>
-                  <p class="text-xs lg:text-sm text-white/90 font-medium">10/07/2026</p>
-                </div>
-                <div class="flex justify-between lg:flex-col gap-1 lg:col-span-2 w-full">
-                  <p class="text-[9px] uppercase text-white/40 tracking-widest font-semibold">Capital Investido</p>
-                  <p class="text-xs lg:text-sm text-white/90 font-medium">€ 50.000,00</p>
-                </div>
-                <div class="flex justify-between lg:flex-col gap-1 lg:col-span-2 w-full">
-                  <p class="text-[9px] uppercase text-white/40 tracking-widest font-semibold">Status do Termo</p>
-                  <p class="text-xs lg:text-sm font-bold text-[#6FCF97] tracking-wide">Ativo em Curso</p>
-                </div>
-                <div class="w-full lg:col-span-2 flex lg:justify-end mt-2 lg:mt-0">
-                  <button onclick="event.stopPropagation(); event.preventDefault();" class="w-full btn-gold-lingot !py-2.5 !px-4 !text-[10px] !h-auto whitespace-nowrap" style="color: #ffffff !important; letter-spacing: 0.12em;">Baixar Doc</button>
-                </div>
-              </div>
-
-              <!-- Contrato: Lumina Chiado -->
-              <div id="contract-chiado" class="hero-card-crystal p-5 rounded-3xl grid grid-cols-1 lg:grid-cols-12 items-center gap-4 lg:gap-2 relative overflow-hidden w-full group hover:bg-white/[0.02] transition-all duration-300">
-                <div class="absolute inset-0 bg-gradient-to-br from-white/[0.01] to-transparent opacity-20 pointer-events-none"></div>
-                <div class="flex items-center gap-4 min-w-0 lg:col-span-4 w-full">
-                  <div class="w-11 h-11 rounded-xl bg-[#071326] flex items-center justify-center border border-white/5 shrink-0 shadow-inner">
-                    <svg class="w-5 h-5 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                    </svg>
-                  </div>
-                  <div class="min-w-0 flex-1">
-                    <h4 class="text-white font-bold text-sm lg:text-base truncate tracking-wide">Mútuo - Lumina Chiado</h4>
-                    <div class="flex items-center gap-2 mt-1">
-                      <span class="text-[9px] font-bold uppercase px-2 py-0.5 rounded-full bg-gold/10 text-gold-light tracking-wider">18 Meses</span>
-                      <span class="text-[9px] font-bold uppercase px-2 py-0.5 rounded-full bg-white/5 text-white/40 tracking-wider">Taxa: 14%</span>
-                    </div>
-                  </div>
-                </div>
-                <div class="flex justify-between lg:flex-col gap-1 lg:col-span-2 w-full lg:pl-2">
-                  <p class="text-[9px] uppercase text-white/40 tracking-widest font-semibold">Vencimento</p>
-                  <p class="text-xs lg:text-sm text-white/90 font-medium">30/11/2027</p>
-                </div>
-                <div class="flex justify-between lg:flex-col gap-1 lg:col-span-2 w-full">
-                  <p class="text-[9px] uppercase text-white/40 tracking-widest font-semibold">Capital Investido</p>
-                  <p class="text-xs lg:text-sm text-white/90 font-medium">€ 50.000,00</p>
-                </div>
-                <div class="flex justify-between lg:flex-col gap-1 lg:col-span-2 w-full">
-                  <p class="text-[9px] uppercase text-white/40 tracking-widest font-semibold">Status do Termo</p>
-                  <p class="text-xs lg:text-sm font-bold text-[#6FCF97] tracking-wide">Ativo em Curso</p>
-                </div>
-                <div class="w-full lg:col-span-2 flex lg:justify-end mt-2 lg:mt-0">
-                  <button onclick="event.stopPropagation(); event.preventDefault();" class="w-full btn-gold-lingot !py-2.5 !px-4 !text-[10px] !h-auto whitespace-nowrap" style="color: #ffffff !important; letter-spacing: 0.12em;">Baixar Doc</button>
-                </div>
-              </div>
+              <div id="activeContractsContainer" class="space-y-4"></div>
             </section>
 
             <!-- Contratos Históricos -->
@@ -2787,80 +2443,7 @@
                 <div class="w-1.5 h-4 bg-gradient-to-b from-white/30 to-white/10 rounded-full"></div>
                 <h3 class="font-playfair text-xs font-bold text-white/60 uppercase tracking-widest">Contratos Antigos (Histórico)</h3>
               </div>
-
-              <!-- Histórico: Operação Alquimia Lux -->
-              <div class="hero-card-crystal p-5 rounded-3xl grid grid-cols-1 lg:grid-cols-12 items-center gap-4 lg:gap-2 relative overflow-hidden w-full group hover:bg-white/[0.02] transition-all duration-300">
-                <div class="absolute inset-0 bg-gradient-to-br from-white/[0.01] to-transparent opacity-10 pointer-events-none"></div>
-                <div class="flex items-center gap-4 min-w-0 lg:col-span-4 w-full">
-                  <div class="w-11 h-11 rounded-xl bg-[#071326]/60 flex items-center justify-center border border-white/5 shrink-0">
-                    <svg class="w-5 h-5 text-white/30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                    </svg>
-                  </div>
-                  <div class="min-w-0 flex-1">
-                    <h4 class="text-white/80 font-bold text-sm lg:text-base truncate tracking-wide">Operação Alquimia Lux</h4>
-                    <div class="flex justify-between items-center w-full mt-1">
-                      <div class="flex items-center gap-2">
-                        <span class="text-[9px] font-bold uppercase px-2 py-0.5 rounded-full bg-white/5 text-white/40 tracking-wider">3 Meses</span>
-                        <span class="text-[9px] font-bold uppercase px-2 py-0.5 rounded-full bg-white/5 text-white/40 tracking-wider">Taxa: 15%</span>
-                      </div>
-                      <span class="text-[9px] font-bold uppercase text-gold-liquid tracking-widest">Vendido</span>
-                    </div>
-                  </div>
-                </div>
-                <div class="flex justify-between lg:flex-col gap-1 lg:col-span-2 w-full lg:pl-2">
-                  <p class="text-[9px] uppercase text-white/40 tracking-widest font-semibold">Término</p>
-                  <p class="text-xs lg:text-sm text-white/60 font-medium">10/12/2025</p>
-                </div>
-                <div class="flex justify-between lg:flex-col gap-1 lg:col-span-2 w-full">
-                  <p class="text-[9px] uppercase text-white/40 tracking-widest font-semibold">Capital Investido</p>
-                  <p class="text-xs lg:text-sm text-white/60 font-medium">€ 100.000,00</p>
-                </div>
-                <div class="flex justify-between lg:flex-col gap-1 lg:col-span-2 w-full">
-                  <p class="text-[9px] uppercase text-white/40 tracking-widest font-semibold">Rendimento Líquido</p>
-                  <p class="text-xs lg:text-sm font-bold text-[#6FCF97]">+ € 10.000,00</p>
-                </div>
-                <div class="w-full lg:col-span-2 flex lg:justify-end mt-2 lg:mt-0">
-                  <button onclick="event.stopPropagation(); event.preventDefault();" class="w-full btn-gold-lingot !py-2.5 !px-4 !text-[10px] !h-auto whitespace-nowrap" style="color: #ffffff !important; letter-spacing: 0.1em;">Baixar Doc</button>
-                </div>
-              </div>
-
-              <!-- Histórico: Edifício Aliados - Cota A -->
-              <div class="hero-card-crystal p-5 rounded-3xl grid grid-cols-1 lg:grid-cols-12 items-center gap-4 lg:gap-2 relative overflow-hidden w-full group hover:bg-white/[0.02] transition-all duration-300">
-                <div class="absolute inset-0 bg-gradient-to-br from-white/[0.01] to-transparent opacity-10 pointer-events-none"></div>
-                <div class="flex items-center gap-4 min-w-0 lg:col-span-4 w-full">
-                  <div class="w-11 h-11 rounded-xl bg-[#071326]/60 flex items-center justify-center border border-white/5 shrink-0">
-                    <svg class="w-5 h-5 text-white/30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                    </svg>
-                  </div>
-                  <div class="min-w-0 flex-1">
-                    <h4 class="text-white/80 font-bold text-sm lg:text-base truncate tracking-wide">Edifício Aliados - Cota A</h4>
-                    <div class="flex justify-between items-center w-full mt-1">
-                      <div class="flex items-center gap-2">
-                        <span class="text-[9px] font-bold uppercase px-2 py-0.5 rounded-full bg-white/5 text-white/40 tracking-wider">6 Meses</span>
-                        <span class="text-[9px] font-bold uppercase px-2 py-0.5 rounded-full bg-white/5 text-white/40 tracking-wider">Taxa: 12,5%</span>
-                      </div>
-                      <span class="text-[9px] font-bold uppercase text-gold-liquid tracking-widest">Vendido</span>
-                    </div>
-                  </div>
-                </div>
-                <div class="flex justify-between lg:flex-col gap-1 lg:col-span-2 w-full lg:pl-2">
-                  <p class="text-[9px] uppercase text-white/40 tracking-widest font-semibold">Término</p>
-                  <p class="text-xs lg:text-sm text-white/60 font-medium">15/09/2025</p>
-                </div>
-                <div class="flex justify-between lg:flex-col gap-1 lg:col-span-2 w-full">
-                  <p class="text-[9px] uppercase text-white/40 tracking-widest font-semibold">Capital Investido</p>
-                  <p class="text-xs lg:text-sm text-white/60 font-medium">€ 40.000,00</p>
-                </div>
-                <div class="flex justify-between lg:flex-col gap-1 lg:col-span-2 w-full">
-                  <p class="text-[9px] uppercase text-white/40 tracking-widest font-semibold">Rendimento Líquido</p>
-                  <p class="text-xs lg:text-sm font-bold text-[#6FCF97]">+ € 2.500,00</p>
-                </div>
-                <div class="w-full lg:col-span-2 flex lg:justify-end mt-2 lg:mt-0">
-                  <button onclick="event.stopPropagation(); event.preventDefault();" class="w-full btn-gold-lingot !py-2.5 !px-4 !text-[10px] !h-auto whitespace-nowrap" style="color: #ffffff !important; letter-spacing: 0.1em;">Baixar Doc</button>
-                </div>
-              </div>
+              <div id="historicalContractsContainer" class="space-y-4"></div>
             </section>
           </div>
           <!-- fim #tab-documentos -->
@@ -2896,39 +2479,86 @@
                     <h3 class="font-playfair text-xs font-bold text-white/60 uppercase tracking-widest">Identidade do Investidor</h3>
                   </div>
 
-                  <div class="flex flex-col items-center text-center justify-center bg-white/[0.01] p-6 rounded-2xl border border-white/5 group identity-avatar-card">
-                    <div class="identity-avatar-img-wrap relative flex items-center justify-center rounded-full bg-[#071326] shadow-lg shrink-0 overflow-hidden">
-                      <img src="img/danilson-photo.webp" alt="Danilson Carvalho" class="object-cover transition-transform duration-500 group-hover:scale-105" />
+                  <!-- Bloco Unificado de Identidade do Investidor -->
+                  <div class="flex flex-col items-center text-center justify-center bg-white/[0.01] p-6 rounded-2xl border border-white/5 group identity-avatar-card relative">
+
+                    <div class="relative mx-auto select-none mb-4" style="width: 96px !important; height: 96px !important; min-width: 96px !important; min-height: 96px !important;">
+
+                      <div id="avatarContainerSettings" class="w-full h-full rounded-full bg-[#071326] border-2 border-gold/30 shadow-xl overflow-hidden flex items-center justify-center relative cursor-pointer group hover:border-gold/50 transition-all">
+
+                        <img id="settingsAccountAvatar" src="" alt="Foto de Perfil" style="width: 100% !important; height: 100% !important; object-fit: cover !important; display: none;" />
+
+                        <div id="settingsAvatarPlaceholder" class="w-full h-full text-white/40 group-hover:text-gold/80 transition-colors bg-[#071326]" style="display: flex !important; align-items: center !important; justify-content: center !important;">
+                          <div class="rounded-full border border-white/20 bg-white/[0.04] shadow-inner transition-all duration-300" style="width: 68px !important; height: 68px !important; display: flex !important; align-items: center !important; justify-content: center !important;">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 26px !important; height: 26px !important; display: block !important;">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                              <circle cx="12" cy="13" r="3" stroke="currentColor" stroke-width="1.5" fill="none" />
+                            </svg>
+                          </div>
+                        </div>
+                      </div>
+
+                      <button type="button" id="btnDeleteAvatar" class="absolute bottom-0 right-0 w-8 h-8 rounded-full bg-[#0d1527] text-red-400/80 hover:text-red-400 border border-red-500/20 cursor-pointer shadow-2xl hover:scale-110 active:scale-95 transition-all z-20 hidden" style="display: flex !important; align-items: center !important; justify-content: center !important; padding: 0 !important; margin: 0 !important; line-height: 0 !important;" aria-label="Remover foto de perfil">
+                        <svg class="w-4 h-4" style="display: block !important; margin: 0 auto !important;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        </svg>
+                      </button>
+
+                      <input type="file" id="inputAvatarFile" accept="image/png, image/jpeg, image/webp" class="hidden" />
                     </div>
-                    <div class="mt-4">
-                      <h4 class="text-white font-bold text-base tracking-wide">Danilson Carvalho</h4>
+
+                    <div class="mt-2">
+                      <h4 id="settingsAccountName" class="text-white font-bold text-base tracking-wide">A carregar...</h4>
                       <p class="text-[10px] text-gold-liquid font-bold uppercase tracking-[0.18em] mt-1 select-none">Investidor Premium</p>
-                      <p class="text-[9px] text-white/30 mt-1">Membro exclusivo since 2024</p>
+                      <p id="settingsAccountFiliation" class="text-[9px] text-white/30 mt-1">Membro Premium desde...</p>
                     </div>
                   </div>
 
                   <div class="space-y-4 font-inter text-xs">
                     <div class="premium-form-group space-y-2">
                       <label class="text-white/40 uppercase tracking-wider text-[9px] font-semibold">Nome Completo</label>
-                      <input type="text" value="Danilson Carvalho" class="premium-field-input" />
+                      <input type="text" id="inputProfileName" value="" class="premium-field-input" />
                     </div>
                     <div class="premium-form-group space-y-2">
                       <label class="text-white/40 uppercase tracking-wider text-[9px] font-semibold">Endereço de E-mail</label>
-                      <input type="email" value="danilson.carvalho@exemplo.com" class="premium-field-input" />
+                      <input type="email" id="inputProfileEmail" value="" class="premium-field-input" />
                     </div>
                     <div class="premium-form-group space-y-2">
                       <label class="text-white/40 uppercase tracking-wider text-[9px] font-semibold">Telemóvel</label>
-                      <input type="text" value="+351 912 345 678" class="premium-field-input" />
+                      <input type="text" id="inputProfilePhone" value="" class="premium-field-input" />
                     </div>
                     <div class="premium-form-group space-y-2">
                       <label class="text-white/30 uppercase tracking-wider text-[9px] font-semibold">NIF (Auditoria Estática)</label>
-                      <input type="text" value="234 567 890" disabled class="premium-field-input cursor-not-allowed select-none" />
+                      <input type="text" id="inputProfileNif" value="" disabled class="premium-field-input cursor-not-allowed select-none" />
                     </div>
                   </div>
                 </div>
 
-                <div class="flex justify-end identity-save-footer">
-                  <button class="w-full sm:w-auto btn-gold-lingot !py-2.5 !px-6 !text-[10px]" style="color: #ffffff !important; letter-spacing: 0.12em;">
+                <div class="flex flex-col sm:flex-row justify-between items-center gap-4 identity-save-footer">
+                  <button id="btnWesusLogout" style="background: rgba(239, 68, 68, 0.02); 
+                   border: 1px solid rgba(239, 68, 68, 0.2); 
+                   color: rgba(248, 113, 113, 0.85); 
+                   font-family: 'Inter', sans-serif; 
+                   font-size: 10px; 
+                   font-weight: 700; 
+                   text-transform: uppercase; 
+                   letter-spacing: 0.12em; 
+                   padding: 0.8rem 1.6rem; 
+                   border-radius: 12px; 
+                   display: inline-flex; 
+                   align-items: center; 
+                   justify-content: center; 
+                   gap: 0.6rem; 
+                   width: 100%; 
+                   transition: all 0.2s ease-in-out; 
+                   cursor: pointer;" onmouseover="this.style.background='rgba(239, 68, 68, 0.07)'; this.style.borderColor='rgba(239, 68, 68, 0.45)'; this.style.color='#f87171';" onmouseout="this.style.background='rgba(239, 68, 68, 0.02)'; this.style.borderColor='rgba(239, 68, 68, 0.2)'; this.style.color='rgba(248, 113, 113, 0.85)';">
+                    <span>Sair da Conta</span>
+                    <svg style="width: 13px; height: 13px; display: block; shrink-0: 0;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                    </svg>
+                  </button>
+
+                  <button id="btnSaveProfile" class="w-full sm:w-auto btn-gold-lingot !py-2.5 !px-6 !text-[10px]" style="color: #ffffff !important; letter-spacing: 0.12em;">
                     Salvar Alterações
                   </button>
                 </div>
@@ -2950,28 +2580,27 @@
                     <div class="space-y-4 font-inter text-xs">
                       <div class="premium-form-group space-y-2">
                         <label class="text-white/40 uppercase tracking-wider text-[9px] font-semibold">Senha Atual</label>
-                        <input type="password" placeholder="••••••••" class="premium-field-input" />
+                        <input type="password" id="inputCurrentPassword" placeholder="••••••••" class="premium-field-input" />
                       </div>
                       <div class="premium-form-group space-y-2">
                         <label class="text-white/40 uppercase tracking-wider text-[9px] font-semibold">Nova Senha</label>
-                        <input type="password" placeholder="Mínimo 8 caracteres" class="premium-field-input" />
-                      </div>
-                    </div>
 
-                    <div class="flex items-center justify-between text-xs font-inter security-2fa-row">
-                      <div>
-                        <p class="text-white/90 font-bold tracking-wide">Autenticação de Dois Fatores (2FA)</p>
-                        <p class="text-[10px] text-white/40 mt-0.5">Camada extra para login e termos</p>
+                        <div class="relative w-full">
+                          <input type="password" id="inputNewPassword" placeholder="Mínimo 8 caracteres" class="premium-field-input w-full !pr-10" />
+
+                          <button id="toggleNewPasswordView" type="button" class="absolute opacity-60 hover:opacity-100 transition-opacity z-30" style="background: transparent !important; border: none !important; height: auto !important; width: auto !important; padding: 0 !important; right: 14px !important; top: 50% !important; transform: translateY(-50%) !important; color: #C5A059;">
+                            <svg id="eyeIconNewPassword" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                            </svg>
+                          </button>
+                        </div>
                       </div>
-                      <label class="premium-toggle-container">
-                        <input type="checkbox" class="premium-toggle-input" checked>
-                        <span class="premium-toggle-slider"></span>
-                      </label>
                     </div>
                   </div>
 
                   <div class="security-update-footer">
-                    <button class="w-full btn-gold-lingot !py-2.5 !text-[10px]" style="color: #ffffff !important; letter-spacing: 0.12em;">
+                    <button id="btnUpdatePassword" class="w-full btn-gold-lingot !py-2.5 !text-[10px]" style="color: #ffffff !important; letter-spacing: 0.12em;">
                       Atualizar Senha
                     </button>
                   </div>
@@ -2987,25 +2616,28 @@
                       <h3 class="font-playfair text-xs font-bold text-white/60 uppercase tracking-widest">Preferências e Suporte</h3>
                     </div>
 
-                    <div class="premium-notification-row prefs-notification-row-border">
+                    <div id="wesusGyroRow" class="premium-notification-row prefs-notification-row-border">
                       <div class="pr-4">
-                        <p class="text-white/90 font-bold tracking-wide">Autenticação Biométrica</p>
-                        <p class="text-[10px] text-white/40 mt-0.5">Login rápido com digital ou rosto</p>
+                        <p class="text-xs text-white/90 font-bold tracking-wide">Efeito de Giroscópio (Tilt)</p>
+                        <p class="text-[10px] text-white/40 mt-0.5">Inclinação premium tridimensional interativa nos cards</p>
                       </div>
                       <label class="premium-toggle-container">
-                        <input type="checkbox" class="premium-toggle-input">
+                        <input type="checkbox" id="wesusGyroToggle" class="premium-toggle-input" checked>
                         <span class="premium-toggle-slider"></span>
                       </label>
+                    </div>
+
+                    <div id="biometricSettingsRow" class="premium-notification-row prefs-notification-row-border">
                     </div>
 
                     <div class="font-inter text-xs">
                       <div class="premium-notification-row">
                         <div class="pr-4">
                           <p class="text-white/90 font-bold tracking-wide">Oportunidades Relâmpago</p>
-                          <p class="text-[10px] text-white/40 mt-0.5">Avisos imediatos de cotas e pools restritos</p>
+                          <p class="text-[10px] text-white/40 mt-0.5">Avisos imediatos de cotas e Oportunidades de Investimentos</p>
                         </div>
                         <label class="premium-toggle-container">
-                          <input type="checkbox" class="premium-toggle-input" checked>
+                          <input type="checkbox" id="wesusAlertaRelampago" class="premium-toggle-input">
                           <span class="premium-toggle-slider"></span>
                         </label>
                       </div>
@@ -3016,7 +2648,7 @@
                           <p class="text-[10px] text-white/40 mt-0.5">Notificações de prazos e liquidações de mútuo</p>
                         </div>
                         <label class="premium-toggle-container">
-                          <input type="checkbox" class="premium-toggle-input" checked>
+                          <input type="checkbox" id="wesusAlertaVencimento" class="premium-toggle-input">
                           <span class="premium-toggle-slider"></span>
                         </label>
                       </div>
@@ -3026,8 +2658,8 @@
                           <p class="text-white/90 font-bold tracking-wide">Modo de Visualização</p>
                           <p class="text-[10px] text-white/40 mt-0.5">Alternar o tema do portal (Claro / Escuro)</p>
                         </div>
-                        <button class="p-2 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 text-gold transition-colors shadow-sm" aria-label="Alternar Tema">
-                          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <button id="themeToggleMobile" class="p-2 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 text-gold transition-colors shadow-sm" aria-label="Alternar Tema">
+                          <svg id="themeIconMobile" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
                           </svg>
                         </button>
@@ -3036,10 +2668,8 @@
                   </div>
 
                   <div class="prefs-support-footer">
-                    <a href="javascript:void(0);" onclick="event.preventDefault(); event.stopPropagation();" class="w-full flex items-center justify-center gap-2 btn-gold-lingot btn-emerald-lingot cursor-default select-none" style="color: #ffffff !important;">
-                      <svg class="w-4 h-4 fill-current shrink-0" viewBox="0 0 24 24">
-                        <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397 0 11.93 0c3.165.001 6.14 1.233 8.377 3.469 2.237 2.235 3.469 5.211 3.469 8.378 0 6.582-5.336 11.93-11.87 11.93h-.004c-2.012 0-3.987-.544-5.732-1.583L0 24zm6.158-3.466l.356.211c1.6.953 3.546 1.456 5.368 1.456h.003c5.497 0 9.969-4.473 9.973-9.972.002-2.664-1.033-5.167-2.915-7.05-1.88-1.882-4.383-2.917-7.046-2.917-5.5 0-9.972 4.474-9.975 9.973-.001 1.894.494 3.743 1.433 5.361l.232.401L1.87 21.673l3.52-.924zM16.43 13.13c-.26-.13-1.536-.758-1.772-.844-.237-.086-.41-.13-.582.13-.172.26-.665.844-.813 1.012-.148.17-.297.187-.557.057-.26-.13-1.1-.405-2.096-1.293-.775-.692-1.3-1.547-1.452-1.807-.152-.26-.016-.4.114-.53.117-.116.26-.303.39-.455.13-.152.173-.26.26-.433.086-.173.043-.325-.022-.455-.065-.13-.582-1.4-.798-1.92-.21-.51-.424-.44-.582-.44H8.04c-.172 0-.453.065-.69.325-.238.26-.908.887-.908 2.162 0 1.275.928 2.506 1.057 2.679.13.173 1.826 2.79 4.425 3.913.618.267 1.1.426 1.475.545.622.197 1.187.17 1.634.1.5-.074 1.536-.628 1.75-1.235.213-.607.213-1.127.15-1.235-.064-.11-.237-.174-.497-.304z" />
-                      </svg>
+                    <a href="https://wa.me/351929408352?text=Olá! Estou no Portal do Investidor e preciso de suporte com as definições da minha conta." target="_blank" class="w-full flex items-center justify-center gap-2 btn-gold-lingot btn-emerald-lingot" style="color: #ffffff !important;">
+                      <img src="./img/whatsapp-icon.png" alt="WhatsApp Icon" style="width: 20px; height: auto;">
                       Contatar Suporte Técnico
                     </a>
                   </div>
@@ -3085,10 +2715,8 @@
                 </div>
 
                 <div class="w-full md:w-auto shrink-0 flex justify-center">
-                  <a href="https://wa.me/351912345678?text=Olá! Estou no Portal do Investidor e preciso de reportar um problem técnico para a equipa de engenharia." target="_blank" class="w-full md:w-auto flex items-center justify-center gap-2 btn-gold-lingot btn-emerald-lingot !py-3 !px-6 !text-[10px] text-center" style="color: #ffffff !important; letter-spacing: 0.12em;">
-                    <svg class="w-4 h-4 fill-current shrink-0" viewBox="0 0 24 24">
-                      <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397 0 11.93 0c3.165.001 6.14 1.233 8.377 3.469 2.237 2.235 3.469 5.211 3.469 8.378 0 6.582-5.336 11.93-11.87 11.93h-.004c-2.012 0-3.987-.544-5.732-1.583L0 24zm6.158-3.466l.356.211c1.6.953 3.546 1.456 5.368 1.456h.003c5.497 0 9.969-4.473 9.973-9.972.002-2.664-1.033-5.167-2.915-7.05-1.88-1.882-4.383-2.917-7.046-2.917-5.5 0-9.972 4.474-9.975 9.973-.001 1.894.494 3.743 1.433 5.361l.232.401L1.87 21.673l3.52-.924zM16.43 13.13c-.26-.13-1.536-.758-1.772-.844-.237-.086-.41-.13-.582.13-.172.26-.665.844-.813 1.012-.148.17-.297.187-.557.057-.26-.13-1.1-.405-2.096-1.293-.775-.692-1.3-1.547-1.452-1.807-.152-.26-.016-.4.114-.53.117-.116.26-.303.39-.455.13-.152.173-.26.26-.433.086-.173.043-.325-.022-.455-.065-.13-.582-1.4-.798-1.92-.21-.51-.424-.44-.582-.44H8.04c-.172 0-.453.065-.69.325-.238.26-.908.887-.908 2.162 0 1.275.928 2.506 1.057 2.679.13.173 1.826 2.79 4.425 3.913.618.267 1.1.426 1.475.545.622.197 1.187.17 1.634.1.5-.074 1.536-.628 1.75-1.235.213-.607.213-1.127.15-1.235-.064-.11-.237-.174-.497-.304z" />
-                    </svg>
+                  <a href="https://wa.me/351929408352?text=Olá! Estou no Portal do Investidor e preciso de reportar um problema técnico para a equipa de engenharia." target="_blank" class="w-full md:w-auto flex items-center justify-center gap-2 btn-gold-lingot btn-emerald-lingot !py-3 !px-6 !text-[10px] text-center" style="color: #ffffff !important; letter-spacing: 0.12em;">
+                    <img src="./img/whatsapp-icon.png" alt="WhatsApp Icon" style="width: 20px; height: auto;">
                     Reportar Problema
                   </a>
                 </div>
@@ -3356,6 +2984,26 @@
       <img id="wesusLightboxImage" src="" alt="Portfólio Expandido" class="rounded-2xl border border-white/10" />
     </div>
   </div>
+
+  <!-- 🎯 ADICIONADO: Modal de Sucesso das Definições da Conta -->
+  <div id="wesusProfileSuccessModal" class="wesus-popup-overlay">
+    <div onclick="document.getElementById('wesusProfileSuccessModal').classList.remove('active')" class="absolute inset-0 bg-[#071326]/75 backdrop-blur-md cursor-pointer"></div>
+    <div class="wesus-popup-card hero-card-crystal relative z-10 rounded-3xl w-[85%] max-w-xs flex flex-col items-center justify-center p-6 text-center border border-white/10 shadow-2xl">
+      <div class="mb-4 relative flex items-center justify-center w-14 h-14">
+        <div class="absolute inset-0 rounded-full bg-[#6FCF97]/10 wesus-animate-ping"></div>
+        <div class="w-14 h-14 rounded-full bg-gradient-to-br from-[#6FCF97]/20 to-[#118f52]/10 border border-[#6FCF97]/30 flex items-center justify-center text-[#6FCF97] drop-shadow-[0_0_15px_rgba(111,207,151,0.4)] success-pop">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
+          </svg>
+        </div>
+      </div>
+      <h4 class="font-playfair font-bold text-lg text-white mb-1">Alterações Salvas!</h4>
+      <p class="text-[11px] text-white/50 max-w-[200px] leading-relaxed font-inter">O seu perfil de investidor foi atualizado com sucesso na base de dados.</p>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
   <script src="js/dashboard.js" defer></script>
 </body>
 

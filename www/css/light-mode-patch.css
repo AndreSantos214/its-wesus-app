@@ -328,17 +328,16 @@ html:not(.dark)
   color: #b8913a !important;
 }
 
-/* ── 16. FILTRO DE COR DOS LOGOTIPOS EM LIGHT MODE (Sem Estouro) ── */
-/* Aplica o filtro de tom dourado premium apenas nos logotipos quando em Light Mode */
+/* ── 16. EXIBIÇÃO PREMIUM DAS LOGOS NATIVAS DOURADAS (SEM FILTROS) ── */
+/* Remove o filtro cromático para permitir que as imagens douradas reais apareçam nativamente */
 html:not(.dark) img[src*="logo-its-wesus"] {
-  filter: invert(68%) sepia(19%) saturate(542%) hue-rotate(344deg)
-    brightness(91%) contrast(89%) !important;
-  opacity: 0.85 !important;
+  filter: none !important; /* Deleta o filtro que tornava a logo azulada */
+  opacity: 1 !important; /* Garante 100% de nitidez e vivacidade ao dourado */
 }
 
 /* ── 🛡️ PATCH DE FORÇA MÁXIMA (Sobrescreve o CSS interno do HTML) ── */
 
-/* 1. Remove sombras e fundos azuis de TODOS os cards Hero */
+/* 1. Remove sombras e fundos azuis de TODOS os cards Hero aplicando a nova volumetria profunda */
 html:not(.dark) section[aria-labelledby="patrimonyHeading"] .hero-card-crystal,
 html:not(.dark)
   section[aria-label="Oportunidades Exclusivas"]
@@ -346,9 +345,14 @@ html:not(.dark)
 html:not(.dark) .hero-card-crystal {
   background: linear-gradient(135deg, #ffffff 0%, #f7f3ec 100%) !important;
   border: 1px solid rgba(197, 160, 89, 0.25) !important;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05) !important; /* 🔥 Sombra Neutra (Sem azul) */
   margin-left: 0 !important;
   margin-right: 0 !important;
+  transform: none !important;
+
+  /* 🔥 Sombra densa sincronizada com o topo do patch */
+  box-shadow: 0 4px 10px -1px rgba(11, 31, 58, 0.04),
+    0 16px 36px -6px rgba(11, 31, 58, 0.15),
+    0 35px 70px -10px rgba(11, 31, 58, 0.1), inset 0 1px 0 0 #ffffff !important;
 }
 
 /* 2. Corrige estouro de tela mobile e centraliza */
@@ -372,8 +376,13 @@ html:not(.dark) .widget-card-backlight {
 /* ── ⚡ MOTOR DE ANIMAÇÃO POR HARDWARE (CAPACITOR HIGH-PERFORMANCE) ── */
 .wesus-hardware-card {
   will-change: transform, opacity !important;
-  transition: transform 0.18s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.18s ease-in-out !important;
-  transform: translate3d(0, 0, 0); /* Força isolamento de camada de renderização na GPU */
+  transition: transform 0.18s cubic-bezier(0.25, 1, 0.5, 1),
+    opacity 0.18s ease-in-out !important;
+  transform: translate3d(
+    0,
+    0,
+    0
+  ); /* Força isolamento de camada de renderização na GPU */
 }
 
 /* Estado de Saída (Fading out) */
@@ -396,4 +405,275 @@ html:not(.dark) .widget-card-backlight {
   opacity: 0 !important;
 }
 
+/* ── 14b. BLINDAGEM DO BOTÃO WHATSAPP (LINGOTE ESMERALDA) ────────── */
+html:not(.dark) .btn-emerald-lingot {
+  background: linear-gradient(
+    135deg,
+    #0b663b 0%,
+    #118f52 45%,
+    #0a5c35 75%,
+    #05301b 100%
+  ) !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(17, 143, 82, 0.4) !important;
+  box-shadow: 0 12px 24px -6px rgba(0, 0, 0, 0.6),
+    0 4px 12px -2px rgba(17, 143, 82, 0.3),
+    inset 0 1.5px 1.5px rgba(255, 255, 255, 0.25),
+    inset 0 -1.5px 2px rgba(0, 0, 0, 0.35) !important;
+}
+
+/* Força o ícone interno (SVG) e o texto a manterem-se brancos e visíveis */
+html:not(.dark) .btn-emerald-lingot svg,
+html:not(.dark) .btn-emerald-lingot svg path {
+  color: #ffffff !important;
+  fill: #ffffff !important;
+}
+
+/* ===================================================================
+   💎 REFINAMENTOS DE ALTA PERFORMANCE — AJUSTES DE CONTRASTE & MODAIS
+   =================================================================== */
+
+/* ── POINT 1: BLINDAGEM GLOBAL DO BOTÃO WHATSAPP (SEMPRE VERDE) ── */
+/* Remove qualquer herança dourada ou escura e tranca o gradiente esmeralda em ambos os modos */
+.btn-emerald-lingot,
+html:not(.dark) .btn-emerald-lingot,
+html.dark .btn-emerald-lingot {
+  background: linear-gradient(
+    135deg,
+    #0b663b 0%,
+    #118f52 45%,
+    #0a5c35 75%,
+    #05301b 100%
+  ) !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(17, 143, 82, 0.4) !important;
+  box-shadow: 0 12px 24px -6px rgba(0, 0, 0, 0.6),
+    0 4px 12px -2px rgba(17, 143, 82, 0.3),
+    inset 0 1.5px 1.5px rgba(255, 255, 255, 0.25),
+    inset 0 -1.5px 2px rgba(0, 0, 0, 0.35) !important;
+}
+
+/* Garante que o ícone do WhatsApp e o texto fiquem sempre brancos */
+.btn-emerald-lingot svg,
+.btn-emerald-lingot svg path,
+.btn-emerald-lingot span,
+html:not(.dark) .btn-emerald-lingot svg,
+html:not(.dark) .btn-emerald-lingot span {
+  color: #ffffff !important;
+  fill: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+
+/* ── POINT 2: ICONES DA ABA OPORTUNIDADES (LIGHT MODE) ── */
+/* Limpa os filtros escuros e re-estiliza os escudos dos planos no modo claro */
+html:not(.dark) .icon-badge-shield {
+  background: rgba(184, 145, 58, 0.08) !important;
+  border: 1px solid rgba(184, 145, 58, 0.35) !important;
+  box-shadow: none !important;
+  color: #b8913a !important;
+}
+
+html:not(.dark) .icon-badge-shield svg {
+  filter: none !important;
+  stroke: #b8913a !important;
+}
+
+/* ── POINT 3: CONTRASTE DO FILTRO DE ANOS (DESEMPENHO ANUAL) ── */
+html:not(.dark) body #annualYearDropdownBtn {
+  background: #ffffff !important;
+  border: 1px solid rgba(197, 160, 89, 0.4) !important;
+  color: #0b1f3a !important;
+}
+
+html:not(.dark) body #selectedYearLabel {
+  color: #0b1f3a !important;
+  font-weight: 700 !important;
+}
+
+html:not(.dark) body #annualYearDropdownMenu {
+  background: #ffffff !important;
+  border: 1px solid rgba(197, 160, 89, 0.25) !important;
+  box-shadow: 0 12px 28px rgba(11, 31, 58, 0.12) !important;
+}
+
+html:not(.dark) body #annualYearDropdownMenu button {
+  color: #0b1f3a !important;
+  -webkit-text-fill-color: #0b1f3a !important;
+  background: transparent !important;
+}
+
+html:not(.dark) body #annualYearDropdownMenu button[style*="#E8D08D"] {
+  color: #b8913a !important;
+  -webkit-text-fill-color: #b8913a !important;
+  font-weight: 700 !important;
+}
+
+/* 👑 TRANCAR GRADIENTE DOURADO PRIVADO NO "TODO O PERÍODO" ATIVO */
+html:not(.dark) body .btn-annual-alltime.active {
+  background: linear-gradient(135deg, #e8d08d 0%, #c5a059 100%) !important;
+  color: #071326 !important;
+  border: 1px solid transparent !important;
+  font-weight: 700 !important;
+}
+
+html:not(.dark) body .btn-annual-alltime.inactive {
+  background: rgba(11, 31, 58, 0.05) !important;
+  color: #0b1f3a !important;
+  border: 1px solid rgba(197, 160, 89, 0.35) !important;
+}
+
+/* ── 3b. ULTRA CONTRASTE PARA BOTÕES DE PAGINAÇÃO DA SECÇÃO PRINCIPAL ── */
+html:not(.dark) body #dashboardPrevContractBtn,
+html:not(.dark) body #dashboardNextContractBtn {
+  background: #ffffff !important;
+  border: 1px solid rgba(197, 160, 89, 0.4) !important;
+  color: #b8913a !important;
+  box-shadow: 0 4px 12px rgba(11, 31, 58, 0.06) !important;
+}
+
+html:not(.dark) body #dashboardPrevContractBtn:hover,
+html:not(.dark) body #dashboardNextContractBtn:hover {
+  background: rgba(197, 160, 89, 0.08) !important;
+  color: #8a662d !important;
+}
+
+/* ── POINT 4: PURIFICAÇÃO GLOBAL DOS MODAIS E CORTINAS EM MÓBILE ── */
+html:not(.dark) .wSimple-popup-overlay,
+html:not(.dark) .wuses-popup-overlay,
+html:not(.dark) .wesus-popup-overlay {
+  background-color: transparent !important;
+}
+
+/* 🔥 CAPTURA CIRÚRGICA: Esmaga o filtro azul inline do HTML e injeta o fino filtro claro de linho */
+html:not(.dark) .wesus-popup-overlay div[id*="Backdrop"],
+html:not(.dark) .wesus-popup-overlay div[class*="bg-[#071326]"],
+html:not(.dark) .wSimple-popup-overlay div[class*="bg-"] {
+  background-color: rgba(
+    237,
+    233,
+    225,
+    0.45
+  ) !important; /* Fino filtro linho premium */
+  backdrop-filter: blur(10px) saturate(140%) !important; /* Desfoque suave e integrado */
+  -webkit-backdrop-filter: blur(10px) saturate(140%) !important;
+}
+
+/* Transmuta a tela interna de Sucesso para fundo branco opaco em modo claro */
+html:not(.dark) #wesusSuccessState {
+  background-color: rgba(255, 255, 255, 0.98) !important;
+  border: 1px solid rgba(197, 160, 89, 0.25) !important;
+}
+
+/* Remove a capa azul escura da imagem do imóvel e aplica uma transição suave de linho */
+html:not(.dark) #wsubAssetDetailsModal .wesus-modal-cover-overlay,
+html:not(.dark) #wesusAssetDetailsModal .wesus-modal-cover-overlay {
+  background-image: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0) 20%,
+    #ffffff 100%
+  ) !important;
+  background-color: transparent !important;
+}
+
+/* Ajusta as cores internas do modal para manter a legibilidade em fundo claro */
+html:not(.dark) #wSimplePopupOverlay #assetDetailsTitle,
+html:not(.dark) #wesusAssetDetailsModal #assetDetailsTitle,
+html:not(.dark) #wesusAssetDetailsModal #assetDetailsTotal {
+  color: #0b1f3a !important;
+}
+
+html:not(.dark) #wesusAssetDetailsModal .wSimple-popup-card,
+html:not(.dark) #wesusAssetDetailsModal .wesus-modal-scroll-pane {
+  background: #ffffff !important;
+}
+
+html:not(.dark) #wSimplePopupOverlay .wSimple-popup-tabs-row,
+html:not(.dark) #wSimplePopupOverlay .wuses-modal-tabs-row,
+html:not(.dark) #wSimplePopupOverlay .wesus-modal-tabs-row,
+html:not(.dark) #wesusAssetDetailsModal .wSimple-popup-tabs-row,
+html:not(.dark) #wesusAssetDetailsModal .wuses-modal-tabs-row,
+html:not(.dark) #wesusAssetDetailsModal .wesus-modal-tabs-row {
+  background: rgba(11, 31, 58, 0.04) !important;
+  border: 1px solid rgba(11, 31, 58, 0.08) !important;
+}
+
+html:not(.dark) #wSimplePopupOverlay .asset-tab-btn,
+html:not(.dark) #wesusAssetDetailsModal .asset-tab-btn {
+  color: rgba(11, 31, 58, 0.5) !important;
+}
+
+html:not(.dark) #wSimplePopupOverlay .asset-tab-btn.active,
+html:not(.dark) #wesusAssetDetailsModal .asset-tab-btn.active {
+  color: #b8913a !important;
+  background: #ffffff !important;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.05) !important;
+}
+
+/* ── POINT 5: UPGRADE DE CONTRASTE NO STATUS DA TABELA DESKTOP ── */
+/* Eleva o contraste do badge "Em Curso" para destacar-se na lista clara */
+html:not(.dark) .status-badge-construction {
+  background: rgba(184, 145, 58, 0.12) !important;
+  color: #8a662d !important;
+  border: 1px solid rgba(184, 145, 58, 0.4) !important;
+}
+
+html:not(.dark) .status-badge-construction:before {
+  background-color: #8a662d !important;
+  box-shadow: 0 0 4px #c5a059 !important;
+}
+
+/* ── UPGRADE DE PROFUNDIDADE & CONTRASTE ESTRUTURAL ── */
+html:not(.dark) .hero-card-crystal,
+html:not(.dark) .glass-card {
+  background: linear-gradient(135deg, #ffffff 0%, #fdfcf9 60%, #f7f3ec 100%)
+    padding-box !important;
+  border: 1px solid rgba(197, 160, 89, 0.28) !important;
+
+  /* 🔥 Sombra Multi-Camada Adensada (Efeito Flutuante de Alta Definição) */
+  box-shadow: 0 4px 10px -1px rgba(11, 31, 58, 0.04),
+    0 16px 36px -6px rgba(11, 31, 58, 0.15),
+    0 35px 70px -10px rgba(11, 31, 58, 0.1), inset 0 1px 0 0 #ffffff !important;
+
+  transform: none !important; /* Desativa saltos em ecrãs Mobile/Desktop */
+  transition: box-shadow 0.3s ease !important;
+}
+
+/* Garante estabilidade física absoluta e a mesma volumetria no Hover */
+@media (min-width: 1024px) {
+  html:not(.dark) .hero-card-crystal:hover {
+    transform: none !important;
+    box-shadow: 0 4px 10px -1px rgba(11, 31, 58, 0.04),
+      0 16px 36px -6px rgba(11, 31, 58, 0.15),
+      0 35px 70px -10px rgba(11, 31, 58, 0.1), inset 0 1px 0 0 #ffffff !important;
+  }
+}
+
+/* ── 15b. ADAPTAÇÃO DA IMAGEM DE FUNDO DA OFERTA RELÂMPAGO ────────── */
+html:not(.dark) img[src*="oferta-relampago"] {
+  filter: brightness(1.05) contrast(0.95) saturate(0.85) !important; /* Desliga o blackout escuro */
+  opacity: 0.15 !important; /* Cria um efeito de marca d'água sofisticado no fundo do card */
+  mix-blend-mode: multiply !important; /* Funde os traços da imagem nativamente com o fundo claro */
+}
+
+/* ── 17. CORREÇÃO DE FILTRO DO CARROSSEL DE INVESTIMENTOS ATIVOS ── */
+html:not(.dark) .carousel-asset-card {
+  background: linear-gradient(135deg, #ffffff95 0%, #f7f3ec6c 100%) padding-box !important;
+  border: 1px solid rgba(197, 160, 89, 0.25) !important;
+  box-shadow: 0 10px 25px rgba(11, 31, 58, 0.05) !important;
+}
+
+html:not(.dark) .carousel-asset-image-mask {
+  opacity: 0.15 !important;
+  mix-blend-mode: multiply !important;
+  /* Transmuta o tom azulado para uma película champagne/linho quente ultra leve */
+  filter: sepia(0.8) hue-rotate(10deg) saturate(1.2) brightness(1.1) !important;
+}
+
+html:not(.dark) .carousel-asset-card h3 {
+  color: #0b1f3a !important;
+}
+
+html:not(.dark) .carousel-asset-card p {
+  color: rgba(11, 31, 58, 0.6) !important;
+}
 /* ── FIM DO PATCH ────────────────────────────────────────────────── */
