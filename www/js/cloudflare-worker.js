@@ -142,7 +142,11 @@ export default {
         );
 
         // 🎯 PONTO CENTRAL: Matriz de e-mails da equipa administrativa.
-        const listaEquipa = ["geral@itswesus.com", "andressantos214@gmail.com"];
+        const listaEquipa = [
+          "geral@itswesus.com",
+          "andressantos214@gmail.com",
+          "danilsonjcarvalho@gmail.com",
+        ];
 
         for (const emailEquipa of listaEquipa) {
           if (investor.email !== emailEquipa) {
