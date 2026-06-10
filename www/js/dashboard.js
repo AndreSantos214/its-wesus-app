@@ -84,6 +84,7 @@ const ThemeController = (() => {
       if (btn)
         btn.addEventListener("click", (e) => {
           e.preventDefault();
+          e.stopPropagation(); // 🛡️ Blindagem: impede que o clique suba para o card pai clicável
           toggle();
         });
     });
@@ -112,12 +113,21 @@ const NavigationController = (() => {
     const targetTab = document.getElementById(`tab-${sectionName}`);
     if (targetTab) targetTab.classList.remove("hidden");
 
+    // 1. Reset síncrono imediato de segurança
     window.scrollTo({ top: 0, left: 0, behavior: "instant" });
 
     const mainContent = document.getElementById("mainContent");
     if (mainContent) {
       mainContent.scrollTo({ top: 0, left: 0, behavior: "instant" });
     }
+
+    // 2. 🛡️ GUARDA SÊNIOR ASSÍNCRONO: Executa logo após o navegador calcular as novas alturas do DOM
+    setTimeout(() => {
+      window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+      if (mainContent) {
+        mainContent.scrollTo({ top: 0, left: 0, behavior: "instant" });
+      }
+    }, 15);
 
     if (
       sectionName === "dashboard" &&
