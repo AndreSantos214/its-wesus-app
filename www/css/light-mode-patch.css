@@ -286,7 +286,7 @@ html:not(.dark) .btn-gold-lingot {
     #c5a059 50%,
     #a38349 100%
   ) !important;
-  color: #071326 !important;
+  color: #fff !important;
   border: 1px solid rgba(163, 131, 73, 0.25) !important;
 }
 
