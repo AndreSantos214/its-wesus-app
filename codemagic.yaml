@@ -36,6 +36,7 @@ workflows:
             DEVELOPMENT_TEAM=334V62BNFQ \
             PRODUCT_BUNDLE_IDENTIFIER=com.itswesus.portal \
             CODE_SIGN_STYLE=Automatic \
+            -allowProvisioningUpdates \
             archive
 
     artifacts:
