@@ -4,40 +4,158 @@ workflows:
     max_build_duration: 60
     instance_type: mac_mini_m2
 
+    integrations:
+      app_store_connect: ios-app
+
     environment:
       node: latest
       xcode: latest
       cocoapods: default
+
+      ios_signing:
+        distribution_type: app_store
+        bundle_identifier: com.itswesus.portal
+
       vars:
         BUNDLE_ID: "com.itswesus.portal"
+        APP_NAME: "It's Wesus"
+        APP_VERSION: "1.0"
+        IOS_DEPLOYMENT_TARGET: "15.0"
+        XCODE_WORKSPACE: "ios/App/App.xcworkspace"
+        XCODE_SCHEME: "App"
 
     scripts:
       - name: Install npm dependencies
         script: |
-          npm install
-          chmod -R +x node_modules/.bin
+          echo "Installing npm dependencies..."
 
-      - name: Sync Capacitor iOS
+          if [ -f package-lock.json ]; then
+            npm ci || npm install
+          else
+            npm install
+          fi
+
+          chmod -R +x node_modules/.bin || true
+
+      - name: Ensure iOS platform exists and sync Capacitor
         script: |
+          echo "Checking Capacitor iOS platform..."
+
+          if [ ! -d "ios" ]; then
+            echo "iOS folder not found. Adding Capacitor iOS platform..."
+            npx cap add ios
+          fi
+
+          echo "Syncing Capacitor iOS..."
           npx cap sync ios
+
+      - name: Ensure Podfile exists and set iOS deployment target
+        script: |
+          echo "Checking Podfile..."
+
+          PODFILE="ios/App/Podfile"
+
+          if [ -d "$PODFILE" ]; then
+            echo "Podfile is incorrectly a directory. Removing it..."
+            rm -rf "$PODFILE"
+          fi
+
+          if [ ! -f "$PODFILE" ]; then
+            echo "Podfile not found. Creating a safe Capacitor Podfile..."
+            cat > "$PODFILE" <<'EOF'
+platform :ios, '15.0'
+use_frameworks!
+
+install! 'cocoapods', :disable_input_output_paths => true
+
+def capacitor_pods
+  pod 'Capacitor', :path => '../../node_modules/@capacitor/ios'
+  pod 'CapacitorCordova', :path => '../../node_modules/@capacitor/ios'
+  pod 'CapacitorKeyboard', :path => '../../node_modules/@capacitor/keyboard'
+  pod 'CapacitorPushNotifications', :path => '../../node_modules/@capacitor/push-notifications'
+  pod 'CapacitorScreenOrientation', :path => '../../node_modules/@capacitor/screen-orientation'
+  pod 'CapacitorSplashScreen', :path => '../../node_modules/@capacitor/splash-screen'
+  pod 'CapacitorNativeBiometric', :path => '../../node_modules/capacitor-native-biometric'
+end
+
+target 'App' do
+  capacitor_pods
+end
+
+post_install do |installer|
+  installer.pods_project.targets.each do |target|
+    target.build_configurations.each do |config|
+      config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '15.0'
+    end
+  end
+end
+EOF
+          fi
+
+          echo "Forcing iOS deployment target to ${IOS_DEPLOYMENT_TARGET}..."
+          ruby -pi -e "gsub(/platform :ios, '[0-9.]+'/, \"platform :ios, '${IOS_DEPLOYMENT_TARGET}'\")" "$PODFILE"
+
+          echo "Podfile content:"
+          cat "$PODFILE"
 
       - name: Install CocoaPods dependencies
         script: |
+          echo "Installing CocoaPods dependencies..."
           cd ios/App
-          pod install
+          pod install --repo-update
 
-      - name: Build iOS archive
+      - name: Set app version and build number
         script: |
+          echo "Setting app version..."
+
           cd ios/App
-          xcodebuild -workspace App.xcworkspace \
-            -scheme App \
-            -configuration Release \
-            -archivePath build/App.xcarchive \
-            DEVELOPMENT_TEAM=334V62BNFQ \
-            PRODUCT_BUNDLE_IDENTIFIER=com.itswesus.portal \
-            CODE_SIGN_STYLE=Automatic \
-            -allowProvisioningUpdates \
-            archive
+
+          BUILD_NUMBER_VALUE="${BUILD_NUMBER:-1}"
+
+          /usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString ${APP_VERSION}" App/Info.plist || \
+          /usr/libexec/PlistBuddy -c "Add :CFBundleShortVersionString string ${APP_VERSION}" App/Info.plist
+
+          /usr/libexec/PlistBuddy -c "Set :CFBundleVersion ${BUILD_NUMBER_VALUE}" App/Info.plist || \
+          /usr/libexec/PlistBuddy -c "Add :CFBundleVersion string ${BUILD_NUMBER_VALUE}" App/Info.plist
+
+          echo "Version: ${APP_VERSION}"
+          echo "Build number: ${BUILD_NUMBER_VALUE}"
+
+      - name: Initialize keychain
+        script: |
+          echo "Initializing keychain..."
+          keychain initialize
+
+      - name: Fetch Apple signing files
+        script: |
+          echo "Fetching Apple signing files for ${BUNDLE_ID}..."
+          app-store-connect fetch-signing-files "$BUNDLE_ID" \
+            --type IOS_APP_STORE \
+            --create
+
+      - name: Add signing certificates to keychain
+        script: |
+          echo "Adding certificates to keychain..."
+          keychain add-certificates
+
+      - name: Apply signing settings to Xcode project
+        script: |
+          echo "Applying signing profiles to Xcode project..."
+          xcode-project use-profiles
+
+      - name: Build IPA
+        script: |
+          echo "Building IPA..."
+          xcode-project build-ipa \
+            --workspace "$XCODE_WORKSPACE" \
+            --scheme "$XCODE_SCHEME"
 
     artifacts:
-      - ios/App/build/App.xcarchive
+      - build/ios/ipa/*.ipa
+      - /tmp/xcodebuild_logs/*.log
+      - ios/App/build/**/*.xcarchive
+
+    publishing:
+      app_store_connect:
+        auth: integration
+        submit_to_testflight: false
