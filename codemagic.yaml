@@ -1,0 +1,39 @@
+workflows:
+  ios-capacitor-release:
+    name: iOS Capacitor Release
+    max_build_duration: 60
+    instance_type: mac_mini_m2
+
+    environment:
+      node: latest
+      xcode: latest
+      cocoapods: default
+      vars:
+        BUNDLE_ID: "com.itswesus.portal"
+
+    scripts:
+      - name: Install npm dependencies
+        script: |
+          npm install
+          chmod -R +x node_modules/.bin
+
+      - name: Sync Capacitor iOS
+        script: |
+          npx cap sync ios
+
+      - name: Install CocoaPods dependencies
+        script: |
+          cd ios/App
+          pod install
+
+      - name: Build iOS archive
+        script: |
+          cd ios/App
+          xcodebuild -workspace App.xcworkspace \
+            -scheme App \
+            -configuration Release \
+            -archivePath build/App.xcarchive \
+            archive
+
+    artifacts:
+      - ios/App/build/App.xcarchive
