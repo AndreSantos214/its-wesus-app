@@ -10,7 +10,6 @@ workflows:
       cocoapods: default
       vars:
         BUNDLE_ID: "com.itswesus.portal"
-        APP_STORE_APP_ID: "" # depois colocamos o Apple ID da app no App Store Connect
 
     scripts:
       - name: Install npm dependencies
