@@ -18,6 +18,7 @@ workflows:
 
       - name: Sync Capacitor iOS
         script: |
+          chmod +x node_modules/.bin/cap
           npx cap sync ios
 
       - name: Install CocoaPods dependencies
