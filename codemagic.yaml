@@ -28,75 +28,48 @@ workflows:
       - name: Install npm dependencies
         script: |
           echo "Installing npm dependencies..."
-
           if [ -f package-lock.json ]; then
             npm ci || npm install
           else
             npm install
           fi
-
           chmod -R +x node_modules/.bin || true
 
-      - name: Ensure iOS platform exists and sync Capacitor
+      - name: Sync Capacitor iOS
         script: |
-          echo "Checking Capacitor iOS platform..."
-
-          if [ ! -d "ios" ]; then
-            echo "iOS folder not found. Adding Capacitor iOS platform..."
-            npx cap add ios
-          fi
-
           echo "Syncing Capacitor iOS..."
           npx cap sync ios
 
-      - name: Ensure Podfile exists and set iOS deployment target
+      - name: Validate iOS project files
         script: |
-          echo "Checking Podfile..."
+          echo "Validating iOS project..."
 
-          PODFILE="ios/App/Podfile"
-
-          if [ -d "$PODFILE" ]; then
-            echo "Podfile is incorrectly a directory. Removing it..."
-            rm -rf "$PODFILE"
+          if [ ! -d "ios/App" ]; then
+            echo "ERROR: ios/App folder not found."
+            exit 1
           fi
 
-          if [ ! -f "$PODFILE" ]; then
-            echo "Podfile not found. Creating a safe Capacitor Podfile..."
-            cat > "$PODFILE" <<'EOF'
-platform :ios, '15.0'
-use_frameworks!
-
-install! 'cocoapods', :disable_input_output_paths => true
-
-def capacitor_pods
-  pod 'Capacitor', :path => '../../node_modules/@capacitor/ios'
-  pod 'CapacitorCordova', :path => '../../node_modules/@capacitor/ios'
-  pod 'CapacitorKeyboard', :path => '../../node_modules/@capacitor/keyboard'
-  pod 'CapacitorPushNotifications', :path => '../../node_modules/@capacitor/push-notifications'
-  pod 'CapacitorScreenOrientation', :path => '../../node_modules/@capacitor/screen-orientation'
-  pod 'CapacitorSplashScreen', :path => '../../node_modules/@capacitor/splash-screen'
-  pod 'CapacitorNativeBiometric', :path => '../../node_modules/capacitor-native-biometric'
-end
-
-target 'App' do
-  capacitor_pods
-end
-
-post_install do |installer|
-  installer.pods_project.targets.each do |target|
-    target.build_configurations.each do |config|
-      config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '15.0'
-    end
-  end
-end
-EOF
+          if [ ! -f "ios/App/Podfile" ]; then
+            echo "ERROR: ios/App/Podfile file not found."
+            echo "Create it locally with npx cap add ios / npx cap sync ios and push it to GitHub."
+            exit 1
           fi
 
+          if [ -d "ios/App/Podfile" ]; then
+            echo "ERROR: ios/App/Podfile is a directory, but it must be a file."
+            exit 1
+          fi
+
+          echo "iOS project looks OK."
+
+      - name: Force iOS deployment target
+        script: |
           echo "Forcing iOS deployment target to ${IOS_DEPLOYMENT_TARGET}..."
-          ruby -pi -e "gsub(/platform :ios, '[0-9.]+'/, \"platform :ios, '${IOS_DEPLOYMENT_TARGET}'\")" "$PODFILE"
 
-          echo "Podfile content:"
-          cat "$PODFILE"
+          ruby -pi -e "gsub(/platform :ios, '[0-9.]+'/, \"platform :ios, '${IOS_DEPLOYMENT_TARGET}'\")" ios/App/Podfile
+
+          echo "Podfile:"
+          cat ios/App/Podfile
 
       - name: Install CocoaPods dependencies
         script: |
@@ -106,8 +79,7 @@ EOF
 
       - name: Set app version and build number
         script: |
-          echo "Setting app version..."
-
+          echo "Setting app version and build number..."
           cd ios/App
 
           BUILD_NUMBER_VALUE="${BUILD_NUMBER:-1}"
@@ -128,10 +100,11 @@ EOF
 
       - name: Fetch Apple signing files
         script: |
-          echo "Fetching Apple signing files for ${BUNDLE_ID}..."
+          echo "Fetching Apple signing files..."
           app-store-connect fetch-signing-files "$BUNDLE_ID" \
             --type IOS_APP_STORE \
-            --create
+            --create \
+            --verbose
 
       - name: Add signing certificates to keychain
         script: |
@@ -140,7 +113,7 @@ EOF
 
       - name: Apply signing settings to Xcode project
         script: |
-          echo "Applying signing profiles to Xcode project..."
+          echo "Applying signing settings..."
           xcode-project use-profiles
 
       - name: Build IPA
