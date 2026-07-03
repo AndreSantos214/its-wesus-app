@@ -33,6 +33,9 @@ workflows:
             -scheme App \
             -configuration Release \
             -archivePath build/App.xcarchive \
+            DEVELOPMENT_TEAM=334V62BNFQ \
+            PRODUCT_BUNDLE_IDENTIFIER=com.itswesus.portal \
+            CODE_SIGN_STYLE=Automatic \
             archive
 
     artifacts:
