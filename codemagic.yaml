@@ -15,10 +15,10 @@ workflows:
       - name: Install npm dependencies
         script: |
           npm install
+          chmod -R +x node_modules/.bin
 
       - name: Sync Capacitor iOS
         script: |
-          chmod +x node_modules/.bin/cap
           npx cap sync ios
 
       - name: Install CocoaPods dependencies
