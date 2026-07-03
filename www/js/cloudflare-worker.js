@@ -23,6 +23,68 @@ export default {
       }
 
       // ────────────────────────────────────────────────────────
+      // ROTA C: ENVIO DE ACESSO AO PORTAL DO INVESTIDOR
+      // Protegida por X-Cron-Secret
+      // ────────────────────────────────────────────────────────
+      if (pathname === "/api/send-access-email" && request.method === "POST") {
+        const cronSecret = request.headers.get("X-Cron-Secret");
+
+        if (!cronSecret || cronSecret !== env.CRON_SECRET) {
+          return new Response(
+            "Acesso Negado: Chave de validação inválida ou em falta.",
+            {
+              status: 401,
+              headers: corsHeaders(),
+            },
+          );
+        }
+
+        const payload = await request.json();
+
+        const {
+          mode = "test",
+          to = "andressantos214@gmail.com",
+          investorName = "Andre Santos",
+          loginEmail = "andressantos214@gmail.com",
+          temporaryPassword = "SenhaTemporaria@2026",
+          portalUrl = "https://itswesus.com",
+        } = payload;
+
+        const emailHTML = buildAccessPortalEmail({
+          investorName,
+          loginEmail,
+          temporaryPassword,
+          portalUrl,
+        });
+
+        await sendEmailViaBrevo(
+          {
+            to,
+            subject: "Acesso ao Portal Privado do Investidor — It's Wesus",
+            html: emailHTML,
+          },
+          env,
+        );
+
+        return new Response(
+          JSON.stringify({
+            success: true,
+            mode,
+            sent_to: to,
+            login_email: loginEmail,
+            message: "E-mail de acesso enviado com sucesso.",
+          }),
+          {
+            status: 200,
+            headers: {
+              ...corsHeaders(),
+              "Content-Type": "application/json",
+            },
+          },
+        );
+      }
+
+      // ────────────────────────────────────────────────────────
       // ROTA A: RECIBO DE INTENÇÃO DE INVESTIMENTO (DIRECT FETCH)
       // ────────────────────────────────────────────────────────
       if (pathname === "/api/notify-lead" && request.method === "POST") {
@@ -146,6 +208,7 @@ export default {
           "geral@itswesus.com",
           "andressantos214@gmail.com",
           "danilsonjcarvalho@gmail.com",
+          "sara.lavado.barbosa@gmail.com",
         ];
 
         for (const emailEquipa of listaEquipa) {
@@ -350,6 +413,16 @@ export default {
         const responseHeaders = new Headers(b2Response.headers);
         responseHeaders.set("Access-Control-Allow-Origin", "*");
         responseHeaders.set("Cache-Control", "public, max-age=86400");
+
+        const inferredContentType = inferContentType(pathname);
+        const currentContentType = responseHeaders.get("Content-Type") || "";
+
+        if (inferredContentType) {
+          responseHeaders.set("Content-Type", inferredContentType);
+        }
+
+        responseHeaders.set("Cross-Origin-Resource-Policy", "cross-origin");
+
         return new Response(b2Response.body, {
           status: b2Response.status,
           headers: responseHeaders,
@@ -425,6 +498,18 @@ export default {
   },
 };
 
+function inferContentType(pathname) {
+  const path = pathname.toLowerCase();
+
+  if (path.endsWith(".webp")) return "image/webp";
+  if (path.endsWith(".jpg") || path.endsWith(".jpeg")) return "image/jpeg";
+  if (path.endsWith(".png")) return "image/png";
+  if (path.endsWith(".svg")) return "image/svg+xml";
+  if (path.endsWith(".pdf")) return "application/pdf";
+
+  return null;
+}
+
 // ────────────────────────────────────────────────────────
 // ✉️ MOTOR HTTP API DO BREVO
 // ────────────────────────────────────────────────────────
@@ -495,6 +580,137 @@ function buildEmailTemplate(
                 </td>
               </tr>
             </table>
+          </td>
+        </tr>
+      </table>
+    </body>
+    </html>
+  `;
+}
+
+// ────────────────────────────────────────────────────────
+// 🔐 TEMPLATE DE ACESSO AO PORTAL DO INVESTIDOR
+// ────────────────────────────────────────────────────────
+function buildAccessPortalEmail({
+  investorName,
+  loginEmail,
+  temporaryPassword,
+  portalUrl,
+}) {
+  const logoUrl =
+    "https://andresantos214.github.io/info-page-wesus/img/email-logo-small.png";
+
+  return `
+    <!DOCTYPE html>
+    <html lang="pt">
+    <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Acesso ao Portal It's Wesus</title>
+    </head>
+
+    <body style="margin:0; padding:0; background-color:#071326; font-family:Arial, Helvetica, sans-serif;">
+      <table border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color:#071326; padding:40px 20px;">
+        <tr>
+          <td align="center">
+
+            <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width:560px; background-color:#0B1F3A; border:1px solid rgba(232,208,141,0.18); border-radius:24px; overflow:hidden; box-shadow:0 24px 60px rgba(0,0,0,0.45);">
+
+              <tr>
+                <td align="center" style="padding:34px 32px 10px 32px;">
+                  <img src="${logoUrl}" alt="It's Wesus" style="max-height:160px; width:auto; display:block; margin:0 auto; border:0;" />
+                </td>
+              </tr>
+
+              <tr>
+                <td style="padding:8px 36px 0 36px;">
+                  <div style="height:1px; background:linear-gradient(90deg, transparent, rgba(232,208,141,0.45), transparent);"></div>
+                </td>
+              </tr>
+
+              <tr>
+                <td style="padding:32px 36px 10px 36px;">
+                  <p style="margin:0 0 10px 0; color:#E8D08D; font-size:11px; letter-spacing:0.18em; text-transform:uppercase; font-weight:bold;">
+                    Portal Privado do Investidor
+                  </p>
+
+                  <h1 style="margin:0 0 18px 0; color:#FFFFFF; font-family:Georgia, 'Times New Roman', serif; font-size:26px; line-height:1.25; font-weight:normal;">
+                    O seu acesso já está ativo.
+                  </h1>
+
+                  <p style="margin:0 0 18px 0; color:rgba(255,255,255,0.76); font-size:14px; line-height:1.7;">
+                    Olá, <strong style="color:#FFFFFF;">${investorName}</strong>.
+                  </p>
+
+                  <p style="margin:0 0 24px 0; color:rgba(255,255,255,0.76); font-size:14px; line-height:1.7;">
+                    Temos o prazer de informar que o seu acesso exclusivo ao <strong style="color:#E8D08D;">Portal do Investidor It's Wesus</strong> já se encontra disponível.
+                    Através do portal, poderá consultar os seus contratos, imóveis associados, documentos, prazos de vencimento e projeções de rendimento.
+                  </p>
+                </td>
+              </tr>
+
+              <tr>
+                <td style="padding:0 36px 28px 36px;">
+                  <table border="0" cellpadding="0" cellspacing="0" width="100%" style="background:rgba(255,255,255,0.035); border:1px solid rgba(255,255,255,0.10); border-radius:18px; padding:0;">
+                    <tr>
+                      <td style="padding:22px 22px 8px 22px;">
+                        <p style="margin:0 0 16px 0; color:#E8D08D; font-size:12px; letter-spacing:0.14em; text-transform:uppercase; font-weight:bold;">
+                          Dados de Acesso
+                        </p>
+
+                        <p style="margin:0 0 12px 0; color:rgba(255,255,255,0.72); font-size:14px; line-height:1.5;">
+                          <strong style="color:#FFFFFF;">Portal:</strong><br>
+                          <a href="${portalUrl}" style="color:#E8D08D; text-decoration:none;">${portalUrl}</a>
+                        </p>
+
+                        <p style="margin:0 0 12px 0; color:rgba(255,255,255,0.72); font-size:14px; line-height:1.5;">
+                          <strong style="color:#FFFFFF;">E-mail de acesso:</strong><br>
+                          <span style="color:#E8D08D;">${loginEmail}</span>
+                        </p>
+
+                        <p style="margin:0 0 18px 0; color:rgba(255,255,255,0.72); font-size:14px; line-height:1.5;">
+                          <strong style="color:#FFFFFF;">Palavra-passe temporária:</strong><br>
+                          <span style="color:#E8D08D; font-size:16px; letter-spacing:0.04em;">${temporaryPassword}</span>
+                        </p>
+                      </td>
+                    </tr>
+
+                    <tr>
+                      <td align="center" style="padding:4px 22px 24px 22px;">
+                        <a href="${portalUrl}" style="display:inline-block; background:linear-gradient(135deg,#E8D08D,#C5A059); color:#071326; text-decoration:none; padding:14px 24px; border-radius:14px; font-size:12px; font-weight:bold; letter-spacing:0.12em; text-transform:uppercase;">
+                          Aceder ao Portal
+                        </a>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+
+              <tr>
+                <td style="padding:0 36px 32px 36px;">
+                  <p style="margin:0 0 12px 0; color:rgba(255,255,255,0.64); font-size:13px; line-height:1.6;">
+                    Por motivos de segurança, recomendamos que altere a sua palavra-passe após o primeiro acesso, através da área <strong style="color:#FFFFFF;">Conta</strong> dentro do portal.
+                  </p>
+
+                  <p style="margin:0; color:rgba(255,255,255,0.64); font-size:13px; line-height:1.6;">
+                    Caso tenha alguma dificuldade no acesso, poderá responder diretamente a este e-mail ou contactar a equipa It's Wesus.
+                  </p>
+                </td>
+              </tr>
+
+              <tr>
+                <td align="center" style="padding:22px 36px 30px 36px; border-top:1px solid rgba(255,255,255,0.06);">
+                  <p style="margin:0 0 6px 0; color:rgba(255,255,255,0.45); font-size:11px; line-height:1.5;">
+                    Este é um canal exclusivo e estritamente confidencial.
+                  </p>
+                  <p style="margin:0; color:rgba(255,255,255,0.28); font-size:10px;">
+                    © 2026 It's Wesus — Consulting & Investment
+                  </p>
+                </td>
+              </tr>
+
+            </table>
+
           </td>
         </tr>
       </table>

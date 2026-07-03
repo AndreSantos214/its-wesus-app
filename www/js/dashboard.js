@@ -1071,6 +1071,109 @@ const AssetDetailsModalController = (() => {
 
 /* ── ACCOUNT SETTINGS CONTROLLER (PROFILE & SECURITY PIPELINE) ── */
 const AccountSettingsController = (() => {
+  async function initBiometricSettings() {
+    const biometricRow = document.getElementById("biometricSettingsRow");
+    const biometricToggle = document.getElementById("wesusBiometricToggle");
+
+    if (!biometricRow || !biometricToggle) return;
+
+    const isNativeApp = window.Capacitor && window.Capacitor.isNativePlatform();
+
+    if (
+      !isNativeApp ||
+      !window.Capacitor.Plugins ||
+      !window.Capacitor.Plugins.NativeBiometric
+    ) {
+      biometricRow.style.setProperty("display", "none", "important");
+      return;
+    }
+
+    const { NativeBiometric } = window.Capacitor.Plugins;
+
+    const available = await NativeBiometric.isAvailable();
+
+    if (!available.isAvailable) {
+      biometricRow.style.setProperty("display", "none", "important");
+      return;
+    }
+
+    biometricRow.classList.remove("hidden");
+    biometricRow.style.setProperty("display", "flex", "important");
+
+    try {
+      await NativeBiometric.getCredentials({
+        server: "itswesus.com",
+      });
+
+      biometricToggle.checked = true;
+    } catch {
+      biometricToggle.checked = false;
+    }
+
+    biometricToggle.addEventListener("change", async (e) => {
+      const shouldEnable = e.target.checked;
+
+      if (!shouldEnable) {
+        await NativeBiometric.deleteCredentials({
+          server: "itswesus.com",
+        });
+
+        localStorage.removeItem("wesus_biometric_prompted");
+        return;
+      }
+
+      const currentPassword = prompt(
+        "Para ativar a biometria, introduza a sua senha atual do portal:",
+      );
+
+      if (!currentPassword) {
+        biometricToggle.checked = false;
+        return;
+      }
+
+      const userRaw = sessionStorage.getItem("wesus_user");
+      if (!userRaw) {
+        biometricToggle.checked = false;
+        return;
+      }
+
+      const user = JSON.parse(userRaw);
+
+      const { error } = await supabaseClient.auth.signInWithPassword({
+        email: user.email,
+        password: currentPassword,
+      });
+
+      if (error) {
+        biometricToggle.checked = false;
+        alert("Senha incorreta. Não foi possível ativar a biometria.");
+        return;
+      }
+
+      try {
+        await NativeBiometric.verifyIdentity({
+          reason: "Ativar acesso biométrico ao Portal Wesus",
+          title: "Portal Wesus",
+          subtitle: "Ativar Face ID / Biometria",
+          description: "Confirme a sua identidade para ativar o acesso rápido.",
+          fallbackTitle: "Usar código",
+        });
+
+        await NativeBiometric.setCredentials({
+          username: user.email,
+          password: currentPassword,
+          server: "itswesus.com",
+        });
+
+        biometricToggle.checked = true;
+        localStorage.setItem("wesus_biometric_prompted", "true");
+      } catch (err) {
+        biometricToggle.checked = false;
+        alert("A ativação da biometria foi cancelada ou não foi concluída.");
+      }
+    });
+  }
+
   function init() {
     const btnSaveProfile = document.getElementById("btnSaveProfile");
     const btnUpdatePassword = document.getElementById("btnUpdatePassword");
@@ -1084,6 +1187,8 @@ const AccountSettingsController = (() => {
         biometricRow.style.setProperty("display", "none", "important");
       }
     }
+
+    initBiometricSettings();
 
     if (toggleEyeBtn) {
       toggleEyeBtn.addEventListener("click", (e) => {
@@ -1197,6 +1302,36 @@ const AccountSettingsController = (() => {
           });
 
           if (updateError) throw updateError;
+
+          if (
+            window.Capacitor &&
+            window.Capacitor.isNativePlatform &&
+            window.Capacitor.isNativePlatform() &&
+            window.Capacitor.Plugins &&
+            window.Capacitor.Plugins.NativeBiometric
+          ) {
+            const { NativeBiometric } = window.Capacitor.Plugins;
+
+            try {
+              await NativeBiometric.getCredentials({
+                server: "itswesus.com",
+              });
+
+              await NativeBiometric.setCredentials({
+                username: user.email,
+                password: novaSenha,
+                server: "itswesus.com",
+              });
+
+              localStorage.setItem("wesus_biometric_prompted", "true");
+              console.log("Senha biométrica atualizada neste dispositivo.");
+            } catch (bioErr) {
+              console.log(
+                "Biometria não estava ativa neste dispositivo ou não pôde ser atualizada:",
+                bioErr,
+              );
+            }
+          }
 
           const successModal = document.getElementById(
             "wesusProfileSuccessModal",
@@ -1457,6 +1592,80 @@ const AccountSettingsController = (() => {
   return { init };
 })();
 
+function formatTaxRateFromDb(taxaRetorno) {
+  const value = Number(String(taxaRetorno).replace(",", "."));
+
+  if (!Number.isFinite(value)) return "--";
+
+  return value.toLocaleString("pt-PT", {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 2,
+  });
+}
+
+const FALLBACK_ASSET_IMAGE = "img/casa-background-mobile-xsmall.webp";
+
+function encodePathSafely(path) {
+  return path
+    .split("/")
+    .map((part) => {
+      try {
+        return encodeURIComponent(decodeURIComponent(part));
+      } catch {
+        return encodeURIComponent(part);
+      }
+    })
+    .join("/");
+}
+
+function normalizeAssetImageUrl(rawUrl, assetId = "", cacheKey = "") {
+  if (!rawUrl || typeof rawUrl !== "string") {
+    return FALLBACK_ASSET_IMAGE;
+  }
+
+  const cleanUrl = rawUrl.trim();
+
+  if (!cleanUrl) {
+    return FALLBACK_ASSET_IMAGE;
+  }
+
+  if (cleanUrl.startsWith("img/")) {
+    return cleanUrl;
+  }
+
+  let finalUrl = "";
+
+  if (/^https?:\/\//i.test(cleanUrl)) {
+    try {
+      const url = new URL(cleanUrl);
+      url.pathname = encodePathSafely(url.pathname);
+      finalUrl = url.toString();
+    } catch {
+      finalUrl = encodeURI(cleanUrl);
+    }
+  } else {
+    let cleanPath = cleanUrl.replace(/^\/+/, "");
+
+    if (assetId && /^foto-\d+\.(webp|jpg|jpeg|png)$/i.test(cleanPath)) {
+      cleanPath = `assets/${assetId}/${cleanPath}`;
+    }
+
+    finalUrl = `${CLOUDFLARE_PROXY_URL}/${encodePathSafely(cleanPath)}`;
+  }
+
+  if (cacheKey) {
+    try {
+      const url = new URL(finalUrl);
+      url.searchParams.set("v", `${assetId}-${cacheKey}`);
+      return url.toString();
+    } catch {
+      return finalUrl;
+    }
+  }
+
+  return finalUrl;
+}
+
 /* ── 🌟 CENTRAL DATABASE ENGINE CONTROLLER (THE CORE ARCHITECT) ── */
 const DatabaseController = (() => {
   async function checkRouteGuard() {
@@ -1470,10 +1679,151 @@ const DatabaseController = (() => {
     return JSON.parse(userRaw);
   }
 
+  function blobToBase64(blob) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+
+      reader.onloadend = () => {
+        const result = reader.result;
+
+        if (typeof result !== "string") {
+          reject(new Error("Falha ao converter o documento."));
+          return;
+        }
+
+        const base64 = result.split(",")[1];
+
+        if (!base64) {
+          reject(new Error("Documento inválido ou vazio."));
+          return;
+        }
+
+        resolve(base64);
+      };
+
+      reader.onerror = () => reject(new Error("Falha ao ler o documento."));
+      reader.readAsDataURL(blob);
+    });
+  }
+
+  function showDownloadSuccessToast({ fileName }) {
+    const existingToast = document.getElementById("wesusDownloadToast");
+    if (existingToast) existingToast.remove();
+
+    const toast = document.createElement("div");
+    toast.id = "wesusDownloadToast";
+
+    toast.innerHTML = `
+    <div style="
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      width: min(92vw, 420px);
+      padding: 18px;
+      border-radius: 22px;
+      background: linear-gradient(135deg, rgba(7,19,38,0.97), rgba(11,31,58,0.97));
+      border: 1px solid rgba(232,208,141,0.30);
+      box-shadow: 0 22px 55px rgba(0,0,0,0.45);
+      color: #fff;
+      font-family: Inter, system-ui, sans-serif;
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+    ">
+      <div style="
+        width: 44px;
+        height: 44px;
+        border-radius: 999px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        background: rgba(232,208,141,0.12);
+        border: 1px solid rgba(232,208,141,0.36);
+        color: #E8D08D;
+      ">
+        <svg width="23" height="23" viewBox="0 0 24 24" fill="none">
+          <path d="M12 3v11m0 0l4-4m-4 4l-4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M5 17v2a2 2 0 002 2h10a2 2 0 002-2v-2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </div>
+
+      <div style="flex: 1; min-width: 0;">
+        <p style="margin: 0; font-size: 14px; font-weight: 800; letter-spacing: .02em;">
+          Documento guardado
+        </p>
+
+        <p style="margin: 5px 0 7px; font-size: 12px; line-height: 1.45; color: rgba(255,255,255,0.70);">
+          O contrato foi guardado com segurança no dispositivo e será aberto automaticamente.
+        </p>
+
+        <p style="
+          margin: 0;
+          font-size: 11px;
+          color: rgba(255,255,255,0.45);
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          max-width: 280px;
+        ">
+          ${fileName}
+        </p>
+      </div>
+
+      <button id="wesusCloseDownloadToastBtn" type="button" style="
+        width: 30px;
+        height: 30px;
+        border-radius: 999px;
+        border: 1px solid rgba(255,255,255,0.12);
+        background: rgba(255,255,255,0.04);
+        color: rgba(255,255,255,0.72);
+        font-weight: 800;
+        cursor: pointer;
+        flex-shrink: 0;
+      ">
+        ×
+      </button>
+    </div>
+  `;
+
+    toast.style.position = "fixed";
+    toast.style.left = "50%";
+    toast.style.top = "calc(18px + env(safe-area-inset-top))";
+    toast.style.transform = "translateX(-50%) translateY(-18px)";
+    toast.style.opacity = "0";
+    toast.style.zIndex = "999999";
+    toast.style.transition = "opacity 0.25s ease, transform 0.25s ease";
+    toast.style.pointerEvents = "auto";
+
+    document.body.appendChild(toast);
+
+    requestAnimationFrame(() => {
+      toast.style.opacity = "1";
+      toast.style.transform = "translateX(-50%) translateY(0)";
+    });
+
+    const closeBtn = document.getElementById("wesusCloseDownloadToastBtn");
+
+    if (closeBtn) {
+      closeBtn.addEventListener("click", () => {
+        toast.style.opacity = "0";
+        toast.style.transform = "translateX(-50%) translateY(-18px)";
+        setTimeout(() => toast.remove(), 250);
+      });
+    }
+
+    setTimeout(() => {
+      if (!document.body.contains(toast)) return;
+
+      toast.style.opacity = "0";
+      toast.style.transform = "translateX(-50%) translateY(-18px)";
+      setTimeout(() => toast.remove(), 250);
+    }, 7000);
+  }
+
   async function downloadContractPDF(pdfUrlPath) {
     try {
       if (!pdfUrlPath) {
-        alert("Documento contratual não associado a esta conta.");
+        alert("Documento indisponível.");
         return;
       }
 
@@ -1517,10 +1867,58 @@ const DatabaseController = (() => {
         throw new Error("Erro ao transferir documento do Storage privado.");
 
       const blob = await response.blob();
+      const fileName = cleanPath.split("/").pop() || "contrato-its-wesus.pdf";
+
+      const isNativeApp =
+        window.Capacitor &&
+        typeof window.Capacitor.isNativePlatform === "function" &&
+        window.Capacitor.isNativePlatform();
+
+      if (
+        isNativeApp &&
+        window.Capacitor.Plugins &&
+        window.Capacitor.Plugins.Filesystem
+      ) {
+        const { Filesystem } = window.Capacitor.Plugins;
+
+        const base64Data = await blobToBase64(blob);
+
+        const savedFile = await Filesystem.writeFile({
+          path: `contratos/${fileName}`,
+          data: base64Data,
+          directory: "DATA",
+          recursive: true,
+        });
+
+        showDownloadSuccessToast({
+          fileName,
+        });
+
+        if (window.Capacitor.Plugins.FileViewer) {
+          const { FileViewer } = window.Capacitor.Plugins;
+
+          setTimeout(async () => {
+            try {
+              await FileViewer.openDocumentFromLocalPath({
+                path: savedFile.uri,
+              });
+            } catch (viewerErr) {
+              console.warn(
+                "Documento guardado, mas não foi possível abrir:",
+                viewerErr,
+              );
+            }
+          }, 650);
+        }
+
+        return;
+      }
+
+      // Fallback para navegador web
       const downloadUrl = window.URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = downloadUrl;
-      a.download = cleanPath.split("/").pop();
+      a.download = fileName;
       document.body.appendChild(a);
       a.click();
       a.remove();
@@ -1531,26 +1929,52 @@ const DatabaseController = (() => {
   }
   async function loadDashboardData(user) {
     try {
-      const [profileRes, contractsRes, assetsRes] = await Promise.all([
-        supabaseClient
-          .from("utilizadores")
-          .select("*")
-          .eq("id", user.id)
-          .single(),
-        supabaseClient
-          .from("vw_contratos_detalhados")
-          .select("*")
-          .eq("utilizador_id", user.id),
-        supabaseClient.from("ativos_imobiliarios").select("*"),
-      ]);
+      const [profileRes, contractsRes, assetsRes, conditionsRes] =
+        await Promise.all([
+          supabaseClient
+            .from("utilizadores")
+            .select("*")
+            .eq("id", user.id)
+            .single(),
+          supabaseClient
+            .from("vw_contratos_detalhados")
+            .select("*")
+            .eq("utilizador_id", user.id),
+          supabaseClient.from("ativos_imobiliarios").select("*"),
+          supabaseClient
+            .from("condicoes_comerciais")
+            .select("id, prazo_meses, taxa_retorno"),
+        ]);
 
       if (profileRes.error) throw profileRes.error;
       if (contractsRes.error) throw contractsRes.error;
       if (assetsRes.error) throw assetsRes.error;
+      if (conditionsRes.error) throw conditionsRes.error;
 
       const profile = profileRes.data;
-      const contracts = contractsRes.data || [];
+      let contracts = contractsRes.data || [];
       const realAssets = assetsRes.data || [];
+      const conditions = conditionsRes.data || [];
+      const conditionsById = new Map(
+        conditions.map((condition) => [condition.id, condition]),
+      );
+
+      // Liga cada contrato ao respetivo imóvel.
+      // Assim os cards de contratos podem mostrar o nome real do ativo.
+      const assetsById = new Map(realAssets.map((asset) => [asset.id, asset]));
+
+      contracts = contracts.map((ctr) => {
+        const linkedAsset = assetsById.get(ctr.ativo_id);
+        const linkedCondition = conditionsById.get(ctr.condicao_id);
+
+        return {
+          ...ctr,
+          nome_ativo: linkedAsset?.nome_ativo || "Imóvel associado",
+          localizacao_ativo: linkedAsset?.localizacao || "Portugal",
+          prazo_meses: ctr.prazo_meses ?? linkedCondition?.prazo_meses,
+          taxa_retorno: ctr.taxa_retorno ?? linkedCondition?.taxa_retorno,
+        };
+      });
 
       const sidebarNameEl = document.getElementById("sidebarUserName");
       const settingsNameEl = document.getElementById("settingsAccountName");
@@ -1829,7 +2253,7 @@ const DatabaseController = (() => {
         acumuladorAnual["all"].capital += cap;
         acumuladorAnual["all"].profit += roi;
 
-        const realTaxRate = ((roi / cap) * 100).toFixed(1).replace(".0", "");
+        const realTaxRate = formatTaxRateFromDb(ctr.taxa_retorno);
 
         const matchedAsset = realAssets.find((a) => a.id === ctr.ativo_id);
         const assetName = matchedAsset
@@ -1845,14 +2269,25 @@ const DatabaseController = (() => {
             )
           : cap.toLocaleString("pt-PT", { minimumFractionDigits: 2 });
 
-        const assetImageUrl =
-          matchedAsset && matchedAsset.imagem_capa_url
-            ? matchedAsset.imagem_capa_url
-            : `${CLOUDFLARE_PROXY_URL}/assets/${ctr.ativo_id}/foto-1.webp`;
+        const rawAssetImageUrl = `assets/${ctr.ativo_id}/foto-1.webp`;
+
+        const assetImageUrl = normalizeAssetImageUrl(
+          rawAssetImageUrl,
+          ctr.ativo_id,
+          "cover-foto-1",
+        );
 
         const assetGallery =
           matchedAsset && Array.isArray(matchedAsset.galeria_fotos)
             ? matchedAsset.galeria_fotos
+                .map((imgUrl, imgIndex) =>
+                  normalizeAssetImageUrl(
+                    imgUrl,
+                    ctr.ativo_id,
+                    `gallery-${imgIndex}`,
+                  ),
+                )
+                .filter(Boolean)
             : [];
         const assetDocs =
           matchedAsset &&
@@ -1873,13 +2308,23 @@ const DatabaseController = (() => {
         const assetMapsUrl =
           matchedAsset &&
           matchedAsset.maps_url &&
+          matchedAsset.maps_url.trim() !== "" &&
           matchedAsset.maps_url !== "https://maps.google.com"
             ? matchedAsset.maps_url
-            : `http://googleusercontent.com/maps.google.com/${encodeURIComponent(
+            : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
                 assetName + ", " + assetLocation,
               )}`;
 
+        const prazoMesesGrafico =
+          Number(ctr.prazo_meses) ||
+          Math.round(
+            (new Date(ctr.data_vencimento) - new Date(ctr.data_inicio)) /
+              (1000 * 60 * 60 * 24 * 30.44),
+          ) ||
+          3;
+
         const mockMeta = {
+          assetId: ctr.ativo_id,
           name: assetName,
           location: assetLocation,
           total: assetTotalInvested,
@@ -1887,7 +2332,7 @@ const DatabaseController = (() => {
           gallery: assetGallery,
           docs: assetDocs,
           offset: idx === 0 ? 66 : idx === 1 ? 140 : 210,
-          axis: idx === 0 ? "Mês 3" : idx === 1 ? "Mês 6" : "Mês 12",
+          axis: `Mês ${prazoMesesGrafico}`,
         };
 
         sliderContractsArray.push({
@@ -1912,14 +2357,24 @@ const DatabaseController = (() => {
           const mobileCardId = `asset-mobile-${idx}`;
           assetsMobileCarousel.innerHTML += `
             <article id="${mobileCardId}" class="snap-start shrink-0 w-80 carousel-asset-card carousel-asset-card-clean rounded-2xl overflow-hidden p-5 flex flex-col justify-between min-h-[175px] relative" style="cursor: pointer;">
-              <div class="carousel-asset-image-mask" 
-                   style="background-image: url('${assetImageUrl}'); 
-                          position: absolute; 
-                          inset: 0; 
-                          background-size: cover; 
-                          background-position: center; 
-                          z-index: 0; ">
-              </div>
+              <img
+                src="${assetImageUrl}"
+                alt="${mockMeta.name}"
+                class="carousel-asset-image-mask"
+                loading="eager"
+                decoding="async"
+                onerror="this.closest('.wesus-gallery-thumb')?.remove();"
+                style="
+                  position: absolute;
+                  inset: 0;
+                  width: 100%;
+                  height: 100%;
+                  object-fit: cover;
+                  object-position: center;
+                  z-index: 0;
+                  display: block;
+                "
+              />
               <div style="position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(11, 31, 58, 0.05) 0%, rgba(7, 19, 38, 0.01) 100%); z-index: 1;"></div>
               <div class="relative z-10 h-full flex flex-col justify-between w-full" style="height: 100%; min-height: 135px;">
                 <div class="flex justify-between items-start w-full gap-2">
@@ -2137,11 +2592,16 @@ const DatabaseController = (() => {
 window.DatabaseController = DatabaseController;
 
 function buildContractCardHTML(ctr, idx) {
-  const dateObj = new Date(ctr.data_vencimento);
-  const formattedDate = dateObj.toLocaleDateString("pt-PT");
+  const startDateObj = new Date(ctr.data_inicio);
+  const endDateObj = new Date(ctr.data_vencimento);
+
+  const formattedStartDate = startDateObj.toLocaleDateString("pt-PT");
+  const formattedEndDate = endDateObj.toLocaleDateString("pt-PT");
   const capital = parseFloat(ctr.capital_investido).toLocaleString("pt-PT", {
     minimumFractionDigits: 2,
   });
+
+  const contractTitle = ctr.nome_ativo || "Imóvel associado";
 
   // 🎯 PIPELINE DATA-DRIVEN: Mapeamento baseado no teu banco de dados real
   // Se a view já incluir prazo_meses e taxa_retorno, usamos diretamente.
@@ -2151,11 +2611,11 @@ function buildContractCardHTML(ctr, idx) {
   let meses = ctr.prazo_meses;
   let taxaRetorno = ctr.taxa_retorno;
 
-  if (meses === undefined || taxaRetorno === undefined) {
+  if (meses == null || taxaRetorno == null) {
     const mapaPlanos = {
       "4c61fe43-b971-492b-b8c5-78fc7f046026": { meses: 3, taxa: "10" },
       "6e5f0b2b-2d65-43c1-8679-e76aa5f31512": { meses: 3, taxa: "6.25" },
-      "a9602a14-de39-4b4d-bc3f-b56a68eaea7b": { meses: 6, taxa: "10" }, // 🌟 O teu "Plano Especial"
+      "a9602a14-de39-4b4d-bc3f-b56a68eaea7b": { meses: 6, taxa: "10" },
       "c07128fb-99b5-4c87-855a-f01799a1944e": { meses: 12, taxa: "25" },
       "d94bb0e0-943e-4ad4-86a8-b26ac06681ab": { meses: 6, taxa: "12.5" },
     };
@@ -2164,18 +2624,17 @@ function buildContractCardHTML(ctr, idx) {
       meses = mapaPlanos[planoId].meses;
       taxaRetorno = mapaPlanos[planoId].taxa;
     } else {
-      // Fallback dinâmico seguro de última instância caso surja um ID novo em tempo de execução
       const cap = parseFloat(ctr.capital_investido) || 1;
       const roi = parseFloat(ctr.rendimento_liquido) || 0;
-      taxaRetorno = ((roi / cap) * 100).toFixed(1).replace(".0", "");
+      taxaRetorno = ((roi / cap) * 100).toFixed(2);
 
       const start = new Date(ctr.data_inicio);
       const end = new Date(ctr.data_vencimento);
       meses = Math.round((end - start) / (1000 * 60 * 60 * 24 * 30.44)) || 0;
     }
-  } else {
-    taxaRetorno = String(taxaRetorno).replace(".0", "");
   }
+
+  taxaRetorno = formatTaxRateFromDb(taxaRetorno);
 
   return `
     <div id="contract-${
@@ -2189,7 +2648,7 @@ function buildContractCardHTML(ctr, idx) {
           </svg>
         </div>
         <div class="min-w-0 flex-1">
-          <h4 class="text-white font-bold text-sm lg:text-base truncate tracking-wide">Contrato de Mútuo Privado</h4>
+          <h4 class="text-white font-bold text-sm lg:text-base truncate tracking-wide">${contractTitle}</h4>
           <div class="flex items-center gap-2 mt-1">
             <span class="text-[9px] font-bold uppercase px-2 py-0.5 rounded-full bg-gold/10 text-gold-light tracking-wider">
               ${meses} Meses • ${taxaRetorno}% Retorno
@@ -2198,8 +2657,15 @@ function buildContractCardHTML(ctr, idx) {
         </div>
       </div>
       <div class="flex justify-between lg:flex-col gap-1 lg:col-span-2 w-full lg:pl-2">
-        <p class="text-[9px] uppercase text-white/40 tracking-widest font-semibold">Vencimento</p>
-        <p class="text-xs lg:text-sm text-white/90 font-medium">${formattedDate}</p>
+        <p class="text-[9px] uppercase text-white/40 tracking-widest font-semibold">Período</p>
+        <div class="flex flex-col items-end lg:items-start leading-tight">
+          <p class="text-[10px] lg:text-xs text-white/55 font-medium">
+            Início: <span class="text-white/90">${formattedStartDate}</span>
+          </p>
+          <p class="text-[10px] lg:text-xs text-white/55 font-medium">
+            Fim: <span class="text-white/90">${formattedEndDate}</span>
+          </p>
+        </div>
       </div>
       <div class="flex justify-between lg:flex-col gap-1 lg:col-span-2 w-full">
         <p class="text-[9px] uppercase text-white/40 tracking-widest font-semibold">Capital Investido</p>
@@ -2277,17 +2743,43 @@ function triggerModalDetails(mockMeta) {
   if (modalTotal) modalTotal.textContent = `€ ${mockMeta.total}`;
 
   if (coverImg) {
-    coverImg.style.opacity = "1";
-    coverImg.src = mockMeta.cover;
+    coverImg.style.opacity = "0";
+
+    coverImg.onload = () => {
+      coverImg.style.opacity = "1";
+    };
+
+    coverImg.onerror = () => {
+      coverImg.onerror = null;
+      coverImg.src = FALLBACK_ASSET_IMAGE;
+      coverImg.style.opacity = "1";
+    };
+
+    coverImg.src = normalizeAssetImageUrl(mockMeta.cover);
+
+    if (coverImg.complete) {
+      coverImg.style.opacity = "1";
+    }
   }
 
   if (interiorGrid) {
     if (mockMeta.gallery && mockMeta.gallery.length > 0) {
       interiorGrid.innerHTML = mockMeta.gallery
         .map(
-          (imgUrl) => `
+          (imgUrl, index) => `
             <div class="wesus-gallery-thumb cursor-pointer overflow-hidden rounded-xl border border-white/5 asset-gallery-item">
-              <img src="${imgUrl}" alt="Vistoria Técnica Interna" class="w-full h-full object-cover transition-transform duration-300 hover:scale-105" onerror="this.src='img/casa-background-mobile-xsmall.webp'" />
+              <img
+                src="${normalizeAssetImageUrl(
+                  imgUrl,
+                  mockMeta.assetId,
+                  `modal-gallery-${index}`,
+                )}"
+                alt="Vistoria Técnica Interna"
+                loading="eager"
+                decoding="async"
+                class="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+                onerror="this.closest('.wesus-gallery-thumb')?.remove();"
+              />
             </div>`,
         )
         .join("");

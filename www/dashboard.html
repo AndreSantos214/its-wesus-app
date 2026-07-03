@@ -16,8 +16,8 @@
   <meta property="og:type" content="website" />
   <meta property="og:title" content="It's Wesus – Portal do Investidor" />
   <meta property="og:description" content="Portal exclusivo de investimentos privados It's Wesus. Acompanhe os seus rendimentos e portfólio restrito." />
-  <meta property="og:url" content="https://andresantos214.github.io/its-wesus-app/www/" />
-  <meta property="og:image" content="https://andresantos214.github.io/its-wesus-app/assets/icon.png" />
+  <meta property="og:url" content="https://itswesus.com/www/" />
+  <meta property="og:image" content="https://itswesus.com/assets/icon.png" />
   <meta property="og:image:type" content="image/webp" />
   <meta property="og:image:width" content="300" />
   <meta property="og:image:height" content="300" />
@@ -2196,7 +2196,7 @@
 
                 <div class="w-full xl:w-auto flex justify-center shrink-0 z-10">
                   <button data-modal="investment" class="w-full btn-gold-lingot !py-3 !text-[10px]" style="color: #ffffff !important;">
-                    Investir Já
+                    Solicitar Informações
                   </button>
                 </div>
               </div>
@@ -2262,7 +2262,7 @@
 
                   <div class="w-full relative z-10 select-none">
                     <button data-modal="investment" class="w-full btn-gold-lingot !py-3 !text-[10px]" style="color: #ffffff !important;">
-                      Investir Já
+                      Solicitar Informações
                     </button>
                   </div>
                 </div>
@@ -2302,7 +2302,7 @@
 
                   <div class="w-full relative z-10 select-none">
                     <button data-modal="investment" class="w-full btn-gold-lingot !py-3 !text-[10px]" style="color: #ffffff !important;">
-                      Investir Já
+                      Solicitar Informações
                     </button>
                   </div>
                 </div>
@@ -2343,7 +2343,7 @@
 
                   <div class="w-full relative z-10 select-none">
                     <button data-modal="investment" class="w-full btn-gold-lingot !py-3 !text-[10px]" style="color: #ffffff !important;">
-                      Investir Já
+                      Solicitar Informações
                     </button>
                   </div>
                 </div>
@@ -2397,7 +2397,7 @@
 
                 <div class="w-full xl:w-auto flex justify-center shrink-0 z-10">
                   <button data-modal="investment" class="w-full btn-gold-lingot !py-3 !text-[10px]" style="color: #ffffff !important;">
-                    Investir Já
+                    Solicitar Informações
                   </button>
                 </div>
               </div>
@@ -2623,7 +2623,17 @@
                       </label>
                     </div>
 
-                    <div id="biometricSettingsRow" class="premium-notification-row prefs-notification-row-border">
+                    <div id="biometricSettingsRow" class="premium-notification-row prefs-notification-row-border hidden">
+                      <div class="pr-4">
+                        <p class="text-white/90 font-bold tracking-wide">Face ID / Biometria</p>
+                        <p class="text-[10px] text-white/40 mt-0.5">
+                          Permitir acesso rápido neste dispositivo
+                        </p>
+                      </div>
+                      <label class="premium-toggle-container">
+                        <input type="checkbox" id="wesusBiometricToggle" class="premium-toggle-input">
+                        <span class="premium-toggle-slider"></span>
+                      </label>
                     </div>
 
                     <div class="font-inter text-xs">
@@ -2663,67 +2673,116 @@
                     </div>
                   </div>
 
-                  <div class="prefs-support-footer">
-                    <a href="https://wa.me/351929408352?text=Olá! Estou no Portal do Investidor e preciso de suporte com as definições da minha conta." target="_blank" class="w-full flex items-center justify-center gap-2 btn-gold-lingot btn-emerald-lingot" style="color: #ffffff !important;">
-                      <img src="./img/whatsapp-icon.png" alt="WhatsApp Icon" style="width: 20px; height: auto;">
-                      Contatar Suporte Técnico
+                  <!-- Links legais / Google Play -->
+                  <div class="font-inter text-xs">
+
+                    <a href="https://itswesus.com/privacy-policy.html" target="_blank" rel="noopener noreferrer" class="premium-notification-row group">
+                      <div class="pr-4 flex items-start gap-3">
+                        <svg class="w-4 h-4 mt-0.5 text-gold flex-shrink-0 opacity-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 3l7 4v5c0 5-3.5 8-7 9-3.5-1-7-4-7-9V7l7-4z" />
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9.5 12.5l1.7 1.7 3.8-4" />
+                        </svg>
+
+                        <div>
+                          <p class="text-white/90 font-bold tracking-wide">
+                            Política de Privacidade
+                          </p>
+                          <p class="text-[10px] text-white/40 mt-0.5">
+                            Como tratamos, protegemos e utilizamos os seus dados
+                          </p>
+                        </div>
+                      </div>
+
+                      <svg class="w-4 h-4 text-gold opacity-50 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9 5l7 7-7 7" />
+                      </svg>
                     </a>
+
+                    <a href="https://itswesus.com/eliminar-conta" target="_blank" rel="noopener noreferrer" class="premium-notification-row">
+                      <div class="pr-4 flex items-start gap-3">
+                        <svg class="w-4 h-4 mt-0.5 text-gold flex-shrink-0 opacity-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M19 7l-.7 11.2A2 2 0 0116.3 20H7.7a2 2 0 01-2-1.8L5 7" />
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M10 11v5M14 11v5M9 7V5a1 1 0 011-1h4a1 1 0 011 1v2M4 7h16" />
+                        </svg>
+
+                        <div>
+                          <p class="text-white/90 font-bold tracking-wide">
+                            Eliminar Conta e Dados
+                          </p>
+                          <p class="text-[10px] text-white/40 mt-0.5">
+                            Solicitar remoção da conta e dos dados pessoais
+                          </p>
+                        </div>
+                      </div>
+
+                      <svg class="w-4 h-4 text-gold opacity-50 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9 5l7 7-7 7" />
+                      </svg>
+                    </a>
+
                   </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <!-- fim #tab-conta -->
 
-
-          <!-- ══════════════════════════════════════════════════════
-               TAB: SUPORTE
-          ══════════════════════════════════════════════════════ -->
-          <div id="tab-suporte" class="tab-content hidden select-none">
-            <header class="contracts-desktop-enxuto support-header-spacing">
-              <h2 class="font-playfair text-2xl lg:text-3xl font-bold text-white/90 tracking-wide">
-                Suporte <span class="text-gold-liquid">Técnico</span>
-              </h2>
-              <p class="text-xs text-white/50 font-inter mt-1">Encontrou alguma anomalia ou precisa de auxílio? Fale diretamente com o engenheiro responsável pelo ecossistema.</p>
-            </header>
-
-            <div class="contracts-desktop-enxuto">
-              <div class="hero-card-crystal p-6 lg:p-8 rounded-3xl relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-6 max-w-3xl mx-auto">
-                <div class="absolute inset-0 bg-gradient-to-br from-white/[0.01] to-transparent opacity-20 pointer-events-none"></div>
-
-                <div class="flex items-center gap-5 min-w-0 flex-1">
-                  <div class="w-12 h-12 rounded-2xl bg-[#071326] flex items-center justify-center border border-white/5 shrink-0 shadow-inner">
-                    <svg class="w-5 h-5 text-gold drop-shadow-[0_0_4px_rgba(197,160,89,0.3)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
-                    </svg>
-                  </div>
-                  <div class="min-w-0 space-y-1">
-                    <div class="flex items-center gap-2">
-                      <h4 class="text-white font-bold text-base tracking-wide">Canal Direto de Engenharia</h4>
-                      <span class="premium-live-badge !py-0.5 !px-2 !text-[8px] !border-[#6FCF97]/30 !text-[#6FCF97]">
-                        <span class="premium-live-dot"></span> Ativo
-                      </span>
-                    </div>
-                    <p class="text-xs text-white/60 font-inter leading-relaxed">
-                      Este canal faz a ponte criptografada com o desenvolvedor privado do portal. Clique ao lado para abrir uma sessão segura no WhatsApp e relatar comportamentos inesperados ou sugerir melhorias de performance.
-                    </p>
-                  </div>
-                </div>
-
-                <div class="w-full md:w-auto shrink-0 flex justify-center">
-                  <a href="https://wa.me/351929408352?text=Olá! Estou no Portal do Investidor e preciso de reportar um problema técnico para a equipa de engenharia." target="_blank" class="w-full md:w-auto flex items-center justify-center gap-2 btn-gold-lingot btn-emerald-lingot !py-3 !px-6 !text-[10px] text-center" style="color: #ffffff !important; letter-spacing: 0.12em;">
+                  <!-- Suporte WhatsApp -->
+                  <a href="https://wa.me/351929408352?text=Olá! Estou no Portal do Investidor e preciso de suporte com as definições da minha conta." target="_blank" rel="noopener noreferrer" class="w-full flex items-center justify-center gap-2 btn-gold-lingot btn-emerald-lingot" style="color: #ffffff !important;">
                     <img src="./img/whatsapp-icon.png" alt="WhatsApp Icon" style="width: 20px; height: auto;">
-                    Reportar Problema
+                    Contatar Suporte Técnico
                   </a>
                 </div>
               </div>
             </div>
           </div>
-          <!-- fim #tab-suporte -->
-
         </div>
-      </main>
+        <!-- fim #tab-conta -->
+
+
+        <!-- ══════════════════════════════════════════════════════
+               TAB: SUPORTE
+          ══════════════════════════════════════════════════════ -->
+        <div id="tab-suporte" class="tab-content hidden select-none">
+          <header class="contracts-desktop-enxuto support-header-spacing">
+            <h2 class="font-playfair text-2xl lg:text-3xl font-bold text-white/90 tracking-wide">
+              Suporte <span class="text-gold-liquid">Técnico</span>
+            </h2>
+            <p class="text-xs text-white/50 font-inter mt-1">Encontrou alguma anomalia ou precisa de auxílio? Fale diretamente com o engenheiro responsável pelo ecossistema.</p>
+          </header>
+
+          <div class="contracts-desktop-enxuto">
+            <div class="hero-card-crystal p-6 lg:p-8 rounded-3xl relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-6 max-w-3xl mx-auto">
+              <div class="absolute inset-0 bg-gradient-to-br from-white/[0.01] to-transparent opacity-20 pointer-events-none"></div>
+
+              <div class="flex items-center gap-5 min-w-0 flex-1">
+                <div class="w-12 h-12 rounded-2xl bg-[#071326] flex items-center justify-center border border-white/5 shrink-0 shadow-inner">
+                  <svg class="w-5 h-5 text-gold drop-shadow-[0_0_4px_rgba(197,160,89,0.3)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+                  </svg>
+                </div>
+                <div class="min-w-0 space-y-1">
+                  <div class="flex items-center gap-2">
+                    <h4 class="text-white font-bold text-base tracking-wide">Canal Direto de Engenharia</h4>
+                    <span class="premium-live-badge !py-0.5 !px-2 !text-[8px] !border-[#6FCF97]/30 !text-[#6FCF97]">
+                      <span class="premium-live-dot"></span> Ativo
+                    </span>
+                  </div>
+                  <p class="text-xs text-white/60 font-inter leading-relaxed">
+                    Este canal faz a ponte criptografada com o desenvolvedor privado do portal. Clique ao lado para abrir uma sessão segura no WhatsApp e relatar comportamentos inesperados ou sugerir melhorias de performance.
+                  </p>
+                </div>
+              </div>
+
+              <div class="w-full md:w-auto shrink-0 flex justify-center">
+                <a href="https://wa.me/351929408352?text=Olá! Estou no Portal do Investidor e preciso de reportar um problema técnico para a equipa de engenharia." target="_blank" class="w-full md:w-auto flex items-center justify-center gap-2 btn-gold-lingot btn-emerald-lingot !py-3 !px-6 !text-[10px] text-center" style="color: #ffffff !important; letter-spacing: 0.12em;">
+                  <img src="./img/whatsapp-icon.png" alt="WhatsApp Icon" style="width: 20px; height: auto;">
+                  Reportar Problema
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- fim #tab-suporte -->
+
     </div>
+    </main>
+  </div>
   </div>
 
   <!-- ─── NAVBAR MOBILE ──────────────────────────────────────────── -->
@@ -2821,7 +2880,7 @@
 
         <div class="pt-2">
           <button type="submit" class="w-full btn-gold-lingot !py-3 !text-[10px] font-bold tracking-[0.15em] uppercase" style="color: #ffffff !important;">
-            Confirmar Interesse
+            Solicitar Informações
           </button>
         </div>
       </form>
