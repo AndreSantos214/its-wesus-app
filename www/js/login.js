@@ -208,26 +208,36 @@
   }
 
   async function offerBiometricActivation(email, password) {
-    if (!window.Capacitor || !window.Capacitor.Plugins.NativeBiometric) return;
-
-    const { NativeBiometric } = window.Capacitor.Plugins;
-
-    const available = await NativeBiometric.isAvailable();
-    if (!available.isAvailable) return;
-
-    const alreadyAsked = localStorage.getItem("wesus_biometric_prompted");
-
-    if (alreadyAsked === "true") return;
-
-    const wantsBiometric = confirm(
-      "Deseja ativar Face ID / biometria para entrar mais rápido neste dispositivo?",
-    );
-
-    localStorage.setItem("wesus_biometric_prompted", "true");
-
-    if (!wantsBiometric) return;
-
     try {
+      const isNativeApp =
+        window.Capacitor &&
+        typeof window.Capacitor.isNativePlatform === "function" &&
+        window.Capacitor.isNativePlatform();
+
+      if (
+        !isNativeApp ||
+        !window.Capacitor.Plugins ||
+        !window.Capacitor.Plugins.NativeBiometric
+      ) {
+        return;
+      }
+
+      const { NativeBiometric } = window.Capacitor.Plugins;
+
+      const available = await NativeBiometric.isAvailable();
+      if (!available || !available.isAvailable) return;
+
+      const alreadyAsked = localStorage.getItem("wesus_biometric_prompted");
+      if (alreadyAsked === "true") return;
+
+      const wantsBiometric = confirm(
+        "Deseja ativar Face ID / biometria para entrar mais rápido neste dispositivo?",
+      );
+
+      localStorage.setItem("wesus_biometric_prompted", "true");
+
+      if (!wantsBiometric) return;
+
       await NativeBiometric.verifyIdentity({
         reason: "Ativar acesso biométrico ao Portal Wesus",
         title: "Portal Wesus",
@@ -248,93 +258,121 @@
 
   /* ── Motor de Biometria (Capacitor) ── */
   async function initBiometricEngine() {
-    const biometricBtn = document.getElementById("biometricBtn");
-
-    if (!biometricBtn) return;
-    if (!window.Capacitor || !window.Capacitor.Plugins.NativeBiometric) return;
-
-    const { NativeBiometric } = window.Capacitor.Plugins;
-
-    const available = await NativeBiometric.isAvailable();
-    if (!available.isAvailable) return;
-
     try {
-      await NativeBiometric.getCredentials({
-        server: "itswesus.com",
-      });
+      const biometricBtn = document.getElementById("biometricBtn");
 
-      biometricBtn.classList.remove("hidden");
-    } catch {
-      biometricBtn.classList.add("hidden");
-    }
+      if (!biometricBtn) return;
 
-    const verifyUser = async () => {
+      const isNativeApp =
+        window.Capacitor &&
+        typeof window.Capacitor.isNativePlatform === "function" &&
+        window.Capacitor.isNativePlatform();
+
+      if (
+        !isNativeApp ||
+        !window.Capacitor.Plugins ||
+        !window.Capacitor.Plugins.NativeBiometric
+      ) {
+        biometricBtn.classList.add("hidden");
+        return;
+      }
+
+      const { NativeBiometric } = window.Capacitor.Plugins;
+
+      const available = await NativeBiometric.isAvailable();
+
+      if (!available || !available.isAvailable) {
+        biometricBtn.classList.add("hidden");
+        return;
+      }
+
       try {
-        await NativeBiometric.verifyIdentity({
-          reason: "Aceda à sua conta",
-          title: "Portal Wesus",
-          subtitle: "Validação biométrica",
-          description: "Use o seu sensor/face ID",
-          fallbackTitle: "Usar Senha",
-        });
-
-        const credentials = await NativeBiometric.getCredentials({
+        await NativeBiometric.getCredentials({
           server: "itswesus.com",
         });
 
-        const result = await authenticate(
-          credentials.username,
-          credentials.password,
-        );
+        biometricBtn.classList.remove("hidden");
+      } catch {
+        biometricBtn.classList.add("hidden");
+        return;
+      }
 
-        sessionStorage.setItem("wesus_token", result.session.access_token);
-        sessionStorage.setItem("wesus_user", JSON.stringify(result.user));
+      const verifyUser = async () => {
+        try {
+          await NativeBiometric.verifyIdentity({
+            reason: "Aceda à sua conta",
+            title: "Portal Wesus",
+            subtitle: "Validação biométrica",
+            description: "Use o seu sensor/face ID",
+            fallbackTitle: "Usar Senha",
+          });
 
-        executePremiumRedirect();
-      } catch (e) {
-        console.log("Biometria cancelada ou erro:", e);
+          const credentials = await NativeBiometric.getCredentials({
+            server: "itswesus.com",
+          });
 
-        const message = String(e?.message || e || "").toLowerCase();
-
-        if (
-          message.includes("invalid login credentials") ||
-          message.includes("credenciais inválidas")
-        ) {
-          try {
-            await NativeBiometric.deleteCredentials({
-              server: "itswesus.com",
-            });
-
-            localStorage.removeItem("wesus_biometric_prompted");
+          if (!credentials || !credentials.username || !credentials.password) {
             biometricBtn.classList.add("hidden");
+            return;
+          }
 
-            showFieldError(
-              formError,
-              "A sua senha foi alterada. Faça login manualmente para reativar a biometria neste dispositivo.",
-            );
-          } catch (deleteErr) {
-            console.log(
-              "Não foi possível limpar a biometria antiga:",
-              deleteErr,
-            );
+          setLoading(true);
+
+          const result = await authenticate(
+            credentials.username,
+            credentials.password,
+          );
+
+          sessionStorage.setItem("wesus_token", result.session.access_token);
+          sessionStorage.setItem("wesus_user", JSON.stringify(result.user));
+
+          executePremiumRedirect();
+        } catch (e) {
+          setLoading(false);
+
+          console.log("Biometria cancelada ou erro:", e);
+
+          const message = String(e?.message || e || "").toLowerCase();
+
+          if (
+            message.includes("invalid login credentials") ||
+            message.includes("credenciais inválidas")
+          ) {
+            try {
+              await NativeBiometric.deleteCredentials({
+                server: "itswesus.com",
+              });
+
+              localStorage.removeItem("wesus_biometric_prompted");
+              biometricBtn.classList.add("hidden");
+
+              showFieldError(
+                formError,
+                "A sua senha foi alterada. Faça login manualmente para reativar a biometria neste dispositivo.",
+              );
+            } catch (deleteErr) {
+              console.log(
+                "Não foi possível limpar a biometria antiga:",
+                deleteErr,
+              );
+            }
           }
         }
+      };
+
+      if (biometricBtn.dataset.biometricInitialized !== "true") {
+        biometricBtn.dataset.biometricInitialized = "true";
+        biometricBtn.addEventListener("click", verifyUser);
       }
-    };
+    } catch (err) {
+      console.log("Erro ao inicializar biometria:", err);
 
-    biometricBtn.addEventListener("click", verifyUser);
+      const biometricBtn = document.getElementById("biometricBtn");
+      if (biometricBtn) biometricBtn.classList.add("hidden");
+    }
   }
 
-  // Biometria temporariamente desativada no iOS para investigar crash de arranque
-  if (
-    !(
-      window.Capacitor &&
-      window.Capacitor.getPlatform &&
-      window.Capacitor.getPlatform() === "ios"
-    )
-  ) {
-    initBiometricEngine();
-  }
+  initBiometricEngine();
 })();
 
 /* ── Lógica Nativa Mobile (Fundo + Teclado + Rotação Inteligente) ──────────────────────────── */

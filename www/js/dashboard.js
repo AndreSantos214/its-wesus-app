@@ -1072,106 +1072,126 @@ const AssetDetailsModalController = (() => {
 /* ── ACCOUNT SETTINGS CONTROLLER (PROFILE & SECURITY PIPELINE) ── */
 const AccountSettingsController = (() => {
   async function initBiometricSettings() {
-    const biometricRow = document.getElementById("biometricSettingsRow");
-    const biometricToggle = document.getElementById("wesusBiometricToggle");
-
-    if (!biometricRow || !biometricToggle) return;
-
-    const isNativeApp = window.Capacitor && window.Capacitor.isNativePlatform();
-
-    if (
-      !isNativeApp ||
-      !window.Capacitor.Plugins ||
-      !window.Capacitor.Plugins.NativeBiometric
-    ) {
-      biometricRow.style.setProperty("display", "none", "important");
-      return;
-    }
-
-    const { NativeBiometric } = window.Capacitor.Plugins;
-
-    const available = await NativeBiometric.isAvailable();
-
-    if (!available.isAvailable) {
-      biometricRow.style.setProperty("display", "none", "important");
-      return;
-    }
-
-    biometricRow.classList.remove("hidden");
-    biometricRow.style.setProperty("display", "flex", "important");
-
     try {
-      await NativeBiometric.getCredentials({
-        server: "itswesus.com",
-      });
+      const biometricRow = document.getElementById("biometricSettingsRow");
+      const biometricToggle = document.getElementById("wesusBiometricToggle");
 
-      biometricToggle.checked = true;
-    } catch {
-      biometricToggle.checked = false;
-    }
+      if (!biometricRow || !biometricToggle) return;
 
-    biometricToggle.addEventListener("change", async (e) => {
-      const shouldEnable = e.target.checked;
+      const isNativeApp =
+        window.Capacitor &&
+        typeof window.Capacitor.isNativePlatform === "function" &&
+        window.Capacitor.isNativePlatform();
 
-      if (!shouldEnable) {
-        await NativeBiometric.deleteCredentials({
-          server: "itswesus.com",
-        });
-
-        localStorage.removeItem("wesus_biometric_prompted");
+      if (
+        !isNativeApp ||
+        !window.Capacitor.Plugins ||
+        !window.Capacitor.Plugins.NativeBiometric
+      ) {
+        biometricRow.style.setProperty("display", "none", "important");
         return;
       }
 
-      const currentPassword = prompt(
-        "Para ativar a biometria, introduza a sua senha atual do portal:",
-      );
+      const { NativeBiometric } = window.Capacitor.Plugins;
 
-      if (!currentPassword) {
-        biometricToggle.checked = false;
+      const available = await NativeBiometric.isAvailable();
+
+      if (!available || !available.isAvailable) {
+        biometricRow.style.setProperty("display", "none", "important");
         return;
       }
 
-      const userRaw = sessionStorage.getItem("wesus_user");
-      if (!userRaw) {
-        biometricToggle.checked = false;
-        return;
-      }
-
-      const user = JSON.parse(userRaw);
-
-      const { error } = await supabaseClient.auth.signInWithPassword({
-        email: user.email,
-        password: currentPassword,
-      });
-
-      if (error) {
-        biometricToggle.checked = false;
-        alert("Senha incorreta. Não foi possível ativar a biometria.");
-        return;
-      }
+      biometricRow.classList.remove("hidden");
+      biometricRow.style.setProperty("display", "flex", "important");
 
       try {
-        await NativeBiometric.verifyIdentity({
-          reason: "Ativar acesso biométrico ao Portal Wesus",
-          title: "Portal Wesus",
-          subtitle: "Ativar Face ID / Biometria",
-          description: "Confirme a sua identidade para ativar o acesso rápido.",
-          fallbackTitle: "Usar código",
-        });
-
-        await NativeBiometric.setCredentials({
-          username: user.email,
-          password: currentPassword,
+        await NativeBiometric.getCredentials({
           server: "itswesus.com",
         });
 
         biometricToggle.checked = true;
-        localStorage.setItem("wesus_biometric_prompted", "true");
-      } catch (err) {
+      } catch {
         biometricToggle.checked = false;
-        alert("A ativação da biometria foi cancelada ou não foi concluída.");
       }
-    });
+
+      if (biometricToggle.dataset.biometricSettingsInitialized === "true") {
+        return;
+      }
+
+      biometricToggle.dataset.biometricSettingsInitialized = "true";
+
+      biometricToggle.addEventListener("change", async (e) => {
+        const shouldEnable = e.target.checked;
+
+        try {
+          if (!shouldEnable) {
+            await NativeBiometric.deleteCredentials({
+              server: "itswesus.com",
+            });
+
+            localStorage.removeItem("wesus_biometric_prompted");
+            return;
+          }
+
+          const currentPassword = prompt(
+            "Para ativar a biometria, introduza a sua senha atual do portal:",
+          );
+
+          if (!currentPassword) {
+            biometricToggle.checked = false;
+            return;
+          }
+
+          const userRaw = sessionStorage.getItem("wesus_user");
+          if (!userRaw) {
+            biometricToggle.checked = false;
+            return;
+          }
+
+          const user = JSON.parse(userRaw);
+
+          const { error } = await supabaseClient.auth.signInWithPassword({
+            email: user.email,
+            password: currentPassword,
+          });
+
+          if (error) {
+            biometricToggle.checked = false;
+            alert("Senha incorreta. Não foi possível ativar a biometria.");
+            return;
+          }
+
+          await NativeBiometric.verifyIdentity({
+            reason: "Ativar acesso biométrico ao Portal Wesus",
+            title: "Portal Wesus",
+            subtitle: "Ativar Face ID / Biometria",
+            description:
+              "Confirme a sua identidade para ativar o acesso rápido.",
+            fallbackTitle: "Usar código",
+          });
+
+          await NativeBiometric.setCredentials({
+            username: user.email,
+            password: currentPassword,
+            server: "itswesus.com",
+          });
+
+          biometricToggle.checked = true;
+          localStorage.setItem("wesus_biometric_prompted", "true");
+        } catch (err) {
+          biometricToggle.checked = false;
+          alert("A ativação da biometria foi cancelada ou não foi concluída.");
+          console.log("Erro ao alterar estado da biometria:", err);
+        }
+      });
+    } catch (err) {
+      console.log("Erro ao inicializar definições de biometria:", err);
+
+      const biometricRow = document.getElementById("biometricSettingsRow");
+      if (biometricRow) {
+        biometricRow.style.setProperty("display", "none", "important");
+      }
+    }
   }
 
   function init() {
@@ -1188,16 +1208,7 @@ const AccountSettingsController = (() => {
       }
     }
 
-    // Biometria temporariamente desativada no iOS para investigar crash de arranque
-    if (
-      !(
-        window.Capacitor &&
-        window.Capacitor.getPlatform &&
-        window.Capacitor.getPlatform() === "ios"
-      )
-    ) {
-      initBiometricSettings();
-    }
+    initBiometricSettings();
 
     if (toggleEyeBtn) {
       toggleEyeBtn.addEventListener("click", (e) => {
