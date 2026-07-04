@@ -1188,7 +1188,16 @@ const AccountSettingsController = (() => {
       }
     }
 
-    initBiometricSettings();
+    // Biometria temporariamente desativada no iOS para investigar crash de arranque
+    if (
+      !(
+        window.Capacitor &&
+        window.Capacitor.getPlatform &&
+        window.Capacitor.getPlatform() === "ios"
+      )
+    ) {
+      initBiometricSettings();
+    }
 
     if (toggleEyeBtn) {
       toggleEyeBtn.addEventListener("click", (e) => {

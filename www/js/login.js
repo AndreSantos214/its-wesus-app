@@ -325,7 +325,16 @@
     biometricBtn.addEventListener("click", verifyUser);
   }
 
-  initBiometricEngine();
+  // Biometria temporariamente desativada no iOS para investigar crash de arranque
+  if (
+    !(
+      window.Capacitor &&
+      window.Capacitor.getPlatform &&
+      window.Capacitor.getPlatform() === "ios"
+    )
+  ) {
+    initBiometricEngine();
+  }
 })();
 
 /* ── Lógica Nativa Mobile (Fundo + Teclado + Rotação Inteligente) ──────────────────────────── */
