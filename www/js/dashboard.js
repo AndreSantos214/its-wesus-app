@@ -739,7 +739,7 @@ const InvestmentModalController = (() => {
         dateInput.value = hoje;
       }
 
-      let contextName = "Alocação de Portfólio Restrito";
+      let contextName = "Modalidade informativa do portal";
       let planPeriod = "";
       let planTax = "";
 
@@ -756,11 +756,19 @@ const InvestmentModalController = (() => {
         cardParent &&
         cardParent.classList.contains("opportunities-special-section")
       ) {
-        contextName = "Nova Oportunidade Relâmpago";
+        contextName = "Atualização informativa restrita";
       }
 
       let monthsTarget = 6;
-      let isRelampago = contextName.toLowerCase().includes("relâmpago");
+
+      const isSpecialUpdate =
+        contextName.toLowerCase().includes("atualização informativa") ||
+        btn.textContent.toLowerCase().includes("atualização") ||
+        Boolean(btn.closest(".opportunities-special-section")) ||
+        Boolean(btn.closest('section[aria-label="Oportunidades Exclusivas"]'));
+
+      let isRelampago =
+        contextName.toLowerCase().includes("relâmpago") || isSpecialUpdate;
 
       if (
         contextName.toLowerCase().includes("3 meses") ||
@@ -771,7 +779,7 @@ const InvestmentModalController = (() => {
         planPeriod = "3 Meses";
 
         if (isRelampago) {
-          planTax = "Retorno: 10%";
+          planTax = "Referência: 10%";
           const matchedPlan = activeConditions.find(
             (c) =>
               c.prazo_meses === 3 &&
@@ -779,7 +787,7 @@ const InvestmentModalController = (() => {
           );
           selectedCondicaoId = matchedPlan ? matchedPlan.id : null;
         } else {
-          planTax = "Retorno: 6,25%";
+          planTax = "Referência: 6,25%";
           const matchedPlan = activeConditions.find(
             (c) =>
               c.prazo_meses === 3 &&
@@ -793,14 +801,14 @@ const InvestmentModalController = (() => {
       ) {
         monthsTarget = 12;
         planPeriod = "12 Meses";
-        planTax = "Retorno: 25%";
+        planTax = "Referência: 25%";
 
         const matchedPlan = activeConditions.find((c) => c.prazo_meses === 12);
         selectedCondicaoId = matchedPlan ? matchedPlan.id : null;
       } else {
         monthsTarget = 6;
         planPeriod = "6 Meses";
-        planTax = "Retorno: 12.5%";
+        planTax = "Referência: 12,5%";
 
         const matchedPlan = activeConditions.find((c) => c.prazo_meses === 6);
         selectedCondicaoId = matchedPlan ? matchedPlan.id : null;
@@ -810,10 +818,14 @@ const InvestmentModalController = (() => {
         selectedCondicaoId = activeConditions[0].id;
       }
 
-      if (planSubtitle) planSubtitle.textContent = `Modalidade: ${contextName}`;
+      if (planSubtitle) {
+        planSubtitle.textContent = isSpecialUpdate
+          ? "Atualização informativa restrita"
+          : `Modalidade: ${contextName}`;
+      }
       if (periodEl) periodEl.textContent = planPeriod;
       if (taxDisplayEl)
-        taxDisplayEl.textContent = planTax.replace("Retorno: ", "");
+        taxDisplayEl.textContent = planTax.replace("Referência: ", "");
       if (metaRow) metaRow.style.setProperty("display", "grid", "important");
 
       form.reset();
@@ -920,7 +932,7 @@ const InvestmentModalController = (() => {
           }, 500);
         }, 3200);
       } catch (err) {
-        alert(`Erro ao registar intenção: ${err.message}`);
+        alert(`Erro ao registar pedido de informação: ${err.message}`);
       }
     });
   }
@@ -1194,6 +1206,132 @@ const AccountSettingsController = (() => {
     }
   }
 
+  function initAccountDeletionFlow() {
+    const openBtn = document.getElementById("btnOpenAccountDeletionModal");
+    const modal = document.getElementById("wesusAccountDeletionModal");
+    const backdrop = document.getElementById("wesusAccountDeletionBackdrop");
+    const closeBtn = document.getElementById("wesusCloseAccountDeletionBtn");
+    const cancelBtn = document.getElementById("btnCancelAccountDeletion");
+    const startBtn = document.getElementById("btnStartAccountDeletion");
+
+    const successModal = document.getElementById(
+      "wesusAccountDeletionSuccessModal",
+    );
+    const finishBtn = document.getElementById("btnFinishAccountDeletion");
+
+    if (!openBtn || !modal || !startBtn) return;
+
+    const openModal = () => modal.classList.add("active");
+    const closeModal = () => modal.classList.remove("active");
+
+    openBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      openModal();
+    });
+
+    if (backdrop) backdrop.addEventListener("click", closeModal);
+    if (closeBtn) closeBtn.addEventListener("click", closeModal);
+    if (cancelBtn) cancelBtn.addEventListener("click", closeModal);
+
+    startBtn.addEventListener("click", async (e) => {
+      e.preventDefault();
+
+      const confirmed = confirm(
+        "Tem a certeza que deseja iniciar a eliminação da sua conta de acesso ao Portal It's Wesus? Esta ação irá remover o seu acesso à aplicação e iniciar a eliminação ou anonimização dos dados pessoais associados à utilização da app, exceto dados que a It's Wesus seja obrigada a conservar por motivos legais, contratuais, fiscais, contabilísticos, regulatórios ou de prevenção de fraude.",
+      );
+
+      if (!confirmed) return;
+
+      try {
+        startBtn.disabled = true;
+        startBtn.textContent = "A registar pedido...";
+
+        const userRaw = sessionStorage.getItem("wesus_user");
+        if (!userRaw) throw new Error("Sessão inválida.");
+
+        const user = JSON.parse(userRaw);
+
+        const { data: profile } = await supabaseClient
+          .from("utilizadores")
+          .select("nome_completo,email")
+          .eq("id", user.id)
+          .single();
+
+        const { error } = await supabaseClient
+          .from("pedidos_eliminacao_conta")
+          .insert([
+            {
+              utilizador_id: user.id,
+              email: profile?.email || user.email || null,
+              nome: profile?.nome_completo || user.email || null,
+              estado: "pendente",
+              origem:
+                window.Capacitor &&
+                typeof window.Capacitor.isNativePlatform === "function" &&
+                window.Capacitor.isNativePlatform()
+                  ? "ios_app"
+                  : "web_app",
+              user_agent: navigator.userAgent,
+              detalhes: {
+                app: "Its Wesus - Portal do Investidor",
+                tipo: "eliminacao_conta_acesso",
+                solicitado_em: new Date().toISOString(),
+              },
+            },
+          ]);
+
+        if (error) throw error;
+
+        closeModal();
+
+        if (successModal) {
+          successModal.classList.add("active");
+        } else {
+          alert("O seu pedido de eliminação da conta de acesso foi recebido.");
+        }
+      } catch (err) {
+        alert(`Não foi possível registar o pedido: ${err.message}`);
+      } finally {
+        startBtn.disabled = false;
+        startBtn.textContent = "Iniciar eliminação da conta de acesso";
+      }
+    });
+
+    if (finishBtn) {
+      finishBtn.addEventListener("click", async () => {
+        if (successModal) successModal.classList.remove("active");
+
+        try {
+          await supabaseClient.auth.signOut();
+        } catch (err) {
+          console.warn("Falha ao encerrar sessão Supabase:", err);
+        }
+
+        sessionStorage.clear();
+        localStorage.removeItem("wesus_biometric_prompted");
+
+        if (
+          window.Capacitor &&
+          window.Capacitor.Plugins &&
+          window.Capacitor.Plugins.NativeBiometric
+        ) {
+          try {
+            await window.Capacitor.Plugins.NativeBiometric.deleteCredentials({
+              server: "itswesus.com",
+            });
+          } catch (bioErr) {
+            console.warn(
+              "Não foi possível limpar credenciais biométricas:",
+              bioErr,
+            );
+          }
+        }
+
+        window.location.href = "index.html";
+      });
+    }
+  }
+
   function init() {
     const btnSaveProfile = document.getElementById("btnSaveProfile");
     const btnUpdatePassword = document.getElementById("btnUpdatePassword");
@@ -1209,6 +1347,7 @@ const AccountSettingsController = (() => {
     }
 
     initBiometricSettings();
+    initAccountDeletionFlow();
 
     if (toggleEyeBtn) {
       toggleEyeBtn.addEventListener("click", (e) => {
@@ -2195,12 +2334,12 @@ const DatabaseController = (() => {
             <div class="flex flex-col items-center justify-center text-center p-6 bg-white/[0.01] border border-white/5 rounded-2xl min-h-[160px] w-full animate-fade-in">
               <p class="text-sm font-bold text-gold mb-1.5">Todos os seus contratos foram concluídos!</p>
               <p class="text-[11px] text-white/50 max-w-md mb-4 font-inter leading-relaxed">
-                O seu capital e os seus rendimentos contratados já foram totalmente pagos e transferidos. 
-                Visite a aba de Oportunidades para iniciar uma nova alocação e manter o seu patrimônio a render.
+                Os contratos associados ao seu perfil encontram-se concluídos.
+                Consulte a área de informações disponíveis para conhecer atualizações privadas apresentadas pela equipa It's Wesus.
               </p>
               <button onclick="if(typeof NavigationController !== 'undefined') { NavigationController._setActive('oportunidades'); NavigationController._switchTab('oportunidades');}" 
                       class="btn-gold-lingot !py-2.5 !px-5 !text-[10px] !text-white uppercase tracking-widest font-bold">
-                Ver Novas Oportunidades
+                Consultar Informações
               </button>
             </div>
           `;

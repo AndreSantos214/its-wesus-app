@@ -85,7 +85,7 @@ export default {
       }
 
       // ────────────────────────────────────────────────────────
-      // ROTA A: RECIBO DE INTENÇÃO DE INVESTIMENTO (DIRECT FETCH)
+      // ROTA A: RECIBO DE PEDIDO DE INFORMAÇÃO (DIRECT FETCH)
       // ────────────────────────────────────────────────────────
       if (pathname === "/api/notify-lead" && request.method === "POST") {
         const payload = await request.json();
@@ -146,7 +146,7 @@ export default {
         ).toLocaleString("pt-PT", { style: "currency", currency: "EUR" });
         const planoNome = condition
           ? condition.nome_plano
-          : "Alocação Privada Restrita";
+          : "Modalidade informativa do portal";
         const taxaRetorno = condition
           ? `${condition.taxa_retorno}%`
           : "Sob Consulta";
@@ -156,23 +156,23 @@ export default {
 
         // 📥 1. CONTEÚDO DO CLIENTE INVESTIDOR
         const emailHTMLInvestor = buildEmailTemplate(
-          "Registo de Intenção de Alocação",
+          "Pedido de Informação Recebido",
           `Olá, ${investor.nome_completo}.`,
-          `Confirmamos com sucesso o registo da sua intenção de alocação de capital privado no ecossistema <strong>It's Wesus</strong>.`,
+          `Confirmamos a receção do seu pedido de informação no <strong>Portal do Investidor It's Wesus</strong>.`,
           `
-            <p style="margin: 0 0 10px 0; font-size: 14px; color: rgba(255,255,255,0.7);"><strong>Modalidade Escolhida:</strong> ${planoNome}</p>
-            <p style="margin: 0 0 10px 0; font-size: 14px; color: rgba(255,255,255,0.7);"><strong>Valor da Alocação:</strong> ${valorFormatado}</p>
-            <p style="margin: 0 0 10px 0; font-size: 14px; color: rgba(255,255,255,0.7);"><strong>Taxa de Rentabilidade:</strong> ${taxaRetorno}</p>
-            <p style="margin: 0 0 0px 0; font-size: 14px; color: rgba(255,255,255,0.7);"><strong>Data Pretendida:</strong> ${dataFormatada}</p>
+            <p style="margin: 0 0 10px 0; font-size: 14px; color: rgba(255,255,255,0.7);"><strong>Modalidade consultada:</strong> ${planoNome}</p>
+            <p style="margin: 0 0 10px 0; font-size: 14px; color: rgba(255,255,255,0.7);"><strong>Montante de referência indicado:</strong> ${valorFormatado}</p>
+            <p style="margin: 0 0 10px 0; font-size: 14px; color: rgba(255,255,255,0.7);"><strong>Referência apresentada:</strong> ${taxaRetorno}</p>
+            <p style="margin: 0 0 0px 0; font-size: 14px; color: rgba(255,255,255,0.7);"><strong>Data preferencial para contacto:</strong> ${dataFormatada}</p>
           `,
-          "O seu Gestor de Conta entrará em contacto nas próximas horas para formalizar o aditamento contratual e coordenar a transferência patrimonial segura.",
+          "A equipa It's Wesus poderá entrar em contacto para prestar informações adicionais. Este pedido não representa compra, pagamento, subscrição, contratação de investimento ou transação financeira dentro da aplicação.",
         );
 
         // 🏢 2. CONTEÚDO DA EQUIPA DE GESTÃO / ADMIN
         const emailHTMLAdmin = buildEmailTemplate(
-          "Nova Lead de Alocação de Capital",
+          "Novo Pedido de Informação pelo Portal",
           "Atenção Equipa,",
-          "Recebemos uma solicitação de Investimento. Por favor, entre em contacto com este cliente nas próximas horas para coordenar a qualificação e a emissão do aditamento contratual.",
+          "Recebemos um pedido de contacto informativo através do Portal do Investidor. Por favor, entre em contacto com este utilizador para prestar informações adicionais fora da aplicação.",
           `
             <p style="margin: 0 0 10px 0; font-size: 14px; color: #E8D08D;"><strong>DADOS DO INVESTIDOR:</strong></p>
             <p style="margin: 0 0 6px 0; font-size: 13px; color: rgba(255,255,255,0.7);"><strong>Nome Completo:</strong> ${
@@ -185,19 +185,19 @@ export default {
               investor.telemovel || "Não Fornecido"
             }</p>
             
-            <p style="margin: 0 0 10px 0; font-size: 14px; color: #E8D08D; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 12px;"><strong>CONDIÇÕES APONTADAS:</strong></p>
+            <p style="margin: 0 0 10px 0; font-size: 14px; color: #E8D08D; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 12px;"><strong>INFORMAÇÕES CONSULTADAS:</strong></p>
             <p style="margin: 0 0 6px 0; font-size: 13px; color: rgba(255,255,255,0.7);"><strong>Modalidade Escolhida:</strong> ${planoNome}</p>
-            <p style="margin: 0 0 6px 0; font-size: 13px; color: rgba(255,255,255,0.7);"><strong>Valor de Alocação:</strong> ${valorFormatado}</p>
-            <p style="margin: 0 0 0px 0; font-size: 13px; color: rgba(255,255,255,0.7);"><strong>Data Limite Pretendida:</strong> ${dataFormatada}</p>
+            <p style="margin: 0 0 6px 0; font-size: 13px; color: rgba(255,255,255,0.7);"><strong>Montante de referência:</strong> ${valorFormatado}</p>
+            <p style="margin: 0 0 0px 0; font-size: 13px; color: rgba(255,255,255,0.7);"><strong>Data preferencial para contacto:</strong> ${dataFormatada}</p>
           `,
-          "Este alerta operacional interno foi ativado de forma instantânea pelo sistema do Portal do Investidor após a verificação de segurança na base de dados.",
+          "Este alerta operacional interno foi ativado pelo sistema do Portal do Investidor após o utilizador solicitar contacto informativo dentro da aplicação.",
         );
 
         // Disparo focado para a caixa de e-mail do Cliente Investidor
         await sendEmailViaBrevo(
           {
             to: investor.email,
-            subject: `It's Wesus - Intenção de Alocação Registada`,
+            subject: `It's Wesus - Pedido de Informação Recebido`,
             html: emailHTMLInvestor,
           },
           env,
@@ -216,7 +216,7 @@ export default {
             await sendEmailViaBrevo(
               {
                 to: emailEquipa,
-                subject: `[ALERTA OPERACIONAL] Solicitação de Investimento - ${investor.nome_completo}`,
+                subject: `[ALERTA OPERACIONAL] Pedido de Informação - ${investor.nome_completo}`,
                 html: emailHTMLAdmin,
               },
               env,
