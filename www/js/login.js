@@ -154,6 +154,22 @@
     return data;
   }
 
+  async function hasPendingAccountDeletionRequest(userId) {
+    const { data, error } = await supabase
+      .from("pedidos_eliminacao_conta")
+      .select("id, estado")
+      .eq("utilizador_id", userId)
+      .eq("estado", "pendente")
+      .limit(1);
+
+    if (error) {
+      console.warn("Não foi possível verificar pedido de eliminação:", error);
+      return false;
+    }
+
+    return Array.isArray(data) && data.length > 0;
+  }
+
   /* ── Submit handler ───────────────────────────────── */
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
@@ -167,6 +183,27 @@
         emailInput.value.trim(),
         passwordInput.value,
       );
+
+      const hasDeletionRequest = await hasPendingAccountDeletionRequest(
+        result.user.id,
+      );
+
+      if (hasDeletionRequest) {
+        try {
+          await supabase.auth.signOut();
+        } catch (signOutErr) {
+          console.warn(
+            "Falha ao terminar sessão após pedido de eliminação:",
+            signOutErr,
+          );
+        }
+
+        sessionStorage.clear();
+
+        throw new Error(
+          "Esta conta de acesso possui um pedido de eliminação pendente. O acesso ao Portal do Investidor está temporariamente indisponível enquanto o pedido é processado.",
+        );
+      }
 
       sessionStorage.setItem("wesus_token", result.session.access_token);
       sessionStorage.setItem("wesus_user", JSON.stringify(result.user));

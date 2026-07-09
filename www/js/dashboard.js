@@ -30,6 +30,45 @@ async function getValidWesusToken() {
   return sessionStorage.getItem("wesus_token");
 }
 
+async function blockAccessIfAccountDeletionPending() {
+  try {
+    const userRaw = sessionStorage.getItem("wesus_user");
+    if (!userRaw) return;
+
+    const user = JSON.parse(userRaw);
+
+    const { data, error } = await supabaseClient
+      .from("pedidos_eliminacao_conta")
+      .select("id, estado")
+      .eq("utilizador_id", user.id)
+      .eq("estado", "pendente")
+      .limit(1);
+
+    if (error) {
+      console.warn("Não foi possível verificar pedido de eliminação:", error);
+      return;
+    }
+
+    if (Array.isArray(data) && data.length > 0) {
+      try {
+        await supabaseClient.auth.signOut();
+      } catch (signOutErr) {
+        console.warn("Falha ao terminar sessão:", signOutErr);
+      }
+
+      sessionStorage.clear();
+
+      alert(
+        "Esta conta de acesso possui um pedido de eliminação pendente. O acesso ao Portal do Investidor está temporariamente indisponível enquanto o pedido é processado.",
+      );
+
+      window.location.href = "index.html";
+    }
+  } catch (err) {
+    console.warn("Erro ao validar estado da conta:", err);
+  }
+}
+
 /* ── THEME CONTROLLER ─────────────────────────────────────── */
 const ThemeController = (() => {
   const HTML = document.documentElement;
@@ -2979,6 +3018,7 @@ function triggerModalDetails(mockMeta) {
 
 /* ── INTERFACE ENTRY POINT ─────────────────────────────────── */
 document.addEventListener("DOMContentLoaded", () => {
+  blockAccessIfAccountDeletionPending();
   ThemeController.init();
   NavigationController.init();
   ScrollController.init();
