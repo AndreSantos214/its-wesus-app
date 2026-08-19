@@ -1756,6 +1756,53 @@
       font-weight: 700 !important;
       letter-spacing: 0.02em !important;
     }
+
+    /* ═══════════════════════════════════════════════════════════════
+   BADGES DINÂMICOS DE STATUS DOS ATIVOS
+═══════════════════════════════════════════════════════════════ */
+    .status-badge-base {
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      font-size: 9px !important;
+      font-weight: 700 !important;
+      letter-spacing: 0.1em !important;
+      text-transform: uppercase !important;
+      padding: 4px 10px !important;
+      border-radius: 9999px !important;
+      white-space: nowrap !important;
+    }
+
+    /* Em Construção / Em Curso (Ouro) */
+    .status-badge-construction {
+      background: rgba(197, 160, 89, 0.12) !important;
+      border: 1px solid rgba(232, 208, 141, 0.35) !important;
+      color: #E8D08D !important;
+      box-shadow: 0 0 10px rgba(197, 160, 89, 0.15) !important;
+    }
+
+    /* Concluído / Liquidado (Esmeralda) */
+    .status-badge-completed {
+      background: rgba(111, 207, 151, 0.12) !important;
+      border: 1px solid rgba(111, 207, 151, 0.35) !important;
+      color: #6FCF97 !important;
+      box-shadow: 0 0 10px rgba(111, 207, 151, 0.2) !important;
+    }
+
+    /* Planeado (Azul Claro) */
+    .status-badge-planned {
+      background: rgba(59, 130, 246, 0.12) !important;
+      border: 1px solid rgba(59, 130, 246, 0.35) !important;
+      color: #93C5FD !important;
+      box-shadow: 0 0 10px rgba(59, 130, 246, 0.15) !important;
+    }
+
+    /* Esgotado / Outros (Neutro / Prata) */
+    .status-badge-soldout {
+      background: rgba(255, 255, 255, 0.08) !important;
+      border: 1px solid rgba(255, 255, 255, 0.2) !important;
+      color: rgba(255, 255, 255, 0.6) !important;
+    }
   </style>
 </head>
 

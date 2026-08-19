@@ -2549,6 +2549,19 @@ const DatabaseController = (() => {
           activeContainer.innerHTML += buildContractCardHTML(ctr, idx);
         }
 
+        // 🎯 Determina o status real do banco e a respectiva classe CSS
+        const rawStatus =
+          matchedAsset?.status_obra || ctr.status_termo || "Em Construção";
+        let badgeClass = "status-badge-construction";
+
+        if (rawStatus === "Concluído" || rawStatus === "Liquidado") {
+          badgeClass = "status-badge-completed";
+        } else if (rawStatus === "Planeado") {
+          badgeClass = "status-badge-planned";
+        } else if (rawStatus === "Esgotado" || rawStatus === "Vendido") {
+          badgeClass = "status-badge-soldout";
+        }
+
         // 📱 1. CARROSSEL MOBILE CONVERTIDO PARA ASSETS REAIS DO B2
         if (assetsMobileCarousel) {
           assetsMobileCarousel.style.alignItems = "";
@@ -2586,7 +2599,7 @@ const DatabaseController = (() => {
                       <span class="truncate">${mockMeta.location}</span>
                     </a>
                   </div>
-                  <span class="status-badge-construction shrink-0">Em Curso</span>
+                  <span class="status-badge-base ${badgeClass} shrink-0">${rawStatus}</span>
                 </div>
                 <div class="mt-5 border-t border-white/5 pt-3 w-full">
                   <p class="text-[9px] text-white/40 uppercase tracking-widest font-semibold mb-0.5">Investimento Total</p>
@@ -2624,7 +2637,7 @@ const DatabaseController = (() => {
                   ${mockMeta.location}
                 </a>
               </td>
-              <td class="assets-td text-center"><span class="status-badge-construction">Em Curso</span></td>
+              <td class="assets-td text-center"><span class="status-badge-base ${badgeClass}">${rawStatus}</span></td>
               <td class="assets-td text-right font-bold text-sm text-white/95 tracking-wide">€ ${mockMeta.total}</td>
             </tr>`;
 
