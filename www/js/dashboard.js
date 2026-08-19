@@ -2549,9 +2549,9 @@ const DatabaseController = (() => {
           activeContainer.innerHTML += buildContractCardHTML(ctr, idx);
         }
 
-        // 🎯 Determina o status real do banco e a respectiva classe CSS
+        // Determina o status real do banco e a respectiva classe CSS
         const rawStatus =
-          matchedAsset?.status_obra || ctr.status_termo || "Em Construção";
+          matchedAsset?.status_obra || ctr.status_termo || "Em Curso";
         let badgeClass = "status-badge-construction";
 
         if (rawStatus === "Concluído" || rawStatus === "Liquidado") {
@@ -2560,6 +2560,8 @@ const DatabaseController = (() => {
           badgeClass = "status-badge-planned";
         } else if (rawStatus === "Esgotado" || rawStatus === "Vendido") {
           badgeClass = "status-badge-soldout";
+        } else {
+          badgeClass = "status-badge-construction"; // 'Em Curso'
         }
 
         // 📱 1. CARROSSEL MOBILE CONVERTIDO PARA ASSETS REAIS DO B2
