@@ -3,7 +3,7 @@
  * dashboard.js – Vanilla ES6+ | HIGH-END REAL-TIME DATABASE PERFORMANCE ENGINE
  */
 // Controlo de versão da aplicação
-const CURRENT_APP_VERSION = "2.0.1";
+const CURRENT_APP_VERSION = "2.0.2";
 const storedVersion = localStorage.getItem("wesus_app_version");
 
 if (storedVersion && storedVersion !== CURRENT_APP_VERSION) {
@@ -821,7 +821,22 @@ const InvestmentModalController = (() => {
       let isRelampago =
         contextName.toLowerCase().includes("relâmpago") || isSpecialUpdate;
 
+      // 🎯 CONDICIONAIS CORRETAS DENTRO DO ESCOPO DE openModal
       if (
+        contextName.toLowerCase().includes("exclusivo") ||
+        contextName.toLowerCase().includes("vip")
+      ) {
+        monthsTarget = 12;
+        planPeriod = "Sob Medida (VIP)";
+        planTax = "Sob Consulta";
+        currentMinAmount = 50000;
+
+        const matchedPlan =
+          activeConditions.find(
+            (c) => c.categoria && c.categoria.toLowerCase().includes("special"),
+          ) || activeConditions.find((c) => c.prazo_meses === 12);
+        selectedCondicaoId = matchedPlan ? matchedPlan.id : null;
+      } else if (
         contextName.toLowerCase().includes("4 meses") ||
         contextName.toLowerCase().includes("curto prazo") ||
         isRelampago
@@ -861,6 +876,7 @@ const InvestmentModalController = (() => {
       if (amountInput) {
         amountInput.min = currentMinAmount;
         amountInput.placeholder = currentMinAmount;
+        amountInput.value = currentMinAmount;
       }
       const minLabel = document.getElementById("investMinLabel");
       if (minLabel) {

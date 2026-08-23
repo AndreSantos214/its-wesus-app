@@ -1808,6 +1808,54 @@
       border: 1px solid rgba(255, 255, 255, 0.2) !important;
       color: rgba(255, 255, 255, 0.6) !important;
     }
+
+    /* ═══════════════════════════════════════════════════════════════
+   GRID DAS 4 OFERTAS (100% INDEPENDENTE DO TAILWIND)
+═══════════════════════════════════════════════════════════════ */
+    .opportunities-grid-4 {
+      display: grid !important;
+      grid-template-columns: repeat(1, minmax(0, 1fr)) !important;
+      gap: 1.5rem !important;
+      width: 100% !important;
+    }
+
+    /* Tablet (2 Colunas) */
+    @media (min-width: 768px) {
+      .opportunities-grid-4 {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 1.5rem !important;
+      }
+    }
+
+    /* Desktop (4 Colunas em 1 linha) */
+    @media (min-width: 1280px) {
+      .opportunities-grid-4 {
+        grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+        gap: 1.25rem !important;
+      }
+    }
+
+    /* Card VIP Exclusivo — Borda Ouro Nobre e Aura Volumétrica */
+    .plan-card-vip {
+      border: 2px solid rgba(232, 208, 141, 0.75) !important;
+      box-shadow: 0 0 30px rgba(197, 160, 89, 0.22), inset 0 0 20px rgba(232, 208, 141, 0.04) !important;
+      background: linear-gradient(135deg, rgba(232, 208, 141, 0.08) 0%, rgba(7, 19, 38, 0.85) 100%) !important;
+    }
+
+    /* Selo VIP com Maior Respiro e Presença */
+    .badge-vip-gold {
+      background: linear-gradient(135deg, #8A662D 0%, #E8D08D 50%, #C5A059 100%) !important;
+      color: #1b2638 !important;
+      font-size: 9.5px !important;
+      font-weight: 800 !important;
+      text-transform: uppercase !important;
+      letter-spacing: 0.14em !important;
+      padding: 0.35rem 1.1rem !important;
+      /* Mais padding conforme pretendido */
+      border-radius: 9999px !important;
+      box-shadow: 0 4px 18px rgba(232, 208, 141, 0.45) !important;
+      border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    }
   </style>
 </head>
 
@@ -2238,18 +2286,18 @@
                       </svg>
                     </div>
                     <h3 class="font-playfair font-bold text-white text-xl lg:text-2xl tracking-wide select-none text-center lg:text-left">
-                      Atualização <span class="text-gold-liquid">Relâmpago</span>
+                      Nova Oportunidade <span class="text-gold-liquid">Relâmpago</span>
                     </h3>
                   </div>
 
                   <p class="text-xs text-white/70 max-w-xl leading-relaxed font-normal">
-                    Atualização privada disponível para utilizadores autorizados. Preencha o pedido para que a equipa It's Wesus explique os detalhes por contacto direto.
+                    Acesso antecipado a oportunidades exclusivas que surgem em momentos estratégicos do mercado. Disponibilidade limitada.
                   </p>
                 </div>
 
                 <div class="w-full xl:w-auto flex justify-center shrink-0 z-10">
                   <button data-modal="investment" class="w-full btn-gold-lingot !py-3 !text-[10px]" style="color: #ffffff !important;">
-                    Pedir Detalhes desta Atualização
+                    Solicitar Informações
                   </button>
                 </div>
               </div>
@@ -2285,11 +2333,11 @@
                 <h3 class="font-playfair text-base font-bold text-white/80 tracking-wide">Contratos de Rendimento Fixo</h3>
               </div>
 
+              <!-- Container com a nova classe sem depender de Tailwind compilado -->
+              <div class="opportunities-grid-4">
 
-              <div class="flex flex-col lg:flex-row gap-6 w-full">
-
-                <!-- Plano 4 Meses -->
-                <div class="hero-card-crystal p-6 lg:p-8 rounded-3xl flex flex-col items-center text-center justify-between flex-1 relative overflow-hidden plan-card-base">
+                <!-- 1. Plano 4 Meses -->
+                <div class="hero-card-crystal p-5 xl:p-6 rounded-3xl flex flex-col items-center text-center justify-between flex-1 relative overflow-hidden plan-card-base">
                   <div class="absolute inset-0 bg-gradient-to-br from-white/[0.01] to-transparent opacity-40 pointer-events-none"></div>
 
                   <div class="icon-badge-shield w-12 h-12 rounded-2xl flex items-center justify-center text-gold/80 mb-2 relative z-10 shrink-0 flex">
@@ -2323,9 +2371,8 @@
                   </div>
                 </div>
 
-
-                <!-- Plano 8 Meses (Mais Procurado) -->
-                <div class="hero-card-crystal p-6 lg:p-8 rounded-3xl flex flex-col items-center text-center justify-between flex-1 relative overflow-hidden plan-card-featured drop-shadow-[0_0_20px_rgba(197,160,89,0.18)]">
+                <!-- 2. Plano 8 Meses (Mais Procurado) -->
+                <div class="hero-card-crystal p-5 xl:p-6 rounded-3xl flex flex-col items-center text-center justify-between flex-1 relative overflow-hidden plan-card-featured drop-shadow-[0_0_20px_rgba(197,160,89,0.18)]">
                   <div class="absolute inset-0 bg-gradient-to-br from-gold/15 to-transparent opacity-50 pointer-events-none"></div>
 
                   <div class="relative z-10 plan-featured-badge-wrap select-none">
@@ -2364,9 +2411,8 @@
                   </div>
                 </div>
 
-
-                <!-- Plano 12 Meses -->
-                <div class="hero-card-crystal p-6 lg:p-8 rounded-3xl flex flex-col items-center text-center justify-between flex-1 relative overflow-hidden plan-card-max drop-shadow-[0_0_15px_rgba(255,255,255,0.03)]">
+                <!-- 3. Plano 12 Meses -->
+                <div class="hero-card-crystal p-5 xl:p-6 rounded-3xl flex flex-col items-center text-center justify-between flex-1 relative overflow-hidden plan-card-max drop-shadow-[0_0_15px_rgba(255,255,255,0.03)]">
                   <div class="absolute inset-0 bg-gradient-to-br from-white/[0.02] to-transparent opacity-40 pointer-events-none"></div>
 
                   <div class="relative z-10 plan-featured-badge-wrap select-none">
@@ -2406,6 +2452,48 @@
                   </div>
                 </div>
 
+                <!-- Plano 4: Exclusivo Premium (VIP) -->
+                <div class="hero-card-crystal p-5 xl:p-6 rounded-3xl flex flex-col items-center text-center justify-between flex-1 relative overflow-hidden plan-card-base plan-card-vip">
+                  <div class="absolute inset-0 bg-gradient-to-br from-gold/15 to-transparent opacity-40 pointer-events-none"></div>
+
+                  <!-- Selo Superior Flutuante VIP com mais padding -->
+                  <div class="relative z-10 plan-featured-badge-wrap select-none">
+                    <span class="badge-vip-gold">
+                      ★ Premium Exclusivo ★
+                    </span>
+                  </div>
+
+                  <!-- Ícone Diamante Lapidado -->
+                  <div class="icon-badge-shield w-12 h-12 rounded-2xl flex items-center justify-center text-gold mb-2 relative z-10 shrink-0 border border-gold/50 bg-[#071326]/80 shadow-[0_0_15px_rgba(232,208,141,0.2)]">
+                    <svg class="w-6 h-6 drop-shadow-[0_0_6px_rgba(232,208,141,0.7)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 3h12l4 6-10 12L2 9l4-6z" />
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M2 9h20M10 3l-2 6 4 12 4-12-2-6M6 3l4 6M18 3l-4 6" />
+                    </svg>
+                  </div>
+
+                  <div class="relative z-10 mb-1">
+                    <p class="text-[9px] uppercase tracking-widest text-gold-liquid font-bold">Soluções Sob Medida</p>
+                    <h4 class="font-playfair font-bold text-xl text-white mt-0.5 select-all">Plano Exclusivo Premium</h4>
+                  </div>
+
+                  <p class="text-xs text-white/80 font-inter max-w-xs leading-relaxed my-2 relative z-10">
+                    Uma oferta sob medida, desenhada para investidores que procuram tratamento VIP, condições personalizadas e serviços de elite. Entre em contato para descobrir os detalhes.
+                  </p>
+
+                  <div class="mb-4 relative z-10 w-full mt-auto">
+                    <p class="text-[8px] uppercase tracking-wider text-white/40 font-medium mb-0.5">Retorno Fixo</p>
+                    <div class="flex items-baseline justify-center select-all py-1">
+
+                    </div>
+                    <div class="w-full h-px bg-gradient-to-r from-gold/30 to-transparent mt-3"></div>
+                  </div>
+
+                  <div class="w-full relative z-10 select-none">
+                    <button data-modal="investment" class="w-full btn-gold-lingot !py-3 !text-[10px]" style="color: #ffffff !important;">
+                      Solicitar Informações
+                    </button>
+                  </div>
+                </div>
 
               </div>
             </section>
@@ -2445,18 +2533,18 @@
                       </svg>
                     </div>
                     <h3 class="font-playfair font-bold text-white text-xl lg:text-2xl tracking-wide select-none text-center lg:text-left">
-                      Atualização <span class="text-gold-liquid">Relâmpago</span>
+                      Nova Oportunidade <span class="text-gold-liquid">Relâmpago</span>
                     </h3>
                   </div>
 
                   <p class="text-xs text-white/70 max-w-xl leading-relaxed font-normal">
-                    Atualização privada disponível para utilizadores autorizados. Preencha o pedido para que a equipa It's Wesus explique os detalhes por contacto direto.
+                    Acesso antecipado a oportunidades exclusivas que surgem em momentos estratégicos do mercado. Disponibilidade limitada.
                   </p>
                 </div>
 
                 <div class="w-full xl:w-auto flex justify-center shrink-0 z-10">
                   <button data-modal="investment" class="w-full btn-gold-lingot !py-3 !text-[10px]" style="color: #ffffff !important;">
-                    Pedir Detalhes desta Atualização
+                    Solicitar Informações
                   </button>
                 </div>
               </div>
@@ -3415,7 +3503,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-  <script src="js/dashboard.js?v=2.0.1" defer></script>
+  <script src="js/dashboard.js?v=2.0.2" defer></script>
 
 </body>
 
