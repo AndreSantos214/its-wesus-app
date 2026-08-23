@@ -1,9 +1,9 @@
 import { connect } from "cloudflare:sockets";
 
-// 🧠 Memória Global do Isolate (Persiste entre requisições no mesmo ciclo de vida do Worker)
+// 🧠 Memória Global do Isolate
 let cachedJWKS = null;
 let cachedB2Auth = null;
-let b2AuthExpiry = 0; // Timestamp de expiração em milissegundos
+let b2AuthExpiry = 0;
 
 export default {
   async fetch(request, env) {
@@ -24,7 +24,6 @@ export default {
 
       // ────────────────────────────────────────────────────────
       // ROTA C: ENVIO DE ACESSO AO PORTAL DO INVESTIDOR
-      // Protegida por X-Cron-Secret
       // ────────────────────────────────────────────────────────
       if (pathname === "/api/send-access-email" && request.method === "POST") {
         const cronSecret = request.headers.get("X-Cron-Secret");
@@ -47,7 +46,7 @@ export default {
           investorName = "Andre Santos",
           loginEmail = "andressantos214@gmail.com",
           temporaryPassword = "SenhaTemporaria@2026",
-          portalUrl = "https://itswesus.com",
+          portalUrl = "https://itswesus.com/www/index.html",
         } = payload;
 
         const emailHTML = buildAccessPortalEmail({
@@ -60,6 +59,7 @@ export default {
         await sendEmailViaBrevo(
           {
             to,
+            name: investorName,
             subject: "Acesso ao Portal Privado do Investidor — It's Wesus",
             html: emailHTML,
           },
@@ -85,6 +85,51 @@ export default {
       }
 
       // ────────────────────────────────────────────────────────
+      // ROTA D: ENVIO DE OPORTUNIDADES (EQUIPA IT'S WESUS)
+      // ────────────────────────────────────────────────────────
+      if (
+        pathname === "/api/send-opportunities-email" &&
+        request.method === "POST"
+      ) {
+        const cronSecret = request.headers.get("X-Cron-Secret");
+        if (!cronSecret || cronSecret !== env.CRON_SECRET) {
+          return new Response("Acesso Negado", {
+            status: 401,
+            headers: corsHeaders(),
+          });
+        }
+
+        const payload = await request.json();
+        const { to, investorName = "Investidor(a)" } = payload;
+
+        const { html, text } = buildOpportunitiesEmail({ investorName });
+
+        // Assunto 100% limpo, sem nome de empresa ou marcadores
+        const subject = "Novos projetos imobiliários em curso";
+
+        await sendEmailViaBrevo(
+          {
+            to,
+            name: investorName,
+            subject,
+            html,
+            text,
+            senderName: "Equipa It's Wesus",
+            replyTo: {
+              email: "geral@itswesus.com",
+              name: "Equipa It's Wesus",
+            },
+          },
+          env,
+        );
+
+        return new Response(JSON.stringify({ success: true, sent_to: to }), {
+          status: 200,
+          headers: { ...corsHeaders(), "Content-Type": "application/json" },
+        });
+      }
+
+      // ────────────────────────────────────────────────────────
       // ROTA A: RECIBO DE PEDIDO DE INFORMAÇÃO (DIRECT FETCH)
       // ────────────────────────────────────────────────────────
       if (pathname === "/api/notify-lead" && request.method === "POST") {
@@ -98,7 +143,6 @@ export default {
           });
         }
 
-        // Query contra o Supabase para buscar o Perfil do Investidor
         const userRes = await fetch(
           `${env.SUPABASE_PROJECT_URL}/rest/v1/utilizadores?id=eq.${record.utilizador_id}&select=*`,
           {
@@ -127,7 +171,6 @@ export default {
 
         const investor = users[0];
 
-        // Query para apanhar os detalhes da Condição Comercial
         const condRes = await fetch(
           `${env.SUPABASE_PROJECT_URL}/rest/v1/condicoes_comerciais?id=eq.${record.condicao_id}&select=*`,
           {
@@ -154,7 +197,6 @@ export default {
           record.data_inicio_pretendida,
         ).toLocaleDateString("pt-PT");
 
-        // 📥 1. CONTEÚDO DO CLIENTE INVESTIDOR
         const emailHTMLInvestor = buildEmailTemplate(
           "Pedido de Informação Recebido",
           `Olá, ${investor.nome_completo}.`,
@@ -168,7 +210,6 @@ export default {
           "A equipa It's Wesus poderá entrar em contacto para prestar informações adicionais. Este pedido não representa compra, pagamento, subscrição, contratação de investimento ou transação financeira dentro da aplicação.",
         );
 
-        // 🏢 2. CONTEÚDO DA EQUIPA DE GESTÃO / ADMIN
         const emailHTMLAdmin = buildEmailTemplate(
           "Novo Pedido de Informação pelo Portal",
           "Atenção Equipa,",
@@ -193,17 +234,16 @@ export default {
           "Este alerta operacional interno foi ativado pelo sistema do Portal do Investidor após o utilizador solicitar contacto informativo dentro da aplicação.",
         );
 
-        // Disparo focado para a caixa de e-mail do Cliente Investidor
         await sendEmailViaBrevo(
           {
             to: investor.email,
+            name: investor.nome_completo,
             subject: `It's Wesus - Pedido de Informação Recebido`,
             html: emailHTMLInvestor,
           },
           env,
         );
 
-        // 🎯 PONTO CENTRAL: Matriz de e-mails da equipa administrativa.
         const listaEquipa = [
           "geral@itswesus.com",
           "andressantos214@gmail.com",
@@ -234,10 +274,9 @@ export default {
       }
 
       // ────────────────────────────────────────────────────────
-      // ROTA B: VERIFICAÇÃO DIÁRIA DE VENCIMENTOS (CRONJOB PROTEGIDO)
+      // ROTA B: VERIFICAÇÃO DIÁRIA DE VENCIMENTOS (CRONJOB)
       // ────────────────────────────────────────────────────────
       if (pathname === "/api/check-vencimentos" && request.method === "POST") {
-        // 🔒 Trava de Segurança: Exige o Header secreto definido nas variáveis Cloudflare
         const cronSecret = request.headers.get("X-Cron-Secret");
         if (!cronSecret || cronSecret !== env.CRON_SECRET) {
           return new Response(
@@ -274,7 +313,6 @@ export default {
           const diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24));
 
           if (diffDays === 30 || diffDays === 7) {
-            // 🔒 TRAVA DE CRON: Só avança se o investidor desejar receber alertas de vencimento
             const prefRes = await fetch(
               `${env.SUPABASE_PROJECT_URL}/rest/v1/preferencias_conta?utilizador_id=eq.${ctr.utilizador_id}&select=alerta_vencimento`,
               {
@@ -287,12 +325,11 @@ export default {
 
             const prefs = prefRes.ok ? await prefRes.json() : [];
 
-            // Se houver configuração explícita de recusa (false), pulamos o disparo do e-mail
             if (prefs.length > 0 && prefs[0].alerta_vencimento === false) {
               console.log(
                 `[CRON SKIP] Alertas desativados pelo utilizador: ${ctr.utilizador_id}`,
               );
-              continue; // Salta para o próximo contrato da lista
+              continue;
             }
 
             const userRes = await fetch(
@@ -333,6 +370,7 @@ export default {
               await sendEmailViaBrevo(
                 {
                   to: investor.email,
+                  name: investor.nome_completo,
                   subject: `It's Wesus - Alerta de Vencimento (${diffDays} Dias)`,
                   html: emailHTML,
                 },
@@ -347,7 +385,7 @@ export default {
         });
       }
 
-      // 🔐 VALIDAÇÃO DE SEGURANÇA JWT (PUT, POST, DELETE no Storage)
+      // 🔐 VALIDAÇÃO DE SEGURANÇA JWT (Storage)
       if (
         (request.method === "PUT" ||
           request.method === "POST" ||
@@ -375,7 +413,7 @@ export default {
         }
       }
 
-      // ⚡ MOTOR DE CACHE DE AUTORIZAÇÃO BACKBLAZE B2
+      // ⚡ MOTOR DE CACHE B2
       const now = Date.now();
       if (!cachedB2Auth || now >= b2AuthExpiry) {
         const authRes = await fetch(
@@ -392,12 +430,9 @@ export default {
 
         cachedB2Auth = await authRes.json();
         b2AuthExpiry = now + 12 * 60 * 60 * 1000;
-        console.log(
-          "[B2 CACHE] Nova chave de autorização gerada e armazenada na Edge.",
-        );
       }
 
-      // 📥 OPERAÇÃO 1: DOWNLOAD DE ARQUIVOS (GET)
+      // 📥 GET B2
       if (request.method === "GET") {
         const b2DownloadUrl = `${cachedB2Auth.downloadUrl}/file/${env.B2_BUCKET_NAME}${pathname}`;
         const b2Response = await fetch(b2DownloadUrl, {
@@ -415,12 +450,9 @@ export default {
         responseHeaders.set("Cache-Control", "public, max-age=86400");
 
         const inferredContentType = inferContentType(pathname);
-        const currentContentType = responseHeaders.get("Content-Type") || "";
-
         if (inferredContentType) {
           responseHeaders.set("Content-Type", inferredContentType);
         }
-
         responseHeaders.set("Cross-Origin-Resource-Policy", "cross-origin");
 
         return new Response(b2Response.body, {
@@ -429,7 +461,7 @@ export default {
         });
       }
 
-      // 📤 OPERAÇÃO 2: ESCREVER ARQUIVOS (PUT)
+      // 📤 PUT B2
       if (request.method === "PUT") {
         const getUploadUrlRes = await fetch(
           `${cachedB2Auth.apiUrl}/b2api/v2/b2_get_upload_url`,
@@ -474,7 +506,7 @@ export default {
         if (!b2UploadResponse.ok) {
           const errText = await b2UploadResponse.text();
           return new Response(
-            `[B2 Storage Error] Erro na escrita física do storage proxy: ${errText}`,
+            `[B2 Storage Error] Erro na escrita física: ${errText}`,
             { status: 500, headers: corsHeaders() },
           );
         }
@@ -500,40 +532,60 @@ export default {
 
 function inferContentType(pathname) {
   const path = pathname.toLowerCase();
-
   if (path.endsWith(".webp")) return "image/webp";
   if (path.endsWith(".jpg") || path.endsWith(".jpeg")) return "image/jpeg";
   if (path.endsWith(".png")) return "image/png";
   if (path.endsWith(".svg")) return "image/svg+xml";
   if (path.endsWith(".pdf")) return "application/pdf";
-
   return null;
 }
 
 // ────────────────────────────────────────────────────────
-// ✉️ MOTOR HTTP API DO BREVO
+// ✉️ MOTOR BREVO COM SUPORTE MULTIPART (HTML + TEXTO PURO)
 // ────────────────────────────────────────────────────────
-async function sendEmailViaBrevo({ to, subject, html }, env) {
+async function sendEmailViaBrevo(
+  { to, name, subject, html, text, senderName, replyTo },
+  env,
+) {
   if (!env.BREVO_API_KEY)
     throw new Error("Secret BREVO_API_KEY não configurado.");
-  await fetch("https://api.brevo.com/v3/smtp/email", {
+
+  const payload = {
+    sender: {
+      name: senderName || "Danilson Carvalho | It's Wesus",
+      email: "geral@itswesus.com",
+    },
+    to: [{ email: to, name: name || "Investidor" }],
+    replyTo: replyTo || {
+      email: "geral@itswesus.com",
+      name: "Danilson Carvalho",
+    },
+    subject: subject,
+    htmlContent: html,
+  };
+
+  if (text) {
+    payload.textContent = text;
+  }
+
+  const res = await fetch("https://api.brevo.com/v3/smtp/email", {
     method: "POST",
     headers: {
       accept: "application/json",
       "api-key": env.BREVO_API_KEY,
       "content-type": "application/json",
     },
-    body: JSON.stringify({
-      sender: { name: "It's Wesus", email: "geral@itswesus.com" },
-      to: [{ email: to }],
-      subject: subject,
-      htmlContent: html,
-    }),
+    body: JSON.stringify(payload),
   });
+
+  if (!res.ok) {
+    const errText = await res.text();
+    throw new Error(`[Brevo SMTP Error ${res.status}] ${errText}`);
+  }
 }
 
 // ────────────────────────────────────────────────────────
-// 🎨 TEMPLATE HTML RESPONSIVO PREMIUM
+// 🎨 TEMPLATE BASE DO SISTEMA
 // ────────────────────────────────────────────────────────
 function buildEmailTemplate(
   tituloTopico,
@@ -589,13 +641,15 @@ function buildEmailTemplate(
 }
 
 // ────────────────────────────────────────────────────────
-// 🔐 TEMPLATE DE ACESSO AO PORTAL DO INVESTIDOR
+// 🔐 TEMPLATE DE ACESSO AO PORTAL
 // ────────────────────────────────────────────────────────
 function buildAccessPortalEmail({
   investorName,
   loginEmail,
   temporaryPassword,
-  portalUrl,
+  portalUrl = "https://itswesus.com/www/index.html",
+  appStoreUrl = "https://apps.apple.com/pt/app/its-wesus/id6787109143",
+  googlePlayUrl = "https://play.google.com/store/apps/details?id=com.itswesus.portal&pcampaignid=web_share",
 }) {
   const logoUrl =
     "https://andresantos214.github.io/info-page-wesus/img/email-logo-small.png";
@@ -608,109 +662,77 @@ function buildAccessPortalEmail({
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <title>Acesso ao Portal It's Wesus</title>
     </head>
-
     <body style="margin:0; padding:0; background-color:#071326; font-family:Arial, Helvetica, sans-serif;">
       <table border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color:#071326; padding:40px 20px;">
         <tr>
           <td align="center">
-
             <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width:560px; background-color:#0B1F3A; border:1px solid rgba(232,208,141,0.18); border-radius:24px; overflow:hidden; box-shadow:0 24px 60px rgba(0,0,0,0.45);">
-
               <tr>
                 <td align="center" style="padding:34px 32px 10px 32px;">
                   <img src="${logoUrl}" alt="It's Wesus" style="max-height:160px; width:auto; display:block; margin:0 auto; border:0;" />
                 </td>
               </tr>
-
               <tr>
                 <td style="padding:8px 36px 0 36px;">
                   <div style="height:1px; background:linear-gradient(90deg, transparent, rgba(232,208,141,0.45), transparent);"></div>
                 </td>
               </tr>
-
               <tr>
                 <td style="padding:32px 36px 10px 36px;">
                   <p style="margin:0 0 10px 0; color:#E8D08D; font-size:11px; letter-spacing:0.18em; text-transform:uppercase; font-weight:bold;">
                     Portal Privado do Investidor
                   </p>
-
                   <h1 style="margin:0 0 18px 0; color:#FFFFFF; font-family:Georgia, 'Times New Roman', serif; font-size:26px; line-height:1.25; font-weight:normal;">
                     O seu acesso já está ativo.
                   </h1>
-
                   <p style="margin:0 0 18px 0; color:rgba(255,255,255,0.76); font-size:14px; line-height:1.7;">
                     Olá, <strong style="color:#FFFFFF;">${investorName}</strong>.
                   </p>
-
                   <p style="margin:0 0 24px 0; color:rgba(255,255,255,0.76); font-size:14px; line-height:1.7;">
                     Temos o prazer de informar que o seu acesso exclusivo ao <strong style="color:#E8D08D;">Portal do Investidor It's Wesus</strong> já se encontra disponível.
-                    Através do portal, poderá consultar os seus contratos, imóveis associados, documentos, prazos de vencimento e projeções de rendimento.
                   </p>
                 </td>
               </tr>
-
               <tr>
-                <td style="padding:0 36px 28px 36px;">
+                <td style="padding:0 36px 24px 36px;">
                   <table border="0" cellpadding="0" cellspacing="0" width="100%" style="background:rgba(255,255,255,0.035); border:1px solid rgba(255,255,255,0.10); border-radius:18px; padding:0;">
                     <tr>
                       <td style="padding:22px 22px 8px 22px;">
                         <p style="margin:0 0 16px 0; color:#E8D08D; font-size:12px; letter-spacing:0.14em; text-transform:uppercase; font-weight:bold;">
                           Dados de Acesso
                         </p>
-
                         <p style="margin:0 0 12px 0; color:rgba(255,255,255,0.72); font-size:14px; line-height:1.5;">
-                          <strong style="color:#FFFFFF;">Portal:</strong><br>
+                          <strong style="color:#FFFFFF;">Portal Web:</strong><br>
                           <a href="${portalUrl}" style="color:#E8D08D; text-decoration:none;">${portalUrl}</a>
                         </p>
-
                         <p style="margin:0 0 12px 0; color:rgba(255,255,255,0.72); font-size:14px; line-height:1.5;">
                           <strong style="color:#FFFFFF;">E-mail de acesso:</strong><br>
                           <span style="color:#E8D08D;">${loginEmail}</span>
                         </p>
-
                         <p style="margin:0 0 18px 0; color:rgba(255,255,255,0.72); font-size:14px; line-height:1.5;">
                           <strong style="color:#FFFFFF;">Palavra-passe temporária:</strong><br>
                           <span style="color:#E8D08D; font-size:16px; letter-spacing:0.04em;">${temporaryPassword}</span>
                         </p>
                       </td>
                     </tr>
-
                     <tr>
-                      <td align="center" style="padding:4px 22px 24px 22px;">
-                        <a href="${portalUrl}" style="display:inline-block; background:linear-gradient(135deg,#E8D08D,#C5A059); color:#071326; text-decoration:none; padding:14px 24px; border-radius:14px; font-size:12px; font-weight:bold; letter-spacing:0.12em; text-transform:uppercase;">
-                          Aceder ao Portal
+                      <td align="center" style="padding:4px 22px 22px 22px;">
+                        <a href="${portalUrl}" style="display:inline-block; background:linear-gradient(135deg,#E8D08D,#C5A059); color:#071326; text-decoration:none; padding:14px 28px; border-radius:14px; font-size:12px; font-weight:bold; letter-spacing:0.12em; text-transform:uppercase;">
+                          Aceder via Navegador
                         </a>
                       </td>
                     </tr>
                   </table>
                 </td>
               </tr>
-
-              <tr>
-                <td style="padding:0 36px 32px 36px;">
-                  <p style="margin:0 0 12px 0; color:rgba(255,255,255,0.64); font-size:13px; line-height:1.6;">
-                    Por motivos de segurança, recomendamos que altere a sua palavra-passe após o primeiro acesso, através da área <strong style="color:#FFFFFF;">Conta</strong> dentro do portal.
-                  </p>
-
-                  <p style="margin:0; color:rgba(255,255,255,0.64); font-size:13px; line-height:1.6;">
-                    Caso tenha alguma dificuldade no acesso, poderá responder diretamente a este e-mail ou contactar a equipa It's Wesus.
-                  </p>
-                </td>
-              </tr>
-
               <tr>
                 <td align="center" style="padding:22px 36px 30px 36px; border-top:1px solid rgba(255,255,255,0.06);">
-                  <p style="margin:0 0 6px 0; color:rgba(255,255,255,0.45); font-size:11px; line-height:1.5;">
-                    Este é um canal exclusivo e estritamente confidencial.
-                  </p>
                   <p style="margin:0; color:rgba(255,255,255,0.28); font-size:10px;">
-                    © 2026 It's Wesus — Consulting & Investment
+                    &copy; 2026 It's Wesus — Consulting & Investment
                   </p>
                 </td>
               </tr>
-
             </table>
-
           </td>
         </tr>
       </table>
@@ -723,8 +745,89 @@ function corsHeaders() {
   return {
     "Access-Control-Allow-Origin": "*",
     "Access-Control-Allow-Methods": "GET, PUT, POST, OPTIONS",
-    "Access-Control-Allow-Headers": "Authorization, Content-Type",
+    "Access-Control-Allow-Headers":
+      "Authorization, Content-Type, X-Cron-Secret",
   };
+}
+
+// ────────────────────────────────────────────────────────
+// ✉️ TEMPLATE: EQUIPA IT'S WESUS (SEM MARCA NO ASSUNTO)
+// ────────────────────────────────────────────────────────
+function buildOpportunitiesEmail({
+  investorName = "Investidor(a)",
+  contactUrl = "https://wa.me/351968228919?text=Ol%C3%A1,%20gostaria%20de%20saber%20mais%20sobre%20os%205%20novos%20projetos.",
+}) {
+  const logoUrl = "https://itswesus.com/img/logo_itswesus_email.png";
+
+  const html = `
+    <!DOCTYPE html>
+    <html lang="pt">
+    <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body style="margin: 0; padding: 24px 0; background-color: #FFFFFF; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #222222; font-size: 15px; line-height: 1.65;">
+      
+      <div style="max-width: 580px; margin: 0 auto; padding: 0 16px;">
+        
+        <!-- Header Visual Oficial -->
+        <div style="margin-bottom: 26px; padding-bottom: 18px; border-bottom: 1px solid #EEEEEE; text-align: center;">
+          <img src="${logoUrl}" alt="It's Wesus" width="460" style="width: 100%; max-width: 460px; height: auto; display: block; margin: 0 auto; border-radius: 8px; border: 0;" />
+        </div>
+
+        <p style="margin: 0 0 16px 0;">
+          Olá, <strong>${investorName}</strong>. Tudo bem?
+        </p>
+
+        <p style="margin: 0 0 16px 0; color: #333333;">
+          Passamos por aqui para informar que estamos a abrir <strong>5 novos projetos imobiliários</strong> na It's Wesus este mês.
+        </p>
+
+        <p style="margin: 0 0 16px 0; color: #333333;">
+          Como as vagas para entrar em cada imóvel são reduzidas, quisemos falar consigo primeiro antes de fecharmos as participações nos próximos dias.
+        </p>
+
+        <p style="margin: 0 0 20px 0; color: #333333;">
+          Se quiser ver os valores, prazos e como funciona cada projeto, basta responder a este e-mail ou falar connosco no WhatsApp:
+        </p>
+
+        <!-- Link WhatsApp -->
+        <p style="margin: 0 0 28px 0; font-size: 15px;">
+          &rarr; <a href="${contactUrl}" target="_blank" style="color: #0B3C73; font-weight: bold; text-decoration: underline;">Fale connosco no WhatsApp (+351 968 228 919)</a>
+        </p>
+
+        <p style="margin: 0; font-size: 14px; color: #444444; line-height: 1.45;">
+          Com os melhores cumprimentos,<br><br>
+          <strong style="color: #111111;">Equipa It's Wesus</strong><br>
+          <span style="color: #666666;">Consulting & Investment</span><br>
+          <span style="color: #888888; font-size: 12px;">Tel: +351 968 228 919 &bull; <a href="mailto:geral@itswesus.com" style="color: #888888; text-decoration: none;">geral@itswesus.com</a></span>
+        </p>
+
+      </div>
+
+    </body>
+    </html>
+  `;
+
+  const text = `
+Olá, ${investorName}. Tudo bem?
+
+Passamos por aqui para informar que estamos a abrir 5 novos projetos imobiliários na It's Wesus este mês.
+
+Como as vagas para entrar em cada imóvel são reduzidas, quisemos falar consigo primeiro antes de fecharmos as participações nos próximos dias.
+
+Se quiser ver os valores, prazos e como funciona cada projeto, basta responder a este e-mail ou falar connosco no WhatsApp:
+
+Falar no WhatsApp: ${contactUrl}
+
+Com os melhores cumprimentos,
+
+Equipa It's Wesus
+Consulting & Investment
+Tel: +351 968 228 919 • geral@itswesus.com
+  `.trim();
+
+  return { html, text };
 }
 
 // 🔐 VALIDADOR CRIPTOGRÁFICO DE TOKENS JWT

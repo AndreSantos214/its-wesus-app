@@ -2,8 +2,19 @@
  * It's Wesus – Portal do Investidor
  * dashboard.js – Vanilla ES6+ | HIGH-END REAL-TIME DATABASE PERFORMANCE ENGINE
  */
+// Controlo de versão da aplicação
+const CURRENT_APP_VERSION = "2.0.1";
+const storedVersion = localStorage.getItem("wesus_app_version");
 
-"use strict";
+if (storedVersion && storedVersion !== CURRENT_APP_VERSION) {
+  localStorage.setItem("wesus_app_version", CURRENT_APP_VERSION);
+  // Recarrega a página forçando limpeza de cache do navegador
+  window.location.reload(true);
+} else if (!storedVersion) {
+  localStorage.setItem("wesus_app_version", CURRENT_APP_VERSION);
+}
+
+("use strict");
 
 /* ── CONFIGURAÇÃO GLOBAL DO SUPABASE ── */
 const SUPABASE_URL = "https://eolpgnlfxgmramzckxvo.supabase.co";
@@ -798,7 +809,8 @@ const InvestmentModalController = (() => {
         contextName = "Atualização informativa restrita";
       }
 
-      let monthsTarget = 6;
+      let currentMinAmount = 10000;
+      let monthsTarget = 8;
 
       const isSpecialUpdate =
         contextName.toLowerCase().includes("atualização informativa") ||
@@ -810,30 +822,17 @@ const InvestmentModalController = (() => {
         contextName.toLowerCase().includes("relâmpago") || isSpecialUpdate;
 
       if (
-        contextName.toLowerCase().includes("3 meses") ||
+        contextName.toLowerCase().includes("4 meses") ||
         contextName.toLowerCase().includes("curto prazo") ||
         isRelampago
       ) {
-        monthsTarget = 3;
-        planPeriod = "3 Meses";
+        monthsTarget = 4;
+        planPeriod = "4 Meses";
+        planTax = "Referência: 10%";
+        currentMinAmount = isRelampago ? 10000 : 50000;
 
-        if (isRelampago) {
-          planTax = "Referência: 10%";
-          const matchedPlan = activeConditions.find(
-            (c) =>
-              c.prazo_meses === 3 &&
-              c.categoria.toLowerCase().includes("premium"),
-          );
-          selectedCondicaoId = matchedPlan ? matchedPlan.id : null;
-        } else {
-          planTax = "Referência: 6,25%";
-          const matchedPlan = activeConditions.find(
-            (c) =>
-              c.prazo_meses === 3 &&
-              c.categoria.toLowerCase().includes("standard"),
-          );
-          selectedCondicaoId = matchedPlan ? matchedPlan.id : null;
-        }
+        const matchedPlan = activeConditions.find((c) => c.prazo_meses === 4);
+        selectedCondicaoId = matchedPlan ? matchedPlan.id : null;
       } else if (
         contextName.toLowerCase().includes("12 meses") ||
         contextName.toLowerCase().includes("performance")
@@ -841,20 +840,39 @@ const InvestmentModalController = (() => {
         monthsTarget = 12;
         planPeriod = "12 Meses";
         planTax = "Referência: 25%";
+        currentMinAmount = 10000;
 
         const matchedPlan = activeConditions.find((c) => c.prazo_meses === 12);
         selectedCondicaoId = matchedPlan ? matchedPlan.id : null;
       } else {
-        monthsTarget = 6;
-        planPeriod = "6 Meses";
-        planTax = "Referência: 12,5%";
+        monthsTarget = 8;
+        planPeriod = "8 Meses";
+        planTax = "Referência: 15% (+1% Bónus)";
+        currentMinAmount = 10000;
 
-        const matchedPlan = activeConditions.find((c) => c.prazo_meses === 6);
+        const matchedPlan = activeConditions.find((c) => c.prazo_meses === 8);
         selectedCondicaoId = matchedPlan ? matchedPlan.id : null;
       }
 
       if (!selectedCondicaoId && activeConditions.length > 0) {
         selectedCondicaoId = activeConditions[0].id;
+      }
+
+      if (amountInput) {
+        amountInput.min = currentMinAmount;
+        amountInput.placeholder = currentMinAmount;
+      }
+      const minLabel = document.getElementById("investMinLabel");
+      if (minLabel) {
+        minLabel.textContent = `referência a partir de € ${currentMinAmount.toLocaleString(
+          "pt-PT",
+        )}`;
+      }
+      const errorText = document.getElementById("amountErrorText");
+      if (errorText) {
+        errorText.textContent = `Indique um montante de referência a partir de € ${currentMinAmount.toLocaleString(
+          "pt-PT",
+        )},00.`;
       }
 
       if (planSubtitle) {
@@ -886,7 +904,8 @@ const InvestmentModalController = (() => {
     if (amountInput && errorMsg) {
       amountInput.addEventListener("input", () => {
         const val = parseFloat(amountInput.value);
-        if (!isNaN(val) && val < 5000) {
+        const minVal = parseFloat(amountInput.min) || 10000;
+        if (!isNaN(val) && val < minVal) {
           errorMsg.classList.remove("hidden");
           amountInput.style.borderColor = "#ff6b6b";
         } else {
@@ -899,8 +918,9 @@ const InvestmentModalController = (() => {
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
       const amountValue = parseFloat(amountInput.value);
+      const minVal = parseFloat(amountInput.min) || 10000;
 
-      if (isNaN(amountValue) || amountValue < 5000) {
+      if (isNaN(amountValue) || amountValue < minVal) {
         if (errorMsg) errorMsg.classList.remove("hidden");
         return;
       }
@@ -2827,10 +2847,10 @@ function buildContractCardHTML(ctr, idx) {
   if (meses == null || taxaRetorno == null) {
     const mapaPlanos = {
       "4c61fe43-b971-492b-b8c5-78fc7f046026": { meses: 3, taxa: "10" },
-      "6e5f0b2b-2d65-43c1-8679-e76aa5f31512": { meses: 3, taxa: "6.25" },
+      "6e5f0b2b-2d65-43c1-8679-e76aa5f31512": { meses: 4, taxa: "10" },
       "a9602a14-de39-4b4d-bc3f-b56a68eaea7b": { meses: 6, taxa: "10" },
       "c07128fb-99b5-4c87-855a-f01799a1944e": { meses: 12, taxa: "25" },
-      "d94bb0e0-943e-4ad4-86a8-b26ac06681ab": { meses: 6, taxa: "12.5" },
+      "d94bb0e0-943e-4ad4-86a8-b26ac06681ab": { meses: 8, taxa: "15" },
     };
 
     if (mapaPlanos[planoId]) {
