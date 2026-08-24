@@ -19,7 +19,7 @@ workflows:
       vars:
         BUNDLE_ID: "com.itswesus.portal"
         APP_NAME: "It's Wesus"
-        APP_VERSION: "1.0"
+        APP_VERSION: "1.0.1"
         IOS_DEPLOYMENT_TARGET: "15.0"
         XCODE_WORKSPACE: "ios/App/App.xcworkspace"
         XCODE_SCHEME: "App"
