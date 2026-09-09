@@ -1,0 +1,900 @@
+import { connect } from "cloudflare:sockets";
+
+// 🧠 Memória Global do Isolate
+let cachedJWKS = null;
+let cachedB2Auth = null;
+let b2AuthExpiry = 0;
+
+export default {
+  async fetch(request, env) {
+    if (request.method === "OPTIONS") {
+      return new Response(null, { headers: corsHeaders() });
+    }
+
+    try {
+      const url = new URL(request.url);
+      const pathname = url.pathname;
+
+      if (pathname === "/" || pathname === "") {
+        return new Response(
+          "It's Wesus Asset & Communication Proxy Ativo (Quiet Luxury Brevo Engine)",
+          { status: 200, headers: corsHeaders() },
+        );
+      }
+
+      // ────────────────────────────────────────────────────────
+      // ROTA C: ENVIO DE ACESSO AO PORTAL DO INVESTIDOR
+      // ────────────────────────────────────────────────────────
+      if (pathname === "/api/send-access-email" && request.method === "POST") {
+        const cronSecret = request.headers.get("X-Cron-Secret");
+
+        if (!cronSecret || cronSecret !== env.CRON_SECRET) {
+          return new Response(
+            "Acesso Negado: Chave de validação inválida ou em falta.",
+            {
+              status: 401,
+              headers: corsHeaders(),
+            },
+          );
+        }
+
+        const payload = await request.json();
+
+        const {
+          mode = "test",
+          to = "andressantos214@gmail.com",
+          investorName = "Andre Santos",
+          loginEmail = "andressantos214@gmail.com",
+          temporaryPassword = "SenhaTemporaria@2026",
+          portalUrl = "https://itswesus.com/www/index.html",
+        } = payload;
+
+        const emailHTML = buildAccessPortalEmail({
+          investorName,
+          loginEmail,
+          temporaryPassword,
+          portalUrl,
+        });
+
+        await sendEmailViaBrevo(
+          {
+            to,
+            name: investorName,
+            subject: "Acesso ao Portal Privado do Investidor — It's Wesus",
+            html: emailHTML,
+          },
+          env,
+        );
+
+        return new Response(
+          JSON.stringify({
+            success: true,
+            mode,
+            sent_to: to,
+            login_email: loginEmail,
+            message: "E-mail de acesso enviado com sucesso.",
+          }),
+          {
+            status: 200,
+            headers: {
+              ...corsHeaders(),
+              "Content-Type": "application/json",
+            },
+          },
+        );
+      }
+
+      // ────────────────────────────────────────────────────────
+      // ROTA D: ENVIO DE OPORTUNIDADES (EQUIPA IT'S WESUS)
+      // ────────────────────────────────────────────────────────
+      if (
+        pathname === "/api/send-opportunities-email" &&
+        request.method === "POST"
+      ) {
+        const cronSecret = request.headers.get("X-Cron-Secret");
+        if (!cronSecret || cronSecret !== env.CRON_SECRET) {
+          return new Response("Acesso Negado", {
+            status: 401,
+            headers: corsHeaders(),
+          });
+        }
+
+        const payload = await request.json();
+        const { to, investorName = "Investidor(a)" } = payload;
+
+        const { html, text } = buildOpportunitiesEmail({ investorName });
+
+        // Assunto 100% limpo, sem nome de empresa ou marcadores
+        const subject = "Novos projetos imobiliários em curso";
+
+        await sendEmailViaBrevo(
+          {
+            to,
+            name: investorName,
+            subject,
+            html,
+            text,
+            senderName: "Equipa It's Wesus",
+            replyTo: {
+              email: "geral@itswesus.com",
+              name: "Equipa It's Wesus",
+            },
+          },
+          env,
+        );
+
+        return new Response(JSON.stringify({ success: true, sent_to: to }), {
+          status: 200,
+          headers: { ...corsHeaders(), "Content-Type": "application/json" },
+        });
+      }
+
+      // ────────────────────────────────────────────────────────
+      // ROTA A: RECIBO DE PEDIDO DE INFORMAÇÃO (DIRECT FETCH)
+      // ────────────────────────────────────────────────────────
+      if (pathname === "/api/notify-lead" && request.method === "POST") {
+        const payload = await request.json();
+
+        const record = payload.record;
+        if (!record) {
+          return new Response("Payload inválido: objeto 'record' em falta.", {
+            status: 400,
+            headers: corsHeaders(),
+          });
+        }
+
+        const userRes = await fetch(
+          `${env.SUPABASE_PROJECT_URL}/rest/v1/utilizadores?id=eq.${record.utilizador_id}&select=*`,
+          {
+            headers: {
+              apikey: env.SUPABASE_SERVICE_ROLE_KEY,
+              Authorization: `Bearer ${env.SUPABASE_SERVICE_ROLE_KEY}`,
+            },
+          },
+        );
+
+        if (!userRes.ok) {
+          const errText = await userRes.text();
+          return new Response(
+            `[Supabase Error] Falha ao consultar utilizadores: ${errText}`,
+            { status: 500, headers: corsHeaders() },
+          );
+        }
+
+        const users = await userRes.json();
+        if (users.length === 0) {
+          return new Response(
+            "[Data Error] O UUID do investidor não existe na tabela.",
+            { status: 404, headers: corsHeaders() },
+          );
+        }
+
+        const investor = users[0];
+
+        const condRes = await fetch(
+          `${env.SUPABASE_PROJECT_URL}/rest/v1/condicoes_comerciais?id=eq.${record.condicao_id}&select=*`,
+          {
+            headers: {
+              apikey: env.SUPABASE_SERVICE_ROLE_KEY,
+              Authorization: `Bearer ${env.SUPABASE_SERVICE_ROLE_KEY}`,
+            },
+          },
+        );
+
+        const conds = condRes.ok ? await condRes.json() : [];
+        const condition = Array.isArray(conds) ? conds[0] : null;
+
+        const valorFormatado = parseFloat(
+          record.valor_pretendido,
+        ).toLocaleString("pt-PT", { style: "currency", currency: "EUR" });
+        const planoNome = condition
+          ? condition.nome_plano
+          : "Modalidade informativa do portal";
+        const taxaRetorno = condition
+          ? `${condition.taxa_retorno}%`
+          : "Sob Consulta";
+        const dataFormatada = new Date(
+          record.data_inicio_pretendida,
+        ).toLocaleDateString("pt-PT");
+
+        const emailHTMLInvestor = buildEmailTemplate(
+          "Pedido de Informação Recebido",
+          `Olá, ${investor.nome_completo}.`,
+          `Confirmamos a receção do seu pedido de informação no <strong>Portal do Investidor It's Wesus</strong>.`,
+          `
+            <p style="margin: 0 0 10px 0; font-size: 14px; color: rgba(255,255,255,0.7);"><strong>Modalidade consultada:</strong> ${planoNome}</p>
+            <p style="margin: 0 0 10px 0; font-size: 14px; color: rgba(255,255,255,0.7);"><strong>Montante de referência indicado:</strong> ${valorFormatado}</p>
+            <p style="margin: 0 0 10px 0; font-size: 14px; color: rgba(255,255,255,0.7);"><strong>Referência apresentada:</strong> ${taxaRetorno}</p>
+            <p style="margin: 0 0 0px 0; font-size: 14px; color: rgba(255,255,255,0.7);"><strong>Data preferencial para contacto:</strong> ${dataFormatada}</p>
+          `,
+          "A equipa It's Wesus poderá entrar em contacto para prestar informações adicionais. Este pedido não representa compra, pagamento, subscrição, contratação de investimento ou transação financeira dentro da aplicação.",
+        );
+
+        const emailHTMLAdmin = buildEmailTemplate(
+          "Novo Pedido de Informação pelo Portal",
+          "Atenção Equipa,",
+          "Recebemos um pedido de contacto informativo através do Portal do Investidor. Por favor, entre em contacto com este utilizador para prestar informações adicionais fora da aplicação.",
+          `
+            <p style="margin: 0 0 10px 0; font-size: 14px; color: #E8D08D;"><strong>DADOS DO INVESTIDOR:</strong></p>
+            <p style="margin: 0 0 6px 0; font-size: 13px; color: rgba(255,255,255,0.7);"><strong>Nome Completo:</strong> ${
+              investor.nome_completo
+            }</p>
+            <p style="margin: 0 0 6px 0; font-size: 13px; color: rgba(255,255,255,0.7);"><strong>E-mail de Contacto:</strong> ${
+              investor.email
+            }</p>
+            <p style="margin: 0 0 16px 0; font-size: 13px; color: rgba(255,255,255,0.7);"><strong>Telemóvel:</strong> ${
+              investor.telemovel || "Não Fornecido"
+            }</p>
+            
+            <p style="margin: 0 0 10px 0; font-size: 14px; color: #E8D08D; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 12px;"><strong>INFORMAÇÕES CONSULTADAS:</strong></p>
+            <p style="margin: 0 0 6px 0; font-size: 13px; color: rgba(255,255,255,0.7);"><strong>Modalidade Escolhida:</strong> ${planoNome}</p>
+            <p style="margin: 0 0 6px 0; font-size: 13px; color: rgba(255,255,255,0.7);"><strong>Montante de referência:</strong> ${valorFormatado}</p>
+            <p style="margin: 0 0 0px 0; font-size: 13px; color: rgba(255,255,255,0.7);"><strong>Data preferencial para contacto:</strong> ${dataFormatada}</p>
+          `,
+          "Este alerta operacional interno foi ativado pelo sistema do Portal do Investidor após o utilizador solicitar contacto informativo dentro da aplicação.",
+        );
+
+        await sendEmailViaBrevo(
+          {
+            to: investor.email,
+            name: investor.nome_completo,
+            subject: `It's Wesus - Pedido de Informação Recebido`,
+            html: emailHTMLInvestor,
+          },
+          env,
+        );
+
+        const listaEquipa = [
+          "geral@itswesus.com",
+          "andressantos214@gmail.com",
+          "danilsonjcarvalho@gmail.com",
+          "sara.lavado.barbosa@gmail.com",
+        ];
+
+        for (const emailEquipa of listaEquipa) {
+          if (investor.email !== emailEquipa) {
+            await sendEmailViaBrevo(
+              {
+                to: emailEquipa,
+                subject: `[ALERTA OPERACIONAL] Pedido de Informação - ${investor.nome_completo}`,
+                html: emailHTMLAdmin,
+              },
+              env,
+            );
+          }
+        }
+
+        return new Response(
+          JSON.stringify({ success: true, message: "Processado com sucesso." }),
+          {
+            status: 200,
+            headers: corsHeaders(),
+          },
+        );
+      }
+
+      // ────────────────────────────────────────────────────────
+      // ROTA B: VERIFICAÇÃO DIÁRIA DE VENCIMENTOS (CRONJOB)
+      // ────────────────────────────────────────────────────────
+      if (pathname === "/api/check-vencimentos" && request.method === "POST") {
+        const cronSecret = request.headers.get("X-Cron-Secret");
+        if (!cronSecret || cronSecret !== env.CRON_SECRET) {
+          return new Response(
+            "Acesso Negado: Chave de validação de Cron inválida ou em falta.",
+            {
+              status: 401,
+              headers: corsHeaders(),
+            },
+          );
+        }
+
+        const contratosRes = await fetch(
+          `${env.SUPABASE_PROJECT_URL}/rest/v1/contratos_cliente?status_termo=eq.Ativo em Curso&select=*`,
+          {
+            headers: {
+              apikey: env.SUPABASE_SERVICE_ROLE_KEY,
+              Authorization: `Bearer ${env.SUPABASE_SERVICE_ROLE_KEY}`,
+            },
+          },
+        );
+
+        if (!contratosRes.ok)
+          return new Response("Erro ao varrer contratos", { status: 500 });
+        const contratos = await contratosRes.json();
+
+        const hoje = new Date();
+        hoje.setHours(0, 0, 0, 0);
+
+        for (const ctr of contratos) {
+          const dataVenc = new Date(ctr.data_vencimento);
+          dataVenc.setHours(0, 0, 0, 0);
+
+          const diffTime = dataVenc - hoje;
+          const diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24));
+
+          if (diffDays === 30 || diffDays === 7) {
+            const prefRes = await fetch(
+              `${env.SUPABASE_PROJECT_URL}/rest/v1/preferencias_conta?utilizador_id=eq.${ctr.utilizador_id}&select=alerta_vencimento`,
+              {
+                headers: {
+                  apikey: env.SUPABASE_SERVICE_ROLE_KEY,
+                  Authorization: `Bearer ${env.SUPABASE_SERVICE_ROLE_KEY}`,
+                },
+              },
+            );
+
+            const prefs = prefRes.ok ? await prefRes.json() : [];
+
+            if (prefs.length > 0 && prefs[0].alerta_vencimento === false) {
+              console.log(
+                `[CRON SKIP] Alertas desativados pelo utilizador: ${ctr.utilizador_id}`,
+              );
+              continue;
+            }
+
+            const userRes = await fetch(
+              `${env.SUPABASE_PROJECT_URL}/rest/v1/utilizadores?id=eq.${ctr.utilizador_id}&select=*`,
+              {
+                headers: {
+                  apikey: env.SUPABASE_SERVICE_ROLE_KEY,
+                  Authorization: `Bearer ${env.SUPABASE_SERVICE_ROLE_KEY}`,
+                },
+              },
+            );
+            const users = await userRes.json();
+            const investor = Array.isArray(users) ? users[0] : null;
+
+            if (investor) {
+              const capitalFormatado = parseFloat(
+                ctr.capital_investido,
+              ).toLocaleString("pt-PT", { style: "currency", currency: "EUR" });
+              const rendimentoFormatado = parseFloat(
+                ctr.rendimento_liquido,
+              ).toLocaleString("pt-PT", { style: "currency", currency: "EUR" });
+
+              const emailHTML = buildEmailTemplate(
+                "Aviso de Maturidade de Ativo",
+                `Prezado(a) ${investor.nome_completo},`,
+                `Informamos que o seu Contrato de Mútuo Privado está próximo do encerramento do ciclo temporal de alocação de liquidez.`,
+                `
+                  <p style="margin: 0 0 10px 0; font-size: 14px; color: rgba(255,255,255,0.7);"><strong>Prazo de Liquidação:</strong> Faltam exatamente ${diffDays} dias</p>
+                  <p style="margin: 0 0 10px 0; font-size: 14px; color: rgba(255,255,255,0.7);"><strong>Capital Investido Original:</strong> ${capitalFormatado}</p>
+                  <p style="margin: 0 0 10px 0; font-size: 14px; color: rgba(255,255,255,0.7);"><strong>Rendimento Líquido Gerado:</strong> ${rendimentoFormatado}</p>
+                  <p style="margin: 0 0 0px 0; font-size: 14px; color: rgba(255,255,255,0.7);"><strong>Data Exata de Vencimento:</strong> ${dataVenc.toLocaleDateString(
+                    "pt-PT",
+                  )}</p>
+                `,
+                "Aceda ao seu Portal do Investidor privado para manifestar a sua instrução de liquidação.",
+              );
+
+              await sendEmailViaBrevo(
+                {
+                  to: investor.email,
+                  name: investor.nome_completo,
+                  subject: `It's Wesus - Alerta de Vencimento (${diffDays} Dias)`,
+                  html: emailHTML,
+                },
+                env,
+              );
+            }
+          }
+        }
+        return new Response(JSON.stringify({ checked: true }), {
+          status: 200,
+          headers: corsHeaders(),
+        });
+      }
+
+      // 🔐 VALIDAÇÃO DE SEGURANÇA JWT (Storage)
+      if (
+        (request.method === "PUT" ||
+          request.method === "POST" ||
+          request.method === "DELETE") &&
+        !pathname.startsWith("/api/")
+      ) {
+        const authHeader = request.headers.get("Authorization");
+        if (!authHeader || !authHeader.startsWith("Bearer ")) {
+          return new Response("Acesso Negado: Token não fornecido", {
+            status: 401,
+            headers: corsHeaders(),
+          });
+        }
+        const token = authHeader.split(" ")[1];
+
+        const isValid = await verifySupabaseJWKS(
+          token,
+          env.SUPABASE_PROJECT_URL,
+        );
+        if (!isValid) {
+          return new Response("Acesso Negado: Token Inválido ou Expirado", {
+            status: 403,
+            headers: corsHeaders(),
+          });
+        }
+      }
+
+      // ⚡ MOTOR DE CACHE B2
+      const now = Date.now();
+      if (!cachedB2Auth || now >= b2AuthExpiry) {
+        const authRes = await fetch(
+          "https://api.backblazeb2.com/b2api/v2/b2_authorize_account",
+          {
+            headers: {
+              Authorization:
+                "Basic " + btoa(`${env.B2_KEY_ID}:${env.B2_APPLICATION_KEY}`),
+            },
+          },
+        );
+        if (!authRes.ok)
+          throw new Error("Falha na autenticação com o cluster Backblaze B2.");
+
+        cachedB2Auth = await authRes.json();
+        b2AuthExpiry = now + 12 * 60 * 60 * 1000;
+      }
+
+      // 📥 GET B2
+      if (request.method === "GET") {
+        const b2DownloadUrl = `${cachedB2Auth.downloadUrl}/file/${env.B2_BUCKET_NAME}${pathname}`;
+        const b2Response = await fetch(b2DownloadUrl, {
+          method: "GET",
+          headers: { Authorization: cachedB2Auth.authorizationToken },
+        });
+        if (!b2Response.ok)
+          return new Response("Não encontrado", {
+            status: 404,
+            headers: corsHeaders(),
+          });
+
+        const responseHeaders = new Headers(b2Response.headers);
+        responseHeaders.set("Access-Control-Allow-Origin", "*");
+        responseHeaders.set("Cache-Control", "public, max-age=86400");
+
+        const inferredContentType = inferContentType(pathname);
+        if (inferredContentType) {
+          responseHeaders.set("Content-Type", inferredContentType);
+        }
+        responseHeaders.set("Cross-Origin-Resource-Policy", "cross-origin");
+
+        return new Response(b2Response.body, {
+          status: b2Response.status,
+          headers: responseHeaders,
+        });
+      }
+
+      // 📤 PUT B2
+      if (request.method === "PUT") {
+        const getUploadUrlRes = await fetch(
+          `${cachedB2Auth.apiUrl}/b2api/v2/b2_get_upload_url`,
+          {
+            method: "POST",
+            headers: {
+              Authorization: cachedB2Auth.authorizationToken,
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ bucketId: env.B2_BUCKET_ID }),
+          },
+        );
+
+        if (!getUploadUrlRes.ok) {
+          const errText = await getUploadUrlRes.text();
+          return new Response(
+            `[B2 Upload Error] Falha ao obter URL de upload: ${errText}`,
+            { status: 500, headers: corsHeaders() },
+          );
+        }
+
+        const uploadUrlData = await getUploadUrlRes.json();
+        const fileName = pathname.startsWith("/")
+          ? pathname.substring(1)
+          : pathname;
+        const fileBuffer = await request.arrayBuffer();
+
+        const b2UploadResponse = await fetch(uploadUrlData.uploadUrl, {
+          method: "POST",
+          headers: {
+            Authorization: uploadUrlData.authorizationToken,
+            "X-Bz-File-Name": fileName
+              .split("/")
+              .map(encodeURIComponent)
+              .join("/"),
+            "Content-Type": request.headers.get("Content-Type") || "image/webp",
+            "X-Bz-Content-Sha1": "do_not_verify",
+          },
+          body: fileBuffer,
+        });
+
+        if (!b2UploadResponse.ok) {
+          const errText = await b2UploadResponse.text();
+          return new Response(
+            `[B2 Storage Error] Erro na escrita física: ${errText}`,
+            { status: 500, headers: corsHeaders() },
+          );
+        }
+
+        return new Response(JSON.stringify({ success: true, path: fileName }), {
+          status: 200,
+          headers: { ...corsHeaders(), "Content-Type": "application/json" },
+        });
+      }
+
+      return new Response("Método não permitido", {
+        status: 405,
+        headers: corsHeaders(),
+      });
+    } catch (error) {
+      return new Response(`Erro Interno no Proxy: ${error.message}`, {
+        status: 500,
+        headers: corsHeaders(),
+      });
+    }
+  },
+};
+
+function inferContentType(pathname) {
+  const path = pathname.toLowerCase();
+  if (path.endsWith(".webp")) return "image/webp";
+  if (path.endsWith(".jpg") || path.endsWith(".jpeg")) return "image/jpeg";
+  if (path.endsWith(".png")) return "image/png";
+  if (path.endsWith(".svg")) return "image/svg+xml";
+  if (path.endsWith(".pdf")) return "application/pdf";
+  return null;
+}
+
+// ────────────────────────────────────────────────────────
+// ✉️ MOTOR BREVO COM SUPORTE MULTIPART (HTML + TEXTO PURO)
+// ────────────────────────────────────────────────────────
+async function sendEmailViaBrevo(
+  { to, name, subject, html, text, senderName, replyTo },
+  env,
+) {
+  if (!env.BREVO_API_KEY)
+    throw new Error("Secret BREVO_API_KEY não configurado.");
+
+  const payload = {
+    sender: {
+      name: senderName || "Danilson Carvalho | It's Wesus",
+      email: "geral@itswesus.com",
+    },
+    to: [{ email: to, name: name || "Investidor" }],
+    replyTo: replyTo || {
+      email: "geral@itswesus.com",
+      name: "Danilson Carvalho",
+    },
+    subject: subject,
+    htmlContent: html,
+  };
+
+  if (text) {
+    payload.textContent = text;
+  }
+
+  const res = await fetch("https://api.brevo.com/v3/smtp/email", {
+    method: "POST",
+    headers: {
+      accept: "application/json",
+      "api-key": env.BREVO_API_KEY,
+      "content-type": "application/json",
+    },
+    body: JSON.stringify(payload),
+  });
+
+  if (!res.ok) {
+    const errText = await res.text();
+    throw new Error(`[Brevo SMTP Error ${res.status}] ${errText}`);
+  }
+}
+
+// ────────────────────────────────────────────────────────
+// 🎨 TEMPLATE BASE DO SISTEMA
+// ────────────────────────────────────────────────────────
+function buildEmailTemplate(
+  tituloTopico,
+  saudacao,
+  paragrafoCorpo,
+  cardHTML,
+  notaRodape,
+) {
+  const logoUrl =
+    "https://andresantos214.github.io/info-page-wesus/img/email-logo-small.png";
+  return `
+    <!DOCTYPE html>
+    <html>
+    <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"></head>
+    <body style="margin: 0; padding: 0; background-color: #071326; font-family: Arial, sans-serif;">
+      <table border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #071326; padding: 40px 20px;">
+        <tr>
+          <td align="center">
+            <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 540px; background-color: #0B1F3A; border: 1px solid rgba(255,255,255,0.06); border-radius: 24px; padding: 40px; box-shadow: 0 20px 40px rgba(0,0,0,0.4);">
+              <tr>
+                <td align="center" style="padding-bottom: 25px; border-bottom: 1px solid rgba(255,255,255,0.05);">
+                  <img src="${logoUrl}" alt="It's Wesus" style="max-height: 200px; width: auto; display: block; margin: 0 auto; border: 0; margin-bottom: -4rem; margin-top:-4rem;" />
+                </td>
+              </tr>
+              <tr>
+                <td style="padding-top: 30px;">
+                  <h2 style="font-family: Georgia, serif; color: #FFFFFF; font-size: 18px; font-weight: normal; margin: 0 0 16px 0;">${saudacao}</h2>
+                  <p style="color: rgba(255,255,255,0.75); font-size: 14px; line-height: 1.6; margin: 0 0 24px 0;">${paragrafoCorpo}</p>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <table border="0" cellpadding="0" cellspacing="0" width="100%" style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 20px; margin-bottom: 24px;">
+                    <tr><td>${cardHTML}</td></tr>
+                  </table>
+                </td>
+              </tr>
+              <tr>
+                <td><p style="color: rgba(255,255,255,0.6); font-size: 13px; line-height: 1.5; margin: 0 0 30px 0; font-style: italic;">${notaRodape}</p></td>
+              </tr>
+              <tr>
+                <td align="center" style="padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.05); color: rgba(255,255,255,0.3); font-size: 10px;">
+                  Este é um canal exclusivo e estritamente confidencial.<br>&copy; 2026 It's Wesus.
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+    </body>
+    </html>
+  `;
+}
+
+// ────────────────────────────────────────────────────────
+// 🔐 TEMPLATE DE ACESSO AO PORTAL
+// ────────────────────────────────────────────────────────
+function buildAccessPortalEmail({
+  investorName,
+  loginEmail,
+  temporaryPassword,
+  portalUrl = "https://itswesus.com/www/index.html",
+  appStoreUrl = "https://apps.apple.com/pt/app/its-wesus/id6787109143",
+  googlePlayUrl = "https://play.google.com/store/apps/details?id=com.itswesus.portal&pcampaignid=web_share",
+}) {
+  const logoUrl =
+    "https://andresantos214.github.io/info-page-wesus/img/email-logo-small.png";
+
+  return `
+    <!DOCTYPE html>
+    <html lang="pt">
+    <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Acesso ao Portal It's Wesus</title>
+    </head>
+    <body style="margin:0; padding:0; background-color:#071326; font-family:Arial, Helvetica, sans-serif;">
+      <table border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color:#071326; padding:40px 20px;">
+        <tr>
+          <td align="center">
+            <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width:560px; background-color:#0B1F3A; border:1px solid rgba(232,208,141,0.18); border-radius:24px; overflow:hidden; box-shadow:0 24px 60px rgba(0,0,0,0.45);">
+              <tr>
+                <td align="center" style="padding:34px 32px 10px 32px;">
+                  <img src="${logoUrl}" alt="It's Wesus" style="max-height:160px; width:auto; display:block; margin:0 auto; border:0;" />
+                </td>
+              </tr>
+              <tr>
+                <td style="padding:8px 36px 0 36px;">
+                  <div style="height:1px; background:linear-gradient(90deg, transparent, rgba(232,208,141,0.45), transparent);"></div>
+                </td>
+              </tr>
+              <tr>
+                <td style="padding:32px 36px 10px 36px;">
+                  <p style="margin:0 0 10px 0; color:#E8D08D; font-size:11px; letter-spacing:0.18em; text-transform:uppercase; font-weight:bold;">
+                    Portal Privado do Investidor
+                  </p>
+                  <h1 style="margin:0 0 18px 0; color:#FFFFFF; font-family:Georgia, 'Times New Roman', serif; font-size:26px; line-height:1.25; font-weight:normal;">
+                    O seu acesso já está ativo.
+                  </h1>
+                  <p style="margin:0 0 18px 0; color:rgba(255,255,255,0.76); font-size:14px; line-height:1.7;">
+                    Olá, <strong style="color:#FFFFFF;">${investorName}</strong>.
+                  </p>
+                  <p style="margin:0 0 24px 0; color:rgba(255,255,255,0.76); font-size:14px; line-height:1.7;">
+                    Temos o prazer de informar que o seu acesso exclusivo ao <strong style="color:#E8D08D;">Portal do Investidor It's Wesus</strong> já se encontra disponível.
+                  </p>
+                </td>
+              </tr>
+              <tr>
+                <td style="padding:0 36px 24px 36px;">
+                  <table border="0" cellpadding="0" cellspacing="0" width="100%" style="background:rgba(255,255,255,0.035); border:1px solid rgba(255,255,255,0.10); border-radius:18px; padding:0;">
+                    <tr>
+                      <td style="padding:22px 22px 8px 22px;">
+                        <p style="margin:0 0 16px 0; color:#E8D08D; font-size:12px; letter-spacing:0.14em; text-transform:uppercase; font-weight:bold;">
+                          Dados de Acesso
+                        </p>
+                        <p style="margin:0 0 12px 0; color:rgba(255,255,255,0.72); font-size:14px; line-height:1.5;">
+                          <strong style="color:#FFFFFF;">Portal Web:</strong><br>
+                          <a href="${portalUrl}" style="color:#E8D08D; text-decoration:none;">${portalUrl}</a>
+                        </p>
+                        <p style="margin:0 0 12px 0; color:rgba(255,255,255,0.72); font-size:14px; line-height:1.5;">
+                          <strong style="color:#FFFFFF;">E-mail de acesso:</strong><br>
+                          <span style="color:#E8D08D;">${loginEmail}</span>
+                        </p>
+                        <p style="margin:0 0 18px 0; color:rgba(255,255,255,0.72); font-size:14px; line-height:1.5;">
+                          <strong style="color:#FFFFFF;">Palavra-passe temporária:</strong><br>
+                          <span style="color:#E8D08D; font-size:16px; letter-spacing:0.04em;">${temporaryPassword}</span>
+                        </p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td align="center" style="padding:4px 22px 22px 22px;">
+                        <a href="${portalUrl}" style="display:inline-block; background:linear-gradient(135deg,#E8D08D,#C5A059); color:#071326; text-decoration:none; padding:14px 28px; border-radius:14px; font-size:12px; font-weight:bold; letter-spacing:0.12em; text-transform:uppercase;">
+                          Aceder via Navegador
+                        </a>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+              <tr>
+                <td align="center" style="padding:22px 36px 30px 36px; border-top:1px solid rgba(255,255,255,0.06);">
+                  <p style="margin:0; color:rgba(255,255,255,0.28); font-size:10px;">
+                    &copy; 2026 It's Wesus — Consulting & Investment
+                  </p>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+    </body>
+    </html>
+  `;
+}
+
+function corsHeaders() {
+  return {
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Methods": "GET, PUT, POST, OPTIONS",
+    "Access-Control-Allow-Headers":
+      "Authorization, Content-Type, X-Cron-Secret",
+  };
+}
+
+// ────────────────────────────────────────────────────────
+// ✉️ TEMPLATE: EQUIPA IT'S WESUS (SEM MARCA NO ASSUNTO)
+// ────────────────────────────────────────────────────────
+function buildOpportunitiesEmail({
+  investorName = "Investidor(a)",
+  contactUrl = "https://wa.me/351968228919?text=Ol%C3%A1,%20gostaria%20de%20saber%20mais%20sobre%20os%205%20novos%20projetos.",
+}) {
+  const logoUrl = "https://itswesus.com/img/logo_itswesus_email.png";
+
+  const html = `
+    <!DOCTYPE html>
+    <html lang="pt">
+    <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body style="margin: 0; padding: 24px 0; background-color: #FFFFFF; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #222222; font-size: 15px; line-height: 1.65;">
+      
+      <div style="max-width: 580px; margin: 0 auto; padding: 0 16px;">
+        
+        <!-- Header Visual Oficial -->
+        <div style="margin-bottom: 26px; padding-bottom: 18px; border-bottom: 1px solid #EEEEEE; text-align: center;">
+          <img src="${logoUrl}" alt="It's Wesus" width="460" style="width: 100%; max-width: 460px; height: auto; display: block; margin: 0 auto; border-radius: 8px; border: 0;" />
+        </div>
+
+        <p style="margin: 0 0 16px 0;">
+          Olá, <strong>${investorName}</strong>. Tudo bem?
+        </p>
+
+        <p style="margin: 0 0 16px 0; color: #333333;">
+          Passamos por aqui para informar que estamos a abrir <strong>5 novos projetos imobiliários</strong> na It's Wesus este mês.
+        </p>
+
+        <p style="margin: 0 0 16px 0; color: #333333;">
+          Como as vagas para entrar em cada imóvel são reduzidas, quisemos falar consigo primeiro antes de fecharmos as participações nos próximos dias.
+        </p>
+
+        <p style="margin: 0 0 20px 0; color: #333333;">
+          Se quiser ver os valores, prazos e como funciona cada projeto, basta responder a este e-mail ou falar connosco no WhatsApp:
+        </p>
+
+        <!-- Link WhatsApp -->
+        <p style="margin: 0 0 28px 0; font-size: 15px;">
+          &rarr; <a href="${contactUrl}" target="_blank" style="color: #0B3C73; font-weight: bold; text-decoration: underline;">Fale connosco no WhatsApp (+351 968 228 919)</a>
+        </p>
+
+        <p style="margin: 0; font-size: 14px; color: #444444; line-height: 1.45;">
+          Com os melhores cumprimentos,<br><br>
+          <strong style="color: #111111;">Equipa It's Wesus</strong><br>
+          <span style="color: #666666;">Consulting & Investment</span><br>
+          <span style="color: #888888; font-size: 12px;">Tel: +351 968 228 919 &bull; <a href="mailto:geral@itswesus.com" style="color: #888888; text-decoration: none;">geral@itswesus.com</a></span>
+        </p>
+
+      </div>
+
+    </body>
+    </html>
+  `;
+
+  const text = `
+Olá, ${investorName}. Tudo bem?
+
+Passamos por aqui para informar que estamos a abrir 5 novos projetos imobiliários na It's Wesus este mês.
+
+Como as vagas para entrar em cada imóvel são reduzidas, quisemos falar consigo primeiro antes de fecharmos as participações nos próximos dias.
+
+Se quiser ver os valores, prazos e como funciona cada projeto, basta responder a este e-mail ou falar connosco no WhatsApp:
+
+Falar no WhatsApp: ${contactUrl}
+
+Com os melhores cumprimentos,
+
+Equipa It's Wesus
+Consulting & Investment
+Tel: +351 968 228 919 • geral@itswesus.com
+  `.trim();
+
+  return { html, text };
+}
+
+// 🔐 VALIDADOR CRIPTOGRÁFICO DE TOKENS JWT
+async function verifySupabaseJWKS(token, projectUrl) {
+  try {
+    const parts = token.split(".");
+    if (parts.length !== 3) return false;
+    const [headerB64, payloadB64, signatureB64] = parts;
+
+    let pB64 = payloadB64.replace(/-/g, "+").replace(/_/g, "/");
+    while (pB64.length % 4) pB64 += "=";
+    const payload = JSON.parse(atob(pB64));
+    if (payload.exp && Math.floor(Date.now() / 1000) > payload.exp)
+      return false;
+
+    let hB64 = headerB64.replace(/-/g, "+").replace(/_/g, "/");
+    while (hB64.length % 4) hB64 += "=";
+    const header = JSON.parse(atob(hB64));
+    const kid = header.kid;
+
+    if (!cachedJWKS) {
+      const jwksRes = await fetch(
+        `${projectUrl}/auth/v1/.well-known/jwks.json`,
+      );
+      if (jwksRes.ok) cachedJWKS = await jwksRes.json();
+      else return false;
+    }
+
+    let jwk = cachedJWKS.keys.find((k) => k.kid === kid);
+    if (!jwk) {
+      const jwksRes = await fetch(
+        `${projectUrl}/auth/v1/.well-known/jwks.json`,
+      );
+      if (jwksRes.ok) {
+        cachedJWKS = await jwksRes.json();
+        jwk = cachedJWKS.keys.find((k) => k.kid === kid);
+        if (!jwk) return false;
+      } else return false;
+    }
+
+    let importAlgorithm =
+      jwk.alg === "RS256" || jwk.kty === "RSA"
+        ? { name: "RSASSA-PKCS1-v1_5", hash: { name: "SHA-256" } }
+        : { name: "ECDSA", namedCurve: "P-256" };
+
+    let verifyAlgorithm =
+      jwk.alg === "RS256" || jwk.kty === "RSA"
+        ? "RSASSA-PKCS1-v1_5"
+        : { name: "ECDSA", hash: { name: "SHA-256" } };
+
+    const cryptoKey = await crypto.subtle.importKey(
+      "jwk",
+      jwk,
+      importAlgorithm,
+      false,
+      ["verify"],
+    );
+    const data = new TextEncoder().encode(`${headerB64}.${payloadB64}`);
+
+    let b64 = signatureB64.replace(/-/g, "+").replace(/_/g, "/");
+    while (b64.length % 4) b64 += "=";
+    const binary = atob(b64);
+    const sigBuf = new Uint8Array(binary.length);
+    for (let i = 0; i < binary.length; i++) sigBuf[i] = binary.charCodeAt(i);
+
+    return await crypto.subtle.verify(verifyAlgorithm, cryptoKey, sigBuf, data);
+  } catch (e) {
+    return false;
+  }
+}
