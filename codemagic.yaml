@@ -40,6 +40,9 @@ workflows:
       - name: Sync Capacitor iOS
         script: |
           echo "Syncing Capacitor iOS..."
+          if [ ! -d "ios" ]; then
+            npx cap add ios
+          fi
           npx cap sync ios
 
       - name: Validate iOS project files
