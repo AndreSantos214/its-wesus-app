@@ -37,11 +37,9 @@ workflows:
 
           chmod -R +x node_modules/.bin || true
 
-      - name: Clean, Add and Sync Capacitor iOS
+      - name: Sync Capacitor iOS
         script: |
-          echo "Cleaning and syncing Capacitor iOS..."
-          rm -rf ios
-          npx cap add ios
+          echo "Syncing Capacitor iOS..."
           npx cap sync ios
 
       - name: Validate iOS project files
