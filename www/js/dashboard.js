@@ -3,7 +3,7 @@
  * dashboard.js – Vanilla ES6+ | HIGH-END REAL-TIME DATABASE PERFORMANCE ENGINE
  */
 // Controlo de versão da aplicação
-const CURRENT_APP_VERSION = "2.0.2";
+const CURRENT_APP_VERSION = "2.0.5";
 const storedVersion = localStorage.getItem("wesus_app_version");
 
 if (storedVersion && storedVersion !== CURRENT_APP_VERSION) {
@@ -2758,6 +2758,180 @@ const DatabaseController = (() => {
 
       if (sliderContractsArray.length > 0) {
         PortfolioCarouselController.setContracts(sliderContractsArray);
+      }
+
+      // ═════════════════════════════════════════════════════════════════
+      // 🏗️ CARROSSEL DE OPORTUNIDADES: TODOS OS IMÓVEIS EM CURSO (GLOBAL)
+      // ═════════════════════════════════════════════════════════════════
+      const oppCarousel = document.getElementById(
+        "opportunitiesAssetsCarousel",
+      );
+      const oppCountEl = document.getElementById("opportunitiesAssetsCount");
+
+      // Filtra todos os imóveis em curso na base de dados, independentemente de contratos
+      const emCursoAssets = realAssets.filter(
+        (a) =>
+          a.status_obra === "Em Curso" ||
+          (a.status_obra && a.status_obra.toLowerCase().includes("curso")),
+      );
+
+      if (oppCountEl) {
+        oppCountEl.textContent = `(${emCursoAssets.length})`;
+      }
+
+      if (oppCarousel) {
+        oppCarousel.innerHTML = "";
+
+        if (emCursoAssets.length === 0) {
+          oppCarousel.innerHTML = `
+            <div class="p-6 rounded-2xl bg-white/[0.01] border border-white/5 text-center w-full">
+              <p class="text-xs text-white/40 font-inter">Nenhum imóvel em estruturação no momento.</p>
+            </div>
+          `;
+        } else {
+          emCursoAssets.forEach((asset, idx) => {
+            const assetName = asset.nome_ativo || "Imóvel em Estruturação";
+            const assetLocation = asset.localizacao || "Portugal";
+            const assetTotal = parseFloat(
+              asset.investimento_total_ativo || 0,
+            ).toLocaleString("pt-PT", {
+              minimumFractionDigits: 2,
+            });
+
+            const assetImageUrl = normalizeAssetImageUrl(
+              `assets/${asset.id}/foto-1.webp`,
+              asset.id,
+              "opp-foto-1",
+            );
+
+            const assetGallery = Array.isArray(asset.galeria_fotos)
+              ? asset.galeria_fotos
+                  .map((imgUrl, imgIndex) =>
+                    normalizeAssetImageUrl(
+                      imgUrl,
+                      asset.id,
+                      `opp-gallery-${imgIndex}`,
+                    ),
+                  )
+                  .filter(Boolean)
+              : [];
+
+            const assetDocs =
+              asset.documentos_urls &&
+              typeof asset.documentos_urls === "object" &&
+              !Array.isArray(asset.documentos_urls)
+                ? Object.entries(asset.documentos_urls).map(([name, path]) => ({
+                    name,
+                    path,
+                    size: "Consultar",
+                    type: "PDF",
+                  }))
+                : [];
+
+            const assetMapsUrl =
+              asset.maps_url &&
+              asset.maps_url.trim() !== "" &&
+              asset.maps_url !== "https://maps.google.com"
+                ? asset.maps_url
+                : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+                    assetName + ", " + assetLocation,
+                  )}`;
+
+            const mockMeta = {
+              assetId: asset.id,
+              name: assetName,
+              location: assetLocation,
+              total: assetTotal,
+              cover: assetImageUrl,
+              gallery: assetGallery,
+              docs: assetDocs,
+            };
+
+            const cardId = `opp-asset-${idx}`;
+
+            oppCarousel.innerHTML += `
+              <article id="${cardId}" class="snap-start shrink-0 w-80 carousel-asset-card carousel-asset-card-clean rounded-2xl overflow-hidden p-5 flex flex-col justify-between min-h-[175px] relative" style="cursor: pointer;">
+                <img
+                  src="${assetImageUrl}"
+                  alt="${mockMeta.name}"
+                  class="carousel-asset-image-mask"
+                  loading="eager"
+                  decoding="async"
+                  onerror="this.closest('.wesus-gallery-thumb')?.remove();"
+                  style="
+                    position: absolute;
+                    inset: 0;
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                    object-position: center;
+                    z-index: 0;
+                    display: block;
+                  "
+                />
+                <div style="position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(11, 31, 58, 0.05) 0%, rgba(7, 19, 38, 0.01) 100%); z-index: 1;"></div>
+                <div class="relative z-10 h-full flex flex-col justify-between w-full" style="height: 100%; min-height: 135px;">
+                  <div class="flex justify-between items-start w-full gap-2">
+                    <div class="flex flex-col min-w-0 flex-1">
+                      <h3 class="font-playfair font-bold text-lg leading-tight text-white select-all truncate">${mockMeta.name}</h3>
+                      <a href="${assetMapsUrl}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation();" class="flex items-center gap-1 text-[10px] text-gold/90 hover:text-white transition-colors w-fit mt-1.5 font-medium cursor-pointer">
+                        <svg style="width: 12px; height: 12px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                        <span class="truncate">${mockMeta.location}</span>
+                      </a>
+                    </div>
+                    <span class="status-badge-base status-badge-construction shrink-0">Em Curso</span>
+                  </div>
+                  <div class="mt-5 border-t border-white/5 pt-3 w-full">
+                    <p class="text-[9px] text-white/40 uppercase tracking-widest font-semibold mb-0.5">Investimento Total</p>
+                    <p class="font-bold text-white text-base select-all">€ ${mockMeta.total}</p>
+                  </div>
+                </div>
+              </article>
+            `;
+
+            setTimeout(() => {
+              document
+                .getElementById(cardId)
+                ?.addEventListener("click", (e) => {
+                  if (e.target.closest("a") || e.target.closest("button"))
+                    return;
+                  triggerModalDetails(mockMeta);
+                });
+            }, 20);
+          });
+        }
+      }
+
+      // 🎯 Controlo de Paginação / Scroll pelas Setas do Carrossel
+      const oppPrevBtn = document.getElementById("oppPrevAssetBtn");
+      const oppNextBtn = document.getElementById("oppNextAssetBtn");
+
+      if (oppPrevBtn && oppNextBtn && oppCarousel) {
+        if (emCursoAssets.length <= 1) {
+          [oppPrevBtn, oppNextBtn].forEach((btn) => {
+            btn.style.opacity = "0.3";
+            btn.style.pointerEvents = "none";
+          });
+        } else {
+          [oppPrevBtn, oppNextBtn].forEach((btn) => {
+            btn.style.opacity = "1";
+            btn.style.pointerEvents = "auto";
+          });
+
+          // Move 1 card inteiro (320px) + espaçamento (16px)
+          oppPrevBtn.onclick = (e) => {
+            e.preventDefault();
+            oppCarousel.scrollBy({ left: -336, behavior: "smooth" });
+          };
+
+          oppNextBtn.onclick = (e) => {
+            e.preventDefault();
+            oppCarousel.scrollBy({ left: 336, behavior: "smooth" });
+          };
+        }
       }
 
       // 🔌 PIPELINE DE SINCRONIZAÇÃO EM TEMPO REAL: PREFERÊNCIAS DE NOTIFICAÇÃO

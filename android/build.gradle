@@ -1,5 +1,7 @@
-// Top-level build file where you can add configuration options common to all sub-projects/modules.
-
+// Workaround para plugins legados que ainda chamam jcenter() no Gradle 9+
+org.gradle.api.artifacts.dsl.RepositoryHandler.metaClass.jcenter = { ->
+    delegate.mavenCentral()
+}
 buildscript {
     
     repositories {
