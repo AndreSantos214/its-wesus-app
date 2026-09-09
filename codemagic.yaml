@@ -14,7 +14,7 @@ workflows:
 
       ios_signing:
         distribution_type: app_store
-        bundle_identifier: com.itswesus.portal
+        bundle_identifier: "com.itswesus.portal"
 
       vars:
         BUNDLE_ID: "com.itswesus.portal"
@@ -36,6 +36,11 @@ workflows:
           fi
 
           chmod -R +x node_modules/.bin || true
+
+      - name: Generate App Icons and Splash
+        script: |
+          echo "Generating app icons and splash screens..."
+          npx capacitor-assets generate --ios
 
       - name: Sync Capacitor iOS
         script: |
@@ -125,3 +130,4 @@ workflows:
       app_store_connect:
         auth: integration
         submit_to_testflight: false
+        
