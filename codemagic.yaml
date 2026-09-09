@@ -2,27 +2,27 @@ workflows:
   ios-capacitor-release:
     name: iOS Capacitor Release
     max_build_duration: 60
-    instance_type: mac_mini_m2[span_0](start_span)[span_0](end_span)
+    instance_type: mac_mini_m2
 
     integrations:
-      app_store_connect: ios-app[span_1](start_span)[span_1](end_span)
+      app_store_connect: ios-app
 
     environment:
-      node: latest[span_2](start_span)[span_2](end_span)
-      xcode: latest[span_3](start_span)[span_3](end_span)
-      cocoapods: default[span_4](start_span)[span_4](end_span)
+      node: latest
+      xcode: latest
+      cocoapods: default
 
       ios_signing:
-        distribution_type: app_store[span_5](start_span)[span_5](end_span)
-        bundle_identifier: "com.itswesus.portal[span_6](start_span)[span_7](start_span)"[span_6](end_span)[span_7](end_span)
+        distribution_type: app_store
+        bundle_identifier: "com.itswesus.portal"
 
       vars:
-        BUNDLE_ID: "com.itswesus.portal[span_8](start_span)[span_9](start_span)"[span_8](end_span)[span_9](end_span)
-        APP_NAME: "It's Wesus[span_10](start_span)[span_11](start_span)"[span_10](end_span)[span_11](end_span)
-        APP_VERSION: "2.0.5[span_12](start_span)"[span_12](end_span)
-        IOS_DEPLOYMENT_TARGET: "15.0[span_13](start_span)[span_14](start_span)"[span_13](end_span)[span_14](end_span)
-        XCODE_WORKSPACE: "ios/App/App.xcworkspace[span_15](start_span)"[span_15](end_span)
-        XCODE_SCHEME: "App[span_16](start_span)"[span_16](end_span)
+        BUNDLE_ID: "com.itswesus.portal"
+        APP_NAME: "It's Wesus"
+        APP_VERSION: "2.0.5"
+        IOS_DEPLOYMENT_TARGET: "15.0"
+        XCODE_WORKSPACE: "ios/App/App.xcworkspace"
+        XCODE_SCHEME: "App"
 
     scripts:
       - name: Install npm dependencies
@@ -122,12 +122,12 @@ workflows:
             --scheme "$XCODE_SCHEME"
 
     artifacts:
-      - build/ios/ipa/*.ipa[span_17](start_span)[span_17](end_span)
-      - /tmp/xcodebuild_logs/*.log[span_18](start_span)[span_18](end_span)
-      - ios/App/build/**/*.xcarchive[span_19](start_span)[span_19](end_span)
+      - build/ios/ipa/*.ipa
+      - /tmp/xcodebuild_logs/*.log
+      - ios/App/build/**/*.xcarchive
 
     publishing:
       app_store_connect:
-        auth: integration[span_20](start_span)[span_20](end_span)
-        submit_to_testflight: false[span_21](start_span)[span_21](end_span)
+        auth: integration
+        submit_to_testflight: false
         
